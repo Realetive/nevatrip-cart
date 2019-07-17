@@ -12,9 +12,34 @@
   padding: 0;
   margin: 0;
 }
-
 .cart__item {
   position: relative;
   padding: 0;
   margin: 0;
+}
+.listPreview .cart__item{
+  padding-top: 7px;
+  border-top: 1px solid #eee;
+}
+.cart__user {
+  position: relative;
+  margin-bottom: 20px;
+}
+.cart>.list {
+  font-size: 23px;
+  padding: 1px 15px 3px;
+}
+.cart label{
+  display: block;
+}
+@media (min-width: 1200px){
+  .cart {
+    width: 1180px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+    align-content: flex-start;
+  }
 }

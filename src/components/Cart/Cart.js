@@ -16,10 +16,10 @@ export const Cart = ({session}) => {
     dispatch('cart/get', session);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-  
+
   const products = () => cart.map( key => {
     const { productId } = order[key];
-    
+
     return (
       <li className='cart__item cart__item_view_product' key={ key }>
         <Product
@@ -29,10 +29,10 @@ export const Cart = ({session}) => {
       </li>
     );
   } )
-  
+
   const productsPreview = () => cart.map( key => {
     const { productId } = order[key];
-    
+
     return (
       <li className='cart__item cart__item_view_product' key={ key }>
         <ProductPreview
@@ -50,8 +50,8 @@ export const Cart = ({session}) => {
   };
   
   const sum = Object.values(order).reduce( ( sum, cartItem ) => {
-    if (!cartItem.options) return 0;
-    
+    if ( !cartItem.options ) return 0;
+
     const {
       productId,
       options: {
@@ -59,10 +59,10 @@ export const Cart = ({session}) => {
         tickets
       },
     } = cartItem;
-    
+
     if (!direction || !tickets) return 0;
-    
-    Object.keys( tickets ).forEach( key => {
+
+    Object.keys(tickets).forEach(key => {
       const count = tickets[ key ] || 0;
       const ticketKey = `${productId}.${direction}.${key}`;
       
@@ -71,10 +71,10 @@ export const Cart = ({session}) => {
         sum += count * price;
       }      
     } );
-    
+
     return sum;
   }, 0 );
-  
+
   const checkOut = async e => {
     e.preventDefault();
     
@@ -115,22 +115,24 @@ export const Cart = ({session}) => {
     
     pay();    
   };
-    
+
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
-        <ul className='cart__list'>{ products() }</ul>
-        <div className='cart__aside'>
-          <ul className='cart__preview'>{ productsPreview() }</ul>
+        <ul className='list'>{ products() }</ul>
+        <div className='aside'>
+          <span className = 'caption'>Ваш заказ</span>
+          <ul className='listPreview'>{ productsPreview() }</ul>
+          <div className = 'asideSeparator' ></div>
           <div className='cart__user'>
             {
               [
-                { name: 'fullName', type: 'text', value: fullName, label: 'Ф. И. О.' },
-                { name: 'email', type: 'email', value: email, label: 'Email' },
+                { name: 'fullName', type: 'text', value: fullName, label: 'Фамилия Имя' },
+                { name: 'email', type: 'email', value: email, label: 'E-mail' },
                 { name: 'phone', type: 'phone', value: phone, label: 'Телефон' }
               ].map( field => (
                 <div key={ field.name }>
-                  <label className='field'>
-                    <span className='field__label'>
+                  <label className='form-label'>
+                    <span className='caption'>
                       {field.label}
                     </span>
                     <input
@@ -146,7 +148,11 @@ export const Cart = ({session}) => {
               ))
             }
           </div>
-          <button className='button button_view_action'>
+          <span className='checkbox'>
+            <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+            <label className='caption checkboxCaption' htmlFor='ofertaCheck'>Согласен с условиями возврата</label>
+          </span>
+          <button className='btn btn_block btn_primary'>
             Оплатить { sum } ₽
           </button>
         </div>

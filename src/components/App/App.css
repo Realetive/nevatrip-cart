@@ -1,3 +1,4 @@
+/*react*/
 .App {
   text-align: center;
 }
@@ -31,3 +32,754 @@
     transform: rotate(360deg);
   }
 }
+/*react*/
+
+/*normalize*/
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+/* Document
+   ========================================================================== */
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+/* Sections
+   ========================================================================== */
+/**
+ * Remove the margin in all browsers.
+ */
+body {
+  margin: 0;
+}
+/**
+ * Render the `main` element consistently in IE.
+ */
+main {
+  display: block;
+}
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+/* Grouping content
+   ========================================================================== */
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+/* Text-level semantics
+   ========================================================================== */
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+a {
+  background-color: transparent;
+}
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+b,
+strong {
+  font-weight: bolder;
+}
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+/**
+ * Add the correct font size in all browsers.
+ */
+small {
+  font-size: 80%;
+}
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sub {
+  bottom: -0.25em;
+}
+sup {
+  top: -0.5em;
+}
+/* Embedded content
+   ========================================================================== */
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+img {
+  border-style: none;
+}
+/* Forms
+   ========================================================================== */
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
+}
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+button,
+input { /* 1 */
+  overflow: visible;
+}
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+button,
+select { /* 1 */
+  text-transform: none;
+}
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+/**
+ * Correct the padding in Firefox.
+ */
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+legend {
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
+}
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+progress {
+  vertical-align: baseline;
+}
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+textarea {
+  overflow: auto;
+}
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+/* Interactive
+   ========================================================================== */
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+details {
+  display: block;
+}
+/*
+ * Add the correct display in all browsers.
+ */
+summary {
+  display: list-item;
+}
+/* Misc
+   ========================================================================== */
+/**
+ * Add the correct display in IE 10+.
+ */
+template {
+  display: none;
+}
+/**
+ * Add the correct display in IE 10.
+ */
+[hidden] {
+  display: none;
+}
+/*normalize*/
+
+/*global*/
+*, *:before, *:after {
+  box-sizing: border-box;
+  outline: 0;
+}
+html{
+  font-size: 18px;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  font-smoothing: antialiased;
+  font-variant-ligatures: none;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  min-height: 100vh;
+}
+/*global*/
+
+/*react-datepicker*/
+.react-datepicker .react-datepicker__month-container{
+  float: none;
+}
+.react-datepicker .react-datepicker__header {
+  background-color: transparent;
+  border-bottom: none;
+}
+.react-datepicker .react-datepicker__current-month {
+  font-weight: 400;
+  margin-top: 17px;
+  margin-bottom: 31px;
+}
+.react-datepicker .react-datepicker__current-month:first-letter {
+  text-transform: uppercase;
+}
+.react-datepicker .react-datepicker__navigation{
+  border:none;
+  height: 43px;
+  width: 43px;
+  opacity: 1;
+  transition: opacity .3s ease;
+}
+.react-datepicker .react-datepicker__navigation:hover{
+  opacity: .7;
+}
+.react-datepicker .react-datepicker__navigation:before{
+  content: '';
+  position: absolute;
+  display: inline-block;
+  top: 22px;
+  height: 10px;
+  width: 20px;
+}
+.react-datepicker .react-datepicker__navigation--previous:before{
+  background: transparent url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTE5LjE4NyA0LjM1OEgxLjg4MnYxLjUwNGgxNy4zMDVWNC4zNTh6IiBmaWxsPSIjNjc2NzY4Ii8+CiAgPHBhdGggZD0iTTUuMjMgOS40NzRMLjcxNiA0Ljk2IDUuMjMuNDQ1bDEuMDU0IDEuMDkxTDIuODYgNC45NmwzLjQyNCAzLjQyM0w1LjIzIDkuNDc0eiIgZmlsbD0iIzY3Njc2OCIvPgo8L3N2Zz4K);
+  left: 13px;
+}
+.react-datepicker .react-datepicker__navigation--next:before{
+  background: transparent url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTS45NDggNS41NjFoMTcuMzA1VjQuMDU3SC45NDhWNS41NnoiIGZpbGw9IiM2NzY3NjgiLz4KICA8cGF0aCBkPSJNMTQuOTA1LjQ0NUwxOS40MiA0Ljk2bC00LjUxNCA0LjUxNS0xLjA1My0xLjA5MSAzLjQyMy0zLjQyNC0zLjQyMy0zLjQyMyAxLjA1My0xLjA5eiIgZmlsbD0iIzY3Njc2OCIvPgo8L3N2Zz4K);
+  right: 13px;
+}
+.react-datepicker .react-datepicker__day-name{
+  text-transform: uppercase;
+  opacity: .4;
+}
+.react-datepicker .react-datepicker__day,
+.react-datepicker .react-datepicker__day-name,
+.react-datepicker .react-datepicker__time-name {
+  width: 10.4%;
+  margin: 3.7px 1%;
+}
+.react-datepicker .react-datepicker__month {
+  margin: 0;
+}
+.react-datepicker .react-datepicker__day {
+  font-size: 16px;
+}
+.react-datepicker .react-datepicker__day-names {
+  margin-bottom: 15px;
+}
+.react-datepicker .react-datepicker__month-text--in-range,
+.react-datepicker .react-datepicker__month-text--in-selecting-range,
+.react-datepicker .react-datepicker__month-text--selected {
+  border-radius: 3px;
+  background-color: #FFD82E;
+  color: #00001C;
+}
+.react-datepicker .react-datepicker__month-text:hover {
+  border-radius: 3px;
+  background-color: transparent;
+}
+
+.react-datepicker .react-datepicker__day--in-range,
+.react-datepicker .react-datepicker__day--in-selecting-range,
+.react-datepicker .react-datepicker__day--selected{
+  position: relative;
+  border-radius: 3px;
+  background-color: transparent;
+  color: #00001C;
+}
+.react-datepicker .react-datepicker__day:hover{
+  position: relative;
+  border-radius: 3px;
+  background-color: transparent;
+}
+.react-datepicker .react-datepicker__day--in-range:before,
+.react-datepicker .react-datepicker__day--in-selecting-range:before,
+.react-datepicker .react-datepicker__day--selected:before,
+.react-datepicker .react-datepicker__day:hover:before{
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 30px;
+  width: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  border-radius: 50%;
+  z-index: -1;
+}
+.react-datepicker .react-datepicker__day--in-range:before,
+.react-datepicker .react-datepicker__day--in-selecting-range:before,
+.react-datepicker .react-datepicker__day--selected:before{
+  background-color: #FFD82E;
+  transform: scale(1);
+  transition: all .3s ease-out;
+}
+.react-datepicker .react-datepicker__day:hover:before{
+  background-color: rgba(255, 216, 46, 0.7);
+}
+.react-datepicker .react-datepicker__day--in-range:active:before,
+.react-datepicker .react-datepicker__day--in-selecting-range:active:before,
+.react-datepicker .react-datepicker__day--selected:active:before,
+.react-datepicker .react-datepicker__day:hover:active:before{
+  background-color: #FFD82E;
+  transform: scale(1.3);
+}
+/*react-datepicker*/
+
+/*form*/
+[type=button]:not(:disabled),
+[type=reset]:not(:disabled),
+[type=submit]:not(:disabled),
+button:not(:disabled) {
+  cursor: pointer;
+}
+.caption{
+  display: block;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.input{
+  display: block;
+  width: 100%;
+  height: 39px;
+  padding: 9px 14px 7px 14px;
+  margin: 0 0 13px;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #544b4b;
+  background: #fff url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIiIGhlaWdodD0iMzkiIGZpbGw9Im5vb…U1NCAwaC0zLjAzOHYyLjY4aDMuMDM5di0yLjY4eiIgZmlsbD0iIzdCN0I3QiIvPjwvc3ZnPg==) no-repeat 100%;
+  background-clip: padding-box;
+  border: 1px solid #cbcbcb;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.input:focus {
+  color: #544B4B;
+  background-color: #fff;
+  border-color: #4FA0D0;
+  outline: 0;
+  box-shadow: 0 0 0 1px rgba(79, 160, 208, 0.25);
+}
+.btn-radio{
+  position: absolute;
+  left: -9999999em;
+  z-index: -999999;
+}
+.btn-radio__label{
+  display: block;
+  width: 100%;
+  height: 39px;
+  padding: 7px;
+  margin: 0 0 13px;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #544b4b;
+  background: #fff;
+  background-clip: padding-box;
+  border: 1px solid #cbcbcb;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.btn-radio__label:hover{
+  background-color: rgba(79, 160, 208, 0.3);
+}
+
+.btn-radio:checked + .btn-radio__label{
+  background-color: #4FA0D0;
+  color: #FFFFFF;
+  border-color: #E1E1E1;
+}
+.btn {
+  display: inline-block;
+  font-weight: 300;
+  color: #212529;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: #0000;
+  border: 1px solid #0000;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.btn_block{
+  display: block;
+  width: 100%;
+}
+.btn:hover {
+  color: #212529;
+  text-decoration: none;
+}
+.btn:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+.btn_secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+.btn_secondary:hover {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+.btn_secondary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(108,117,125,.5);
+}
+.btn_primary {
+  color: #000000;
+  background-color: #FFE056;
+  border-color: #FFE056;
+}
+.btn_primary:hover {
+  background-color: #e8b705;
+  border-color: #e8b705;
+}
+.btn_primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 224, 86, 0.5);
+}
+.grid-list{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  list-style: none;
+  margin: 0 -5px;
+  padding: 0;
+}
+.grid-list__item{
+  position: relative;
+  overflow: hidden;
+  margin: 0 5px 10px;
+  display: flex;
+  flex: 1 3 30%;
+}
+.checkbox{
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin-bottom: 15px;
+}
+.checkboxCaption{
+  position: relative;
+  display: block;
+  margin: 0;
+  min-height: 25px;
+  padding: 6px 30px 0 0;
+}
+.checkboxCaption:before{
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 2px;
+  height: 22px;
+  width: 22px;
+  border-radius: 3px;
+  background-color: #49A1D0;
+}
+.checkboxInput:checked + .checkboxCaption:after{
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: 3px;
+  width: 17px;
+  height: 13px;
+  background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEuMzEgNi4yNTRsNS4wNTIgNS4wNTNMMTYuNjE2IDEuMzUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIi8+Cjwvc3ZnPgo=);
+}
+.caption.checkboxCaption {
+  padding-left: 0;
+}
+.checkboxInput{
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+.form-label{
+  position: relative;
+  display: block;
+  margin-bottom: 10px;
+}
+/*form*/
+
+/*list*/
+.list {
+  position: relative;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.listPreview{
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.listPreviewFieldset{
+  padding: 0;
+  margin: 0;
+  position: relative;
+  border: none;
+}
+.listPreviewLegend {
+  position: relative;
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  padding-bottom: 10px;
+}
+.listPreviewData{
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #717171;
+  font-size: 11px;
+  font-style: italic;
+}
+.listPreviewDataLi{
+  margin-bottom: 3px;
+}
+.listPreviewTickets{
+  position: relative;
+  list-style: none;
+  padding: 0;
+  display: block;
+  margin: 8px 0;
+  font-size: 12px;
+}
+.listPreviewTicketsLi{
+  color: #717171;
+  margin-top: 2px;
+}
+/*list*/
+
+/*aside*/
+.aside{
+  position: relative;
+  padding: 15px;
+  margin: 5px 15px 30px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 15px #CBCBCB;
+}
+.asideSeparator{
+  position: relative;
+  display: block;
+  margin: 15px 0;
+  border-top: 1px dashed #CBCBCB;
+}
+.asideSeparator:before,
+.asideSeparator:after{
+  content: '';
+  position: absolute;
+  top: -10px;
+  height: 20px;
+  width: 10px;
+  overflow: hidden;
+}
+.asideSeparator:before{
+  left: -15px;
+  box-shadow: inset -2px 0 2px #cbcbcb;
+  border-bottom-right-radius: 16px;
+  border-top-right-radius: 16px;
+  background: #eee;
+}
+.asideSeparator:after{
+  right: -15px;
+  box-shadow: inset 2px 0 2px #cbcbcb;
+  border-bottom-left-radius: 16px;
+  border-top-left-radius: 16px;
+  background: #dedede;
+}
+@media (min-width: 1200px) {
+  .aside{
+    width: 380px;
+  }
+  .colDesktop{
+    position: relative;
+    padding: 0 7.5px;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+/*aside*/
+
+/*counter*/
+.counterBtn{
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  height: 28px;
+  width: 46px;
+  font-size: 22px;
+  font-weight: 600;
+  background-color: transparent;
+  color: #464B5D;
+  opacity: 1;
+}
+.counterBtn:hover{
+  opacity: .85;
+}
+.counterBtn:active{
+  opacity: .7;
+}
+.counterInput{
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+  text-align: center;
+  vertical-align: middle;
+  border: none;
+  outline: none;
+  background: #E9EEF1;
+  color: #464B5D;
+  -webkit-appearance: none;
+  margin: 0;
+  -moz-appearance: textfield;
+}
+.counterInput::-webkit-outer-spin-button,
+.counterInput::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+.counterInput:hover,
+.counterInput:focus {
+  -moz-appearance: number-input;
+}
+/*counter*/

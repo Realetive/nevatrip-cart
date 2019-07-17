@@ -18,15 +18,19 @@ export const Product = (props) => {
     direction,
     date
   } = order[cartKey].options || {};
-  
+
   return (
     <fieldset className='product product_view_form'>
       <legend className='product__legend'>{ title }</legend>
       <div className='product__inner'>
-        { direction && <Calendar {...props} /> }
-        <Directions {...props} />
-        { date && <Time {...props} /> }
-        { direction && <Tickets {...props} /> }
+        <div className='colDesktop'>
+          { direction && <Calendar {...props} /> }
+        </div>
+        <div className='colDesktop'>
+          <Directions {...props} />
+          { date && <Time {...props} /> }
+          { direction && <Tickets {...props} /> }
+        </div>
       </div>
     </fieldset>
   );
