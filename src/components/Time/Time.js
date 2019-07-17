@@ -11,7 +11,7 @@ export const Time = ({ cartKey, productId }) => {
 
   useEffect(() => {
     const getTimes = async ( direction, date ) => {
-      const formatDate = format( date, 'yyyy-MM-dd', new Date() );
+      const formatDate = format( typeof date === 'string' ? new Date(date) : date, 'yyyy-MM-dd', new Date() );
       const times = await api.product.getProductTime(productId, direction, formatDate);
       if(!times.length) return;
       
@@ -30,11 +30,11 @@ export const Time = ({ cartKey, productId }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time])
 
-  const formatDate = format( date, 'yyyy-MM-dd', new Date() );
+  const formatDate = format( typeof date === 'string' ? new Date(date) : date, 'yyyy-MM-dd' );
   const eventGroup = `${productId}.${direction}.${formatDate}`;
   const events = event[eventGroup];
   const renderTimes = events ? events.map((eventItem, index) => {
-    const formatTime = format( new Date(eventItem.start), 'HH:mm', new Date() );
+    const formatTime = format( new Date(eventItem.start), 'HH:mm' );
 
     return (
       <li key={eventItem._key} title={`${formatDate} в ${formatTime}`}>

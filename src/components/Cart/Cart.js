@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import useStoreon from 'storeon/react';
 
 import { Product } from '../Product/Product';
 import { ProductPreview } from '../ProductPreview/ProductPreview';
+
+import { api } from "../../api";
 
 import './Cart.css';
 
@@ -46,9 +48,9 @@ export const Cart = ({session}) => {
 
     dispatch('user/update', user);
   };
-
+  
   const sum = Object.values(order).reduce( ( sum, cartItem ) => {
-    if (!cartItem.options ) return 0;
+    if (!cartItem.options) return 0;
     
     const {
       productId,
@@ -60,56 +62,58 @@ export const Cart = ({session}) => {
     
     if (!direction || !tickets) return 0;
     
-    
     Object.keys( tickets ).forEach( key => {
       const count = tickets[ key ] || 0;
       const ticketKey = `${productId}.${direction}.${key}`;
-      const { price } = ticket[ ticketKey ];
-      sum += count * price;
+      
+      if ( ticket.hasOwnProperty( ticketKey ) ) {
+        const { price } = ticket[ ticketKey ];
+        sum += count * price;
+      }      
     } );
     
     return sum;
   }, 0 );
   
-  const checkOut = e => {
+  const checkOut = async e => {
     e.preventDefault();
- 
-    const order = {
-      session,
-      user,
-    };
+    
+    await api.cart.updateCart(session, Object.values(order));
+    const createOrder = await api.order.newOrder({ sessionId: session, user });
+    
+    console.log('createOrder', createOrder);
+    
+    const invoiceId = createOrder.payment.Model.Number;    
     
     const pay = function () {
-      var cp = window.cp;
-        var widget = new cp.CloudPayments();
-        widget.charge({ // options
-          publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
-          description: 'Пример оплаты (деньги сниматься не будут)', //назначение
-          amount: sum, //сумма
-          currency: 'RUB', //валюта
-          invoiceId: '1234567', //номер заказа  (необязательно)
-          accountId: user.email, //идентификатор плательщика (необязательно)
-          skin: "mini", //дизайн виджета
-          data: {
-            myProp: 'myProp value' //произвольный набор параметров
-          }
-        },
-        function (options) { // success
-          console.log('options', options);
-          
-          alert( 'Оплата прошла успешно' );
-        },
-        function (reason, options) { // fail
-          console.log('reason', reason);
-          console.log('options', options);
-          
-          alert( 'Оплата не прошла' );
-        });
+      const cp = window.cp;
+      const widget = new cp.CloudPayments();
+      widget.charge({ // options
+        publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
+        description: 'Пример оплаты (деньги сниматься не будут)', //назначение
+        amount: sum, //сумма
+        currency: 'RUB', //валюта
+        invoiceId, //номер заказа  (необязательно)
+        accountId: user.email, //идентификатор плательщика (необязательно)
+        skin: "mini", //дизайн виджета
+        data: {
+          myProp: 'myProp value' //произвольный набор параметров
+        }
+      },
+      function (options) { // success
+        console.log('options', options);
+        
+        alert( 'Оплата прошла успешно' );
+      },
+      function (reason, options) { // fail
+        console.log('reason', reason);
+        console.log('options', options);
+        
+        alert( 'Оплата не прошла' );
+      });
     };
     
     pay();    
-    
-    console.log('order', order);
   };
     
   return cart && !cart.loading && !cart.error

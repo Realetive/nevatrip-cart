@@ -34,7 +34,7 @@ export const api = {
           method: 'PUT',
           headers,
           body: JSON.stringify({
-            session,
+            sessionId: session,
             products,
           }),
         }
