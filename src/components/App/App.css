@@ -473,7 +473,8 @@ button:not(:disabled) {
   font-weight: 400;
   line-height: 1.5;
   color: #544b4b;
-  background: #fff url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIiIGhlaWdodD0iMzkiIGZpbGw9Im5vb…U1NCAwaC0zLjAzOHYyLjY4aDMuMDM5di0yLjY4eiIgZmlsbD0iIzdCN0I3QiIvPjwvc3ZnPg==) no-repeat 100%;
+  background-color: #fff;
+  /* background: #fff url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIiIGhlaWdodD0iMzkiIGZpbGw9Im5vb…U1NCAwaC0zLjAzOHYyLjY4aDMuMDM5di0yLjY4eiIgZmlsbD0iIzdCN0I3QiIvPjwvc3ZnPg==) no-repeat 100%; */
   background-clip: padding-box;
   border: 1px solid #cbcbcb;
   border-radius: .25rem;
