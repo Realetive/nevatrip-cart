@@ -21,6 +21,12 @@
   padding-top: 7px;
   border-top: 1px solid #eee;
 }
+
+.list>.cart__item+.cart__item{
+  padding-top: 15px;
+  border-top: 1px dashed #eee;
+  margin-top: 24px;
+}
 .cart__user {
   position: relative;
   margin-bottom: 20px;
