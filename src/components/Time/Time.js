@@ -14,7 +14,7 @@ export const Time = ({ cartKey, productId }) => {
       const formatDate = format( date, 'yyyy-MM-dd', new Date() );
       const times = await api.product.getProductTime(productId, direction, formatDate);
       if(!times.length) return;
-      
+
       _setTime(times[0]._key);
 
       dispatch('event/add', { [`${productId}.${direction}.${formatDate}`]: times });
@@ -23,7 +23,7 @@ export const Time = ({ cartKey, productId }) => {
     getTimes(direction, date);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [direction, date]);
-  
+
   useEffect(() => {
     order[cartKey].options.event = time;
     dispatch('order/update', order);
@@ -35,18 +35,19 @@ export const Time = ({ cartKey, productId }) => {
   const events = event[eventGroup];
   const renderTimes = events ? events.map((eventItem, index) => {
     const formatTime = format( new Date(eventItem.start), 'HH:mm', new Date() );
-
     return (
-      <li key={eventItem._key} title={`${formatDate} в ${formatTime}`}>
-        <label>
+      <li key={eventItem._key} title={`${formatDate} в ${formatTime}`} className = 'grid-list__item'>
           <input
             type="radio"
+            className = 'btn-radio'
             name={ eventGroup }
             value={ eventItem._key }
             checked={ time ? time === eventItem._key : !index }
             onChange={ e => _setTime( e.target.value ) }
+            id = { eventItem._key }
           />
-            {`${formatDate} в ${formatTime} (${eventItem._key})`}
+          <label className = 'btn-radio__label' htmlFor = { eventItem._key }>
+            {formatTime}
           </label>
       </li>
     );

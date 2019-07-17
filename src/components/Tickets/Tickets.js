@@ -3,6 +3,8 @@ import useStoreon from 'storeon/react';
 
 import Counter from '../Counter/Counter';
 
+import './Tickets.css';
+
 export const Tickets = ({ cartKey, productId }) => {
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const { direction: selectedDirection } = order[cartKey].options;
@@ -10,12 +12,12 @@ export const Tickets = ({ cartKey, productId }) => {
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
     obj[ _key ] = count;
-    
+
     return obj;
   }, {} );
 
   const [ _tickets, _setTickets ] = useState(initialTickets);
-  
+
   useEffect(() => {
     order[cartKey].options.tickets = _tickets;
     dispatch('order/update', order);
@@ -32,7 +34,7 @@ export const Tickets = ({ cartKey, productId }) => {
     } = ticket[ ticketId ];
 
     return (
-      <div key={ _key } className='ticketsItem'>
+      <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
           { name || '???' }, { price } ₽
         </dt>

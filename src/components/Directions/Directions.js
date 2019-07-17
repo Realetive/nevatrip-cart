@@ -35,6 +35,7 @@ export const Directions = ({ cartKey, productId }) => {
       <select
         value={selectedDirection}
         onChange={ event => _setDirection(event.target.value) }
+        className = 'input'
       >
         {renderDirections}
       </select>
