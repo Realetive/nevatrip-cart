@@ -26,12 +26,12 @@ export const Calendar = ({ cartKey, productId }) => {
     dispatch('order/update', order);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
-  
+
   useEffect(() => {
     setDate( getNearestDate(date, availableDates) );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDirection]);
-  
+
   return (
     <>
       <label>
@@ -40,7 +40,7 @@ export const Calendar = ({ cartKey, productId }) => {
           readOnly
           type = 'text'
           value = { format(date, 'dd MMMM yyyy', { locale: ru }) }
-          className = 'input'
+          className = 'input input_calendar'
         />
       </label>
       <div className='calendarWrapper'>
