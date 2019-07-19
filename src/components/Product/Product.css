@@ -9,8 +9,10 @@
   vertical-align: middle;
   padding: 15px 0;
   color: #363232;
-  background-color: #FFFFFF;
+  /*background-color: #FFFFFF;*/
   width: 100%;
+  margin-bottom: 3px;
+  border-bottom:  1px solid #f1f1f1;
 }
 .product__legend:before{
   content: '';
@@ -25,7 +27,6 @@
 .product__inner {
   display:  flex;
   flex-direction: column;
-  padding: 10px 15px;
   width: 100%;
 }
 @media (min-width: 1200px){
@@ -34,8 +35,6 @@
     justify-content: space-between;
     margin-left: -7.5px;
     margin-right: -7.5px;
-    padding-left: 0;
-    padding-right: 0;
     width: auto;
   }
 }

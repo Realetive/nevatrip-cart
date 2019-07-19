@@ -48,7 +48,7 @@ export const Cart = ({session}) => {
 
     dispatch('user/update', user);
   };
-  
+
   const sum = Object.values(order).reduce( ( sum, cartItem ) => {
     if ( !cartItem.options ) return 0;
 
@@ -65,11 +65,11 @@ export const Cart = ({session}) => {
     Object.keys(tickets).forEach(key => {
       const count = tickets[ key ] || 0;
       const ticketKey = `${productId}.${direction}.${key}`;
-      
+
       if ( ticket.hasOwnProperty( ticketKey ) ) {
         const { price } = ticket[ ticketKey ];
         sum += count * price;
-      }      
+      }
     } );
 
     return sum;
@@ -77,14 +77,14 @@ export const Cart = ({session}) => {
 
   const checkOut = async e => {
     e.preventDefault();
-    
+
     await api.cart.updateCart(session, Object.values(order));
     const createOrder = await api.order.newOrder({ sessionId: session, user });
-    
+
     console.log('createOrder', createOrder);
-    
-    const invoiceId = createOrder.payment.Model.Number;    
-    
+
+    const invoiceId = createOrder.payment.Model.Number;
+
     const pay = function () {
       const cp = window.cp;
       const widget = new cp.CloudPayments();
@@ -102,25 +102,25 @@ export const Cart = ({session}) => {
       },
       function (options) { // success
         console.log('options', options);
-        
+
         alert( 'Оплата прошла успешно' );
       },
       function (reason, options) { // fail
         console.log('reason', reason);
         console.log('options', options);
-        
+
         alert( 'Оплата не прошла' );
       });
     };
-    
-    pay();    
+
+    pay();
   };
 
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
         <ul className='list'>{ products() }</ul>
         <div className='aside'>
-          <span className = 'caption'>Ваш заказ</span>
+          <span className = 'caption caption_l'>Ваш заказ</span>
           <ul className='listPreview'>{ productsPreview() }</ul>
           <div className = 'asideSeparator' ></div>
           <div className='cart__user'>

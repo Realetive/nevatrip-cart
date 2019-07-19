@@ -22,6 +22,7 @@
   border-top: 1px solid #eee;
 }
 
+
 .list>.cart__item+.cart__item{
   padding-top: 15px;
   border-top: 1px dashed #eee;
@@ -41,11 +42,28 @@
 @media (min-width: 1200px){
   .cart {
     width: 1180px;
+    padding-top: 30px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: flex-start;
     align-content: flex-start;
+  }
+  .list>.cart__item{
+    padding: 7px 25px 16px;
+    margin: 0;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px #cbcbcb;;
+  }
+  .listPreview .cart__item{
+    padding-top: 20px;
+  }
+  .list>.cart__item+.cart__item{
+    border-top: none;
+  }
+  .cart>.list {
+    padding: 0;
   }
 }

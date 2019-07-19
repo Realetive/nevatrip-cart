@@ -53,11 +53,44 @@ export const ProductPreview = ({ cartKey, productId }) => {
     <fieldset className='listPreviewFieldset'>
       <legend className='listPreviewLegend'>{title}</legend>
       <ul className='listPreviewData'>
-        { date && <li className='listPreviewDataLi'>Дата: { renderDate() }</li> }
-        { selectedEvent && <li className='listPreviewDataLi'>Время: { renderTime() }</li> }
-        { selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>Направление: { direction[selectedDirection].title }</li> }
+        { date && <li className='listPreviewDataLi'>
+          <div className="listPreviewDataLi__h">
+            <b>дата</b> /
+            <div className="text_en">date</div>
+          </div>
+          <div className="listPreviewDataLi__p">{ renderDate() }</div>
+        </li> }
+
+        { selectedEvent && <li className='listPreviewDataLi'>
+          <div className="listPreviewDataLi__h">
+            <b>время</b> /
+            <div className="text_en">time</div>
+          </div>
+          <div className="listPreviewDataLi__p">
+            { renderTime() }
+          </div>
+        </li> }
+
+        { selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
+          <div className="listPreviewDataLi__h">
+            <b>направление</b> /
+            <div className="text_en">direction</div>
+          </div>
+          <div className="listPreviewDataLi__p">
+            { direction[selectedDirection].title }
+          </div>
+        </li> }
       </ul>
-      { tickets && <div className='listPreviewTickets'>Билеты: { renderTicket() }</div> }
+      { tickets &&
+      <div className='listPreviewTickets'>
+        <div className="listPreviewDataLi__h">
+          <b>билеты</b> /
+          <div className="text_en">tickets</div>
+        </div>
+        <div className="listPreviewDataLi__p">
+          { renderTicket() }
+        </div>
+      </div> }
     </fieldset>
   );
 };
