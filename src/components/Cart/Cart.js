@@ -90,20 +90,21 @@ export const Cart = ({session}) => {
       const widget = new cp.CloudPayments();
       widget.charge({ // options
         publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
-        description: 'Пример оплаты (деньги сниматься не будут)', //назначение
+        description: 'Оплата на сайте NevaTrip.ru', //назначение
         amount: sum, //сумма
         currency: 'RUB', //валюта
         invoiceId, //номер заказа  (необязательно)
         accountId: user.email, //идентификатор плательщика (необязательно)
         skin: "mini", //дизайн виджета
-        data: {
-          myProp: 'myProp value' //произвольный набор параметров
-        }
+        // data: {
+        //   myProp: 'myProp value' //произвольный набор параметров
+        // }
       },
       function (options) { // success
         console.log('options', options);
 
-        alert( 'Оплата прошла успешно' );
+        alert('Оплата прошла успешно');
+        window.location.href = '/';
       },
       function (reason, options) { // fail
         console.log('reason', reason);

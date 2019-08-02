@@ -13,16 +13,28 @@ export const ProductPreview = ({ cartKey, productId }) => {
     tickets
   } = order[cartKey].options || {};
   const selectedDate = new Date(date);
-
-  const renderDate = () => format( selectedDate, 'dd MMMM yyyy', { locale: ru });
-
+  
+  let action;
   const renderTime = () => {
     const formatedDate = format( selectedDate, 'yyyy-MM-dd');
     const eventGroup = `${productId}.${selectedDirectionId}.${formatedDate}`;
     if (!event[eventGroup]) return;
-    const action = event[eventGroup].find(eventItem => eventItem._key === selectedEvent);
+    action = event[eventGroup].find(eventItem => eventItem._key === selectedEvent);
     if (!action) return;
     return format( new Date( action.start ), 'HH:mm' );
+  }
+  
+  const renderDate = () => {
+    const hours = selectedDate.getHours();
+    if (hours > 2 && hours < 22) {
+      return format(selectedDate, 'dd MMMM', { locale: ru });
+    } else {
+      const prevDate = new Date(selectedDate);
+      prevDate.setDate(prevDate.getDate() - 1);
+      const dateFrom = format(prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru });
+      return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
+    }
+    
   }
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
@@ -55,8 +67,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
       <ul className='listPreviewData'>
         { date && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
-            <b>дата</b> /
-            <div className="text_en">date</div>
+            <b>дата</b> / <span className="text_en">date</span>
           </div>
           <div className="listPreviewDataLi__p">{ renderDate() }</div>
         </li> }
@@ -64,7 +75,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
         { selectedEvent && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
             <b>время</b> /
-            <div className="text_en">time</div>
+            <span className="text_en">time</span>
           </div>
           <div className="listPreviewDataLi__p">
             { renderTime() }
@@ -74,7 +85,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
         { selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
             <b>направление</b> /
-            <div className="text_en">direction</div>
+            <span className="text_en">direction</span>
           </div>
           <div className="listPreviewDataLi__p">
             { direction[selectedDirection].title }
@@ -85,7 +96,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
       <div className='listPreviewTickets'>
         <div className="listPreviewDataLi__h">
           <b>билеты</b> /
-          <div className="text_en">tickets</div>
+          <span className="text_en">tickets</span>
         </div>
         <div className="listPreviewDataLi__p">
           { renderTicket() }
