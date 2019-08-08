@@ -24,7 +24,15 @@ export const Product = (props) => {
 
   return (
     <fieldset className='product product_view_form'>
-      <legend className='product__legend'>{ title }</legend>
+      <legend className='product__legend'>
+        {
+          urlToProduct
+            ? <a href={urlToProduct} style={{ color: 'inherit', textDecoration: 'none' }}>
+                {title}
+              </a>
+            : title
+        }
+      </legend>
       <div className='product__inner'>
         <div className='colDesktop'>
           { direction && <Calendar {...props} /> }
