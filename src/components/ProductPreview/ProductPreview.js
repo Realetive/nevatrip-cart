@@ -13,11 +13,11 @@ export const ProductPreview = ({ cartKey, productId }) => {
     tickets
   }] = order[cartKey].options || [{}];
   const selectedDate = new Date(date);
-  
+
   const renderTime = () => {
     return selectedEvent && selectedEvent.start ? format( new Date( selectedEvent.start ), 'HH:mm' ) : '';
   }
-  
+
   const renderDate = () => {
     const hours = selectedDate.getHours();
     if (hours > 2 && hours < 22) {
@@ -27,7 +27,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
       prevDate.setDate(prevDate.getDate() - 1);
       const dateFrom = format(prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru });
       return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
-    }   
+    }
   }
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
@@ -60,15 +60,14 @@ export const ProductPreview = ({ cartKey, productId }) => {
       <ul className='listPreviewData'>
         { date && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
-            <b>дата</b> / <span className="text_en">date</span>
+            <b>дата</b>&nbsp;/&nbsp;<span className="text_en">date</span>
           </div>
           <div className="listPreviewDataLi__p">{ renderDate() }</div>
         </li> }
 
         { selectedEvent && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
-            <b>время</b> /
-            <span className="text_en">time</span>
+            <b>время</b>&nbsp;/&nbsp;<span className="text_en">time</span>
           </div>
           <div className="listPreviewDataLi__p">
             { renderTime() }
@@ -77,8 +76,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
 
         { product[productId].directions.length > 1 && selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
-            <b>направление</b> /
-            <span className="text_en">direction</span>
+            <b>направление</b>&nbsp;/&nbsp;<span className="text_en">direction</span>
           </div>
           <div className="listPreviewDataLi__p">
             { direction[selectedDirection].title }
@@ -88,8 +86,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
       { tickets &&
       <div className='listPreviewTickets'>
         <div className="listPreviewDataLi__h">
-          <b>билеты</b> /
-          <span className="text_en">tickets</span>
+          <b>билеты</b>&nbsp;/&nbsp;<span className="text_en">tickets</span>
         </div>
         <div className="listPreviewDataLi__p">
           { renderTicket() }
