@@ -165,72 +165,78 @@ export const Cart = ({session}) => {
 
     pay();
   };
-  
+
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
         <ul className='list'>{ products() }</ul>
         <div className='aside'>
-          <span className = 'caption caption_l'>Ваш заказ</span>
-          <ul className='listPreview'>{ productsPreview() }</ul>
-          <div className = 'asideSeparator' ></div>
-          <div className='cart__user'>
-            {
-              [
-                { name: 'fullName', type: 'text', value: fullName, label: 'Фамилия и имя' },
-                { name: 'email', type: 'email', value: email, label: 'E-mail' },
-                { name: 'phone', type: 'phone', value: phone, label: 'Телефон' }
-              ].map( field => (
-                <div key={ field.name }>
-                  <label className='form-label'>
+          <div className="aside__blank">
+            <span className = 'caption caption_l'>Ваш заказ</span>
+            <ul className='listPreview'>{ productsPreview() }</ul>
+          </div>
+
+          <div className = 'asideSeparator' ><div className="asideSeparator__line"></div></div>
+
+          <div className="aside__blank">
+            <div className='cart__user'>
+              {
+                [
+                  { name: 'fullName', type: 'text', value: fullName, label: 'Фамилия и имя' },
+                  { name: 'email', type: 'email', value: email, label: 'E-mail' },
+                  { name: 'phone', type: 'phone', value: phone, label: 'Телефон' }
+                ].map( field => (
+                  <div key={ field.name }>
+                    <label className='form-label'>
                     <span className='caption'>
                       {field.label}
                     </span>
-                    <input
-                      className='input'
-                      type={ field.type }
-                      name={ field.name }
-                      defaultValue={ field.value }
-                      onBlur={ setUserData }
-                      required
-                    />
-                  </label>
-                </div>
-              ))
-            }
-          </div>
-          <div className='cart__promocode'>
-            {
-              isShowPromocode
-              ? <label className='form-label'>
+                      <input
+                        className='input'
+                        type={ field.type }
+                        name={ field.name }
+                        defaultValue={ field.value }
+                        onBlur={ setUserData }
+                        required
+                      />
+                    </label>
+                  </div>
+                ))
+              }
+            </div>
+            <div className='cart__promocode'>
+              {
+                isShowPromocode
+                  ? <label className='form-label'>
                   <span className='caption'>
                     Промокод&nbsp;
                     {
                       sale > 0 ? `«${ promocode.toUpperCase() }» на ${ sale }% 👍` : null
                     }
                   </span>
-                  <input
-                    className='input'
-                    name='promocode'
-                    defaultValue={promocode}
-                    onKeyUp={ e => setPromocode( e.target.value ) }
-                    autoComplete='off'
-                    autoFocus={isShowPromocode}
-                    onBlur={()=> !promocode && setShowPromocode(false)}
-                  />
-                </label>
-              : <button className="btn-radio__label" onClick={ () => setShowPromocode(true) }>У меня есть промокод</button>
-            }
-          </div>
-          <span className='checkbox'>
+                    <input
+                      className='input'
+                      name='promocode'
+                      defaultValue={promocode}
+                      onKeyUp={ e => setPromocode( e.target.value ) }
+                      autoComplete='off'
+                      autoFocus={isShowPromocode}
+                      onBlur={()=> !promocode && setShowPromocode(false)}
+                    />
+                  </label>
+                  : <button className="btn-radio__label" onClick={ () => setShowPromocode(true) }>У меня есть промокод</button>
+              }
+            </div>
+            <span className='checkbox'>
             <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
             <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
-              Согласен с&nbsp;
-              <a href="https://nevatrip.ru/oferta" target="_blank" rel="noopener noreferrer">офертой и условиями возврата</a>
+              Согласен(-на) с&nbsp;
+              <a href="https://nevatrip.ru/oferta" target="_blank" rel="noopener noreferrer">условиями покупки</a>
             </label>
           </span>
-          <button className='btn btn_block btn_primary'>
-            Оплатить { sum } ₽
-          </button>
+            <button className='btn btn_block btn_primary'>
+              Оплатить { sum } ₽
+            </button>
+          </div>
         </div>
       </form>
     : 'Загрузка'
