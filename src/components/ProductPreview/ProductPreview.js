@@ -27,7 +27,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
       prevDate.setDate(prevDate.getDate() - 1);
       const dateFrom = format(prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru });
       return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
-    }
+    }   
   }
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
@@ -75,7 +75,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
           </div>
         </li> }
 
-        { selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
+        { product[productId].directions.length > 1 && selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
             <b>направление</b> /
             <span className="text_en">direction</span>

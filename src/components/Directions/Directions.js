@@ -30,15 +30,17 @@ export const Directions = ({ cartKey, productId }) => {
   });
 
   return (
-    <label>
-      <span className='caption'>Выберите направление</span>
-      <select
-        value={selectedDirection}
-        onChange={ event => _setDirection(event.target.value) }
-        className = 'input'
-      >
-        {renderDirections}
-      </select>
-    </label>
+    renderDirections.length > 1
+      ? <label>
+          <span className='caption'>Выберите направление</span>
+          <select
+            value={selectedDirection}
+            onChange={ event => _setDirection(event.target.value) }
+            className = 'input'
+          >
+            {renderDirections}
+          </select>
+        </label>
+      : null
   );
 };
