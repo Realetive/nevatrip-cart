@@ -55,7 +55,7 @@ export const Tickets = ({ cartKey, productId }) => {
       <span className='caption'>
         Выберите категории билетов
       </span>
-      <dl>
+      <dl className='ticketsDl'>
         { _renderTickets }
       </dl>
     </div>
