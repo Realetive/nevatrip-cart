@@ -6,7 +6,7 @@ import { api } from "../../api";
 
 export const Time = ({ cartKey, productId }) => {
   const { dispatch, event, order } = useStoreon( 'product', 'event', 'order' );
-  const { direction, date, event: selectedEvent } = order[ cartKey ].options;
+  const [{ direction, date, event: selectedEvent }] = order[ cartKey ].options;
   const [ time, _setTime ] = useState( selectedEvent );
 
   useEffect(() => {

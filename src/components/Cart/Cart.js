@@ -50,14 +50,14 @@ export const Cart = ({session}) => {
   };
 
   const sum = Object.values(order).reduce( ( sum, cartItem ) => {
-    if ( !cartItem.options ) return 0;
+    if ( !cartItem.options || !cartItem.options.length ) return 0;
 
     const {
       productId,
-      options: {
+      options: [{
         direction,
         tickets
-      },
+      }],
     } = cartItem;
 
     if (!direction || !tickets) return 0;

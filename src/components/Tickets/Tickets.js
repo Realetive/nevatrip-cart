@@ -7,7 +7,7 @@ import './Tickets.css';
 
 export const Tickets = ({ cartKey, productId }) => {
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
-  const { direction: selectedDirection } = order[cartKey].options;
+  const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -19,7 +19,7 @@ export const Tickets = ({ cartKey, productId }) => {
   const [ _tickets, _setTickets ] = useState(initialTickets);
 
   useEffect(() => {
-    order[cartKey].options.tickets = _tickets;
+    order[cartKey].options[0].tickets = _tickets;
     dispatch('order/update', order);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_tickets]);

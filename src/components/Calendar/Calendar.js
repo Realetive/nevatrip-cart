@@ -14,6 +14,10 @@ const getNearestDate = ( date = new Date(), dates = [] ) => dates.includes( date
 
 export const Calendar = ({ cartKey, productId }) => {
   const { dispatch, direction, order } = useStoreon( 'direction', 'order' );
+  const [{
+    direction: selectedDirection,
+    date: selectedDate,
+  }] = order[ cartKey ].options;
   const {
     direction: selectedDirection,
     date: selectedDate
@@ -22,7 +26,7 @@ export const Calendar = ({ cartKey, productId }) => {
   const [ date, setDate ] = useState( getNearestDate(selectedDate, availableDates) );
 
   useEffect(() => {
-    order[cartKey].options.date = date;
+    order[cartKey].options[0].date = date;
     dispatch('order/update', order);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);

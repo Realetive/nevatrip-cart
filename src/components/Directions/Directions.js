@@ -4,12 +4,12 @@ import useStoreon from 'storeon/react';
 export const Directions = ({ cartKey, productId }) => {
   const { dispatch, product, direction, order } = useStoreon('product', 'direction', 'order');
   const { directions } = product[productId];
-  const defaultDirectionKey = ((order[cartKey] || {}).options || {}).direction || direction[directions[0]]._key;
+  const defaultDirectionKey = ((order[cartKey] || {}).options || [{}])[0].direction || direction[directions[0]]._key;
   const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
 
   useEffect(() => {
-    order[cartKey].options = order[cartKey].options || {};
-    order[cartKey].options.direction = selectedDirection;
+    order[cartKey].options = order[cartKey].options || [{}];
+    order[cartKey].options[0].direction = selectedDirection;
     dispatch('order/update', order);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDirection])

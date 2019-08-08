@@ -4,24 +4,18 @@ import format from 'date-fns/format';
 import ru from 'date-fns/locale/ru';
 
 export const ProductPreview = ({ cartKey, productId }) => {
-  const { product, order, event, direction, ticket } = useStoreon( 'product', 'order', 'event', 'direction', 'ticket' );
+  const { product, order, direction, ticket } = useStoreon( 'product', 'order', 'direction', 'ticket' );
   const title = product[productId].title.ru.name;
-  const {
+  const [{
     direction: selectedDirectionId,
     date,
     event: selectedEvent,
     tickets
-  } = order[cartKey].options || {};
+  }] = order[cartKey].options || [{}];
   const selectedDate = new Date(date);
   
-  let action;
   const renderTime = () => {
-    const formatedDate = format( selectedDate, 'yyyy-MM-dd');
-    const eventGroup = `${productId}.${selectedDirectionId}.${formatedDate}`;
-    if (!event[eventGroup]) return;
-    action = event[eventGroup].find(eventItem => eventItem._key === selectedEvent);
-    if (!action) return;
-    return format( new Date( action.start ), 'HH:mm' );
+    return selectedEvent && selectedEvent.start ? format( new Date( selectedEvent.start ), 'HH:mm' ) : '';
   }
   
   const renderDate = () => {
@@ -34,7 +28,6 @@ export const ProductPreview = ({ cartKey, productId }) => {
       const dateFrom = format(prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru });
       return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
     }
-    
   }
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
