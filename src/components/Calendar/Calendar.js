@@ -19,10 +19,15 @@ export const Calendar = ({ cartKey, productId }) => {
     date: selectedDate,
   }] = order[ cartKey ].options;
   const {
-    direction: selectedDirection,
-    date: selectedDate
-  } = order[ cartKey ].options;
-  const availableDates = direction[ `${productId}.${selectedDirection}` ].dates.map( date => fromUnixTime( date ));
+    dates,
+    buyTimeOffset,
+  } = direction[`${productId}.${selectedDirection}`];
+  const timeOffset = new Date();
+  timeOffset.setMinutes(timeOffset.getMinutes() + (buyTimeOffset || 0));
+  const availableDates = dates
+    .filter(date => fromUnixTime(date) > timeOffset)
+    .sort()
+    .map(date => fromUnixTime( date ));
   const [ date, setDate ] = useState( getNearestDate(selectedDate, availableDates) );
 
   useEffect(() => {
