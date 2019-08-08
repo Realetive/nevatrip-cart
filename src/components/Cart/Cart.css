@@ -35,6 +35,7 @@
 .cart>.list {
   font-size: 23px;
   padding: 1px 15px 3px;
+  flex: 1;
 }
 .cart label{
   display: block;
