@@ -6,10 +6,13 @@
   position: relative;
   display: flex;
   justify-content: space-between;
-  margin: 10px 15px 5px;
+  margin: 0 15px 5px;
   padding: 10px 0 0 10px;
   min-height: 40px;
   border-top: 1px solid #C9C9C9;
+}
+.ticketsItem+.ticketsItem{
+  margin: 10px 15px 5px;
 }
 .ticketsItem:before{
   content: '';
@@ -52,4 +55,7 @@
   max-width: 100px;
   margin-left: 15px;
   margin-right: -7px;
+}
+.ticketsDl{
+  margin: 0;
 }
