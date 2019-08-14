@@ -132,38 +132,44 @@ export const Cart = ({session}) => {
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
     console.log('createOrder', createOrder);
+    
+    if (sale < 100 && createOrder.payment.Model.Number) {
+      const invoiceId = createOrder.payment.Model.Number;
+  
+      const pay = function () {
+        const cp = window.cp;
+        const widget = new cp.CloudPayments();
+        widget.charge({
+          publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
+          description: 'Оплата на сайте NevaTrip.ru', //назначение
+          amount: sum, //сумма
+          currency: 'RUB', //валюта
+          invoiceId, //номер заказа  (необязательно)
+          accountId: user.email, //идентификатор плательщика (необязательно)
+          skin: "mini", //дизайн виджета
+          // data: {
+          //   myProp: 'myProp value' //произвольный набор параметров
+          // }
+        },
+        function (success) { // success
+          console.log('success', success);
+  
+          window.location.href = '/';
+        },
+        function (reason, fail) { // fail
+          console.log('reason', reason);
+          console.log('fail', fail);
+  
+          alert( 'Оплата не прошла' );
+        });
+      };
+  
+      pay();
+    } else {
+      alert('Заказ по 100% промокоду успешно зарегистрирован')
+      window.location.href = '/';
+    }
 
-    const invoiceId = createOrder.payment.Model.Number;
-
-    const pay = function () {
-      const cp = window.cp;
-      const widget = new cp.CloudPayments();
-      widget.charge({
-        publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
-        description: 'Оплата на сайте NevaTrip.ru', //назначение
-        amount: sum, //сумма
-        currency: 'RUB', //валюта
-        invoiceId, //номер заказа  (необязательно)
-        accountId: user.email, //идентификатор плательщика (необязательно)
-        skin: "mini", //дизайн виджета
-        // data: {
-        //   myProp: 'myProp value' //произвольный набор параметров
-        // }
-      },
-      function (success) { // success
-        console.log('success', success);
-
-        window.location.href = '/';
-      },
-      function (reason, fail) { // fail
-        console.log('reason', reason);
-        console.log('fail', fail);
-
-        alert( 'Оплата не прошла' );
-      });
-    };
-
-    pay();
   };
   
   return cart && !cart.loading && !cart.error
