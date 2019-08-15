@@ -12,13 +12,15 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets
   }] = order[cartKey].options || [{}];
-  const selectedDate = new Date(date);
-
+  
   const renderTime = () => {
     return selectedEvent && selectedEvent.start ? format( new Date( selectedEvent.start ), 'HH:mm' ) : '';
   }
 
   const renderDate = () => {
+    if (!selectedEvent || !selectedEvent.start) return;
+    const selectedDate = new Date(selectedEvent.start);
+
     const hours = selectedDate.getHours();
     if (hours > 2 && hours < 22) {
       return format(selectedDate, 'dd MMMM', { locale: ru });
