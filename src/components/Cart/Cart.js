@@ -46,7 +46,7 @@ function throttle(func, wait, options) {
 };
 
 export const Cart = ({session}) => {
-  const { dispatch, cart, user, order, ticket } = useStoreon('cart', 'user', 'order', 'ticket');
+  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
   const [isShowPromocode, setShowPromocode] = useState(false);
   const [sale, setSale] = useState(0);
@@ -133,6 +133,9 @@ export const Cart = ({session}) => {
 
     console.log('createOrder', createOrder);
     
+    // Get first product's oldId for redirect
+    const productOldId = Object.values(product)[0].oldId;
+    
     if (sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
   
@@ -154,7 +157,7 @@ export const Cart = ({session}) => {
         function (success) { // success
           console.log('success', success);
   
-          window.location.href = '/';
+          window.location.href = `http://nevatrip.ru/index.php?id=${ productOldId }`;
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -167,7 +170,7 @@ export const Cart = ({session}) => {
       pay();
     } else {
       alert('Заказ по 100% промокоду успешно зарегистрирован')
-      window.location.href = '/';
+      window.location.href = `http://nevatrip.ru/index.php?id=${ productOldId }`;
     }
 
   };
