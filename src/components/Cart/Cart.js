@@ -125,11 +125,13 @@ export const Cart = ({session}) => {
 
       if ( ticket.hasOwnProperty( ticketKey ) ) {
         const { price } = ticket[ ticketKey ];
-        sum += count * price;
+        const priceSale = Math.ceil( price - ( price * ( sale / 100 ) ) )
+        
+        sum += count * priceSale;
       }
     } );
 
-    return Math.ceil( sum - ( sum * ( sale / 100 ) ) );
+    return sum;
   }, 0 );
 
   const checkOut = async e => {
