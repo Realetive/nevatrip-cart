@@ -36,7 +36,7 @@ export const Tickets = ({ cartKey, productId }) => {
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
-          { name || '???' }, { price } ₽
+            { name || '???' },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;₽</span>
         </dt>
         <dd className='ticketsItemControls' >
           <Counter
