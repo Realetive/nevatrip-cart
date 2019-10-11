@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ru from 'date-fns/locale/ru';
-import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import useStoreon from 'storeon/react';
 
@@ -25,9 +24,9 @@ export const Calendar = ({ cartKey, productId }) => {
   const timeOffset = new Date();
   timeOffset.setMinutes(timeOffset.getMinutes() + (buyTimeOffset || 0));
   const availableDates = dates
-    .filter(date => fromUnixTime(date) > timeOffset)
+    .filter(date => new Date( date ) > timeOffset)
     .sort()
-    .map(date => fromUnixTime( date ));
+    .map(date => new Date( date ));
   const [ date, setDate ] = useState( getNearestDate(selectedDate, availableDates) );
 
   useEffect(() => {
