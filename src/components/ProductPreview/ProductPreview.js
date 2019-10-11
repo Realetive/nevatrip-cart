@@ -48,9 +48,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
-          <div>
-            {`${name}: ${price} ₽ × ${count} = ${count * price} ₽`}
-          </div>
+          <div dangerouslySetInnerHTML={{__html: `${name}: ${price}&nbsp;₽ × ${count} = ${count * price}&nbsp;₽`}} />
         </li>
       );
     } )
