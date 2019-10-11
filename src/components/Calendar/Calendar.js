@@ -19,10 +19,10 @@ export const Calendar = ({ cartKey, productId }) => {
   }] = order[ cartKey ].options;
   const {
     dates,
-    buyTimeOffset,
+    buyTimeOffset = 0,
   } = direction[`${productId}.${selectedDirection}`];
   const timeOffset = new Date();
-  timeOffset.setMinutes(timeOffset.getMinutes() + (buyTimeOffset || 0));
+  timeOffset.setMinutes(timeOffset.getMinutes() + buyTimeOffset);
   const availableDates = dates
     .filter(date => new Date( date ) > timeOffset)
     .sort()
