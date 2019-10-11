@@ -55,9 +55,10 @@ function throttle(func, wait, options) {
 export const Cart = ({session}) => {
   const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
-  const [isShowPromocode, setShowPromocode] = useState(false);
-  const [sale, setSale] = useState(0);
-  const [promocode, setPromocode] = useState('');
+  const [ isShowPromocode, setShowPromocode ] = useState(false);
+  const [ sale, setSale ] = useState(0);
+  const [ promocode, setPromocode ] = useState('');
+  const [ paid, setPaid ] = useState(false);
   const throttled = useRef(throttle(async (newValue) => {
     if (newValue) {
       const resp = await api.order.promocode(57, newValue);
@@ -140,11 +141,6 @@ export const Cart = ({session}) => {
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-    console.log('createOrder', createOrder);
-    
-    // Get first product's oldId for redirect
-    const productOldId = Object.values(product)[0].oldId;
-    
     if (sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
   
@@ -166,7 +162,7 @@ export const Cart = ({session}) => {
         function (success) { // success
           console.log('success', success);
   
-          window.location.href = `http://nevatrip.ru/index.php?id=${ productOldId }`;
+          setPaid(createOrder.id);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -178,11 +174,17 @@ export const Cart = ({session}) => {
   
       pay();
     } else {
-      alert('Заказ по 100% промокоду успешно зарегистрирован')
-      window.location.href = `http://nevatrip.ru/index.php?id=${ productOldId }`;
+      setPaid(createOrder.id);
     }
-
   };
+
+  if (paid) return (<iframe
+    src={`https://api.nevatrip.ru/orders/${ paid }/preview`}
+    title="Билет"
+    width="100%"
+    height="850"
+    frameBorder="0"
+  >Ошибка загрузки билета</iframe>)
 
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
