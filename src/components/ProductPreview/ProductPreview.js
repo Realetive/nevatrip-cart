@@ -2,6 +2,7 @@ import React from 'react';
 import useStoreon from 'storeon/react';
 import format from 'date-fns/format';
 import ru from 'date-fns/locale/ru';
+import { convertTime, generateNightWarning } from '../Time/Time';
 
 export const ProductPreview = ({ cartKey, productId }) => {
   const { product, order, direction, ticket } = useStoreon( 'product', 'order', 'direction', 'ticket' );
@@ -12,18 +13,25 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets
   }] = order[cartKey].options || [{}];
-  
+
+  const theEvent = selectedEvent && selectedEvent.start;
+
   const renderTime = () => {
-    return selectedEvent && selectedEvent.start ? format( new Date( selectedEvent.start ), 'HH:mm' ) : '';
+    return theEvent ? convertTime( theEvent, 'time' ) : '';
   }
 
   const renderDate = () => {
     if (!selectedEvent || !selectedEvent.start) return;
     const selectedDate = new Date(selectedEvent.start);
 
-    const hours = selectedDate.getHours();
+    const hours = convertTime( selectedDate, 'hour' );
+
+    console.log(hours);
+
+    //return generateNightWarning( hours, convertTime( selectedDate, 'dateRu' ));
+
     if (hours > 2 && hours < 22) {
-      return format(selectedDate, 'dd MMMM', { locale: ru });
+      return convertTime(selectedDate, 'dateRu');
     } else {
       const prevDate = new Date(selectedDate);
       prevDate.setDate(prevDate.getDate() - 1);
