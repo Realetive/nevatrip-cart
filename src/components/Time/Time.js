@@ -140,7 +140,7 @@ export function generateNightWarning(time, date){
       const date = new Date(unixtimestamp*1000);
       const month = months_arr[date.getMonth()];
       const day = date.getDate();
-      return day+' '+month;
+      return day + ' ' + month;
     }
 
     let msg;

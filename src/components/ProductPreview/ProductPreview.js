@@ -21,23 +21,31 @@ export const ProductPreview = ({ cartKey, productId }) => {
   }
 
   const renderDate = () => {
-    if (!selectedEvent || !selectedEvent.start) return;
-    const selectedDate = new Date(selectedEvent.start);
+    if ( !selectedEvent || !selectedEvent.start ) return;
+    const selectedDate = new Date( selectedEvent.start );
 
     const hours = convertTime( selectedDate, 'hour' );
 
-    console.log(hours);
+    //console.log(selectedDate);
 
-    //return generateNightWarning( hours, convertTime( selectedDate, 'dateRu' ));
+    //return generateNightWarning( hours, convertTime( selectedDate, 'timestamp' ));
 
-    if (hours > 2 && hours < 22) {
-      return convertTime(selectedDate, 'dateRu');
+    if ( hours > 21 ) {
+      return `В ночь с ${ convertTime(selectedDate, 'dateRu') } на ${ convertTime( ( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ), 'dateRu') }`;
+    } else if ( hours < 4 ) {
+      return `В ночь с ${ convertTime( ( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ), 'dateRu') } на ${ convertTime(selectedDate, 'dateRu') }`;
     } else {
-      const prevDate = new Date(selectedDate);
-      prevDate.setDate(prevDate.getDate() - 1);
-      const dateFrom = format(prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru });
-      return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
+      return convertTime(selectedDate, 'dateRu');
     }
+
+    // if ( hours > 2 && hours < 22 ) {
+    //   return convertTime(selectedDate, 'dateRu');
+    // } else {
+    //   const prevDate = new Date( selectedDate );
+    //   prevDate.setDate( prevDate.getDate() - 1 );
+    //   const dateFrom = format( prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru } );
+    //   return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
+    // }
   }
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
