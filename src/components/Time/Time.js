@@ -3,12 +3,56 @@ import useStoreon from 'storeon/react';
 import { format } from 'date-fns';
 import { api } from "../../api";
 
+function pad (value) {
+    return value < 10 ? '0' + value : value;
+}
+
+function formatOffset(offset) {
+    const sign = (offset > 0) ? "-" : "+";
+    const _offset = Math.abs(offset);
+    const hours = pad(Math.floor(_offset / 60));
+    const minutes = pad(_offset % 60);
+    return sign + hours + ":" + minutes;
+}
 
 export const Time = ({ cartKey, productId }) => {
   const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
   const [{ direction, date, event: selectedEvent }] = order[ cartKey ].options;
   const [ time, setTime ] = useState( selectedEvent );
-  
+  const {
+    timeOffset = -180,
+    buyTimeOffset = 0,
+  } = directions[`${productId}.${direction}`];
+  const userTimeOffset = new Date().getTimezoneOffset();  
+  const formatDate = format( new Date(date), 'yyyy-MM-dd' );
+  const eventGroup = `${productId}.${direction}.${formatDate}`;
+  const events = event[eventGroup];
+  const renderTimes = events ? (events || []).map((eventItem, index) => {
+    const timeOffset = new Date(eventItem.start)
+    timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
+    const isOffset = new Date() > timeOffset;
+    
+    const formatTime = format( new Date(eventItem.start), 'HH:mm' );
+
+    return (
+      <li key={eventItem._key} title={`${formatDate} в ${formatTime}`} className = 'grid-list__item'>
+          <input
+            type="radio"
+            className='btn-radio'
+            name={ eventGroup }
+            value={ eventItem._key }
+            checked={ isOffset ? false : time ? time === eventItem._key : !index }
+            onChange={ e => setTime( e.target.value ) }
+            id={ eventItem._key }
+            disabled={isOffset}
+          />
+          <label className='btn-radio__label' htmlFor={ eventItem._key }>
+            {isOffset ? `Продажа на ${ formatTime } уже недоступна` : formatTime}
+          </label>
+      </li>
+    );
+  } ) : [];
+
   useEffect(() => {
     const getTimes = async (direction, date) => {
       const scheduleDate = new Date(date);
@@ -37,40 +81,17 @@ export const Time = ({ cartKey, productId }) => {
     dispatch('order/update', order);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time, event])
-
-  const formatDate = format( new Date(date), 'yyyy-MM-dd' );
-  const eventGroup = `${productId}.${direction}.${formatDate}`;
-  const events = event[eventGroup];
-  const renderTimes = events ? (events || []).map((eventItem, index) => {
-    const timeOffset = new Date(eventItem.start)
-    const buyTimeOffset = directions[`${productId}.${direction}`].buyTimeOffset || 0;
-    timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
-    const isOffset = new Date() > timeOffset;
-    
-    const formatTime = format( new Date(eventItem.start), 'HH:mm' );
-
-    return (
-      <li key={eventItem._key} title={`${formatDate} в ${formatTime}`} className = 'grid-list__item'>
-          <input
-            type="radio"
-            className = 'btn-radio'
-            name={ eventGroup }
-            value={ eventItem._key }
-            checked={ isOffset ? false : time ? time === eventItem._key : !index }
-            onChange={ e => setTime( e.target.value ) }
-            id={ eventItem._key }
-            disabled={isOffset}
-          />
-          <label className = 'btn-radio__label' htmlFor = { eventItem._key }>
-            {isOffset ? `Продажа на ${ formatTime } уже недоступна` : formatTime}
-          </label>
-      </li>
-    );
-  } ) : [];
-
+  
   return (
     <div>
-      <span className = 'caption'>Выберите время отправления</span>
+      {
+        userTimeOffset !== timeOffset &&
+          <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
+            Похоже, часовой пояс экскурсии отличается от вашего (UTC{ formatOffset(userTimeOffset) }).
+            Указано отправление по местному времени (UTC{ formatOffset(timeOffset) }).
+          </div>
+      }
+      <div className='caption'>Выберите время отправления</div>
       {
         <ul className='grid-list'>
           {renderTimes}
