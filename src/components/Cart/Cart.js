@@ -53,7 +53,7 @@ function throttle(func, wait, options) {
 };
 
 export const Cart = ({session}) => {
-  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
+  const { dispatch, cart, user, order, ticket } = useStoreon('cart', 'user', 'order', 'ticket');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
@@ -65,16 +65,6 @@ export const Cart = ({session}) => {
       setSale(resp);
     }
   }, 700));
-
-  useEffect(() => {
-    throttled.current(promocode)
-  }, [promocode])
-
-  useEffect(() => {
-    dispatch('cart/get', session);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
   const products = () => cart.map( key => {
     const { productId } = order[key];
 
@@ -87,7 +77,6 @@ export const Cart = ({session}) => {
       </li>
     );
   } )
-
   const productsPreview = () => cart.map( key => {
     const { productId } = order[key];
 
@@ -100,13 +89,11 @@ export const Cart = ({session}) => {
       </li>
     );
   } )
-
-  const setUserData = (event) => {
+  const setUserData = event => {
     user[event.target.name] = event.target.value;
 
     dispatch('user/update', user);
   };
-
   const sum = Object.values(order).reduce( ( sum, cartItem ) => {
     if ( !cartItem.options || !cartItem.options.length ) return 0;
 
@@ -133,8 +120,7 @@ export const Cart = ({session}) => {
     } );
 
     return sum;
-  }, 0 );
-
+  }, 0);
   const checkOut = async e => {
     e.preventDefault();
 
@@ -177,6 +163,15 @@ export const Cart = ({session}) => {
       setPaid(createOrder.id);
     }
   };
+  
+  useEffect(() => {
+    throttled.current(promocode)
+  }, [promocode])
+
+  useEffect(() => {
+    dispatch('cart/get', session);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   if (paid) return (<iframe
     src={`https://api.nevatrip.ru/orders/${ paid }/preview`}
