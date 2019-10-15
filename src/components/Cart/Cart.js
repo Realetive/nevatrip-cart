@@ -59,24 +59,25 @@ export const Cart = ({session}) => {
   const [ sale, setSale ] = useState(0);
   const [ promocode, setPromocode ] = useState('');
   const [ paid, setPaid ] = useState(false);
+  const [ emailContent, setEmailContent ] = useState();
   const throttled = useRef(throttle(async (newValue) => {
     if (newValue) {
       const resp = await api.order.promocode(57, newValue);
       setSale(resp);
     }
   }, 700));
-  const products = () => cart.map( key => {
+  const products = () => cart.map(key => {
     const { productId } = order[key];
 
     return (
-      <li className='cart__item cart__item_view_product' key={ key }>
+      <li className='cart__item cart__item_view_product' key={key}>
         <Product
           cartKey={key}
           productId={productId}
         />
       </li>
     );
-  } )
+  });
   const productsPreview = () => cart.map( key => {
     const { productId } = order[key];
 
@@ -88,7 +89,7 @@ export const Cart = ({session}) => {
         />
       </li>
     );
-  } )
+  });
   const setUserData = event => {
     user[event.target.name] = event.target.value;
 
@@ -172,14 +173,20 @@ export const Cart = ({session}) => {
     dispatch('cart/get', session);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+  
+  useEffect(() => {
+    setTimeout(async () => {
+      const _emailContent = await api.order.getMail( paid );
+      setEmailContent( _emailContent );
+      const sheet = document.createElement('link');
+      sheet.rel = 'stylesheet';
+      sheet.href = '//api.nevatrip.ru/assets/css/web-desktop.min.css';
+      sheet.type = 'text/css';
+      document.head.appendChild(sheet);
+    }, 1000);
+  }, [paid])
 
-  if (paid) return (<iframe
-    src={`https://api.nevatrip.ru/orders/${ paid }/preview`}
-    title="Билет"
-    width="100%"
-    height="850"
-    frameBorder="0"
-  >Ошибка загрузки билета</iframe>)
+  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>)
 
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>

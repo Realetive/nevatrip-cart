@@ -105,5 +105,12 @@ export const api = {
       
       return 0;
     },
+
+    async getMail (orderId) {
+      const response = await fetch( `${MAIN_URL}/orders/${ orderId }/preview` );
+
+      return response.text();
+    },
+
   },
 };
