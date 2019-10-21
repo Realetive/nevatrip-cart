@@ -1,8 +1,9 @@
 import React from 'react';
 import useStoreon from 'storeon/react';
-import format from 'date-fns/format';
-import ru from 'date-fns/locale/ru';
-import { convertTime, generateNightWarning } from '../Time/Time';
+
+const moment = require( 'moment-timezone' );
+require( 'moment/locale/ru' );
+const tripTimeZone = 'Europe/Moscow';
 
 export const ProductPreview = ({ cartKey, productId }) => {
   const { product, order, direction, ticket } = useStoreon( 'product', 'order', 'direction', 'ticket' );
@@ -17,35 +18,22 @@ export const ProductPreview = ({ cartKey, productId }) => {
   const theEvent = selectedEvent && selectedEvent.start;
 
   const renderTime = () => {
-    return theEvent ? convertTime( theEvent, 'time' ) : '';
+    return theEvent ? moment( theEvent ).tz( tripTimeZone ).format( "LT" ) : '';
   }
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
-    const selectedDate = new Date( selectedEvent.start );
+    const selectedDate = moment( moment( selectedEvent.start ).tz( tripTimeZone ).format( "YYYY-MM-DD LT:ss" )).toDate();
 
-    const hours = convertTime( selectedDate, 'hour' );
+    const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
 
-    //console.log(selectedDate);
-
-    //return generateNightWarning( hours, convertTime( selectedDate, 'timestamp' ));
-
-    if ( hours > 21 ) {
-      return `В ночь с ${ convertTime(selectedDate, 'dateRu') } на ${ convertTime( ( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ), 'dateRu') }`;
-    } else if ( hours < 4 ) {
-      return `В ночь с ${ convertTime( ( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ), 'dateRu') } на ${ convertTime(selectedDate, 'dateRu') }`;
+    if ( hours > 21) {
+      return `В ночь с ${ moment( selectedDate ).format( "D MMMM" ) } на ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
+    } else if ( hours < 4  || hours === '0:') {
+      return `В ночь с ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) }  на ${ moment( selectedDate ).format( "D MMMM" ) }`;
     } else {
-      return convertTime(selectedDate, 'dateRu');
+      return moment( selectedDate ).format( "D MMMM" )
     }
-
-    // if ( hours > 2 && hours < 22 ) {
-    //   return convertTime(selectedDate, 'dateRu');
-    // } else {
-    //   const prevDate = new Date( selectedDate );
-    //   prevDate.setDate( prevDate.getDate() - 1 );
-    //   const dateFrom = format( prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru } );
-    //   return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
-    // }
   }
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
