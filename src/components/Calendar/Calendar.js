@@ -31,7 +31,7 @@ export const Calendar = ( { cartKey, productId } ) => {
   timeOffset.setMinutes( timeOffset.getMinutes() + buyTimeOffset );
 
   const availableDates = dates
-    .filter( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() >= timeOffset )
+    .filter( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() )
     .sort()
     .map( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() );
   const [ date, setDate ] = useState( getNearestDate( selectedDate, availableDates ) );

@@ -53,20 +53,25 @@ export const Time = ( { cartKey, productId } ) => {
     const formatTime = moment( eventItem.start ).tz( tripTimeZone ).format( "LT" );
 
     return (
-      <li key={ eventItem._key } title={`${formatDate} в ${ formatTime }`} className = 'grid-list__item'>
+      <li key={ eventItem._key }
+          title={ isOffset ? 'Это время уже не доступно'  : `${formatDate} в ${ formatTime }`  }
+          className = 'grid-list__item'>
           <input
             type="radio"
             className = 'btn-radio'
-            name={ eventGroup }
-            value={ eventItem._key }
-            checked={ isOffset ? false : time ? time === eventItem._key : !index }
-            onChange={ e => setTime( e.target.value ) }
-            id={ eventItem._key }
-            disabled={ isOffset }
+            name = { eventGroup }
+            value = { eventItem._key }
+            checked = { isOffset ? false : time ? time === eventItem._key : !index }
+            onChange = { e => setTime( e.target.value ) }
+            id = { eventItem._key }
+            disabled = { isOffset }
           />
-          <label className = 'btn-radio__label' htmlFor = { eventItem._key }>
-            { isOffset ? `Продажа на ${ formatTime } уже недоступна` : formatTime }
-          </label>
+
+        <label
+          className = { isOffset ? 'btn-radio__label btn-radio__label_disabled'  : 'btn-radio__label'  }
+          htmlFor = { eventItem._key }>
+          {formatTime}
+        </label>
       </li>
     );
   } ) : [];
