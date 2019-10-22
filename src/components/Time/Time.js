@@ -7,6 +7,18 @@ const moment = require( 'moment-timezone' );
 require( 'moment/locale/ru' );
 const tripTimeZone = 'Europe/Moscow';
 
+function pad (value) {
+    return value < 10 ? '0' + value : value;
+}
+
+function formatOffset(offset) {
+    const sign = (offset > 0) ? "-" : "+";
+    const _offset = Math.abs(offset);
+    const hours = pad(Math.floor(_offset / 60));
+    const minutes = pad(_offset % 60);
+    return sign + hours + ":" + minutes;
+}
+
 export const Time = ( { cartKey, productId } ) => {
   const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
   const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
@@ -78,7 +90,14 @@ export const Time = ( { cartKey, productId } ) => {
 
   return (
     <div>
-      <span className = 'caption'>Выберите время отправления</span>
+      {
+        userTimeOffset !== timeOffset &&
+          <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
+            Похоже, часовой пояс экскурсии отличается от вашего (UTC{ formatOffset(userTimeOffset) }).
+            Указано отправление по местному времени (UTC{ formatOffset(timeOffset) }).
+          </div>
+      }
+      <div className='caption'>Выберите время отправления</div>
       {
         <ul className='grid-list'>
           { renderTimes }
