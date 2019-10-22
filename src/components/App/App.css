@@ -541,6 +541,14 @@ button:not(:disabled) {
 .btn-radio__label:hover{
   background-color: rgba(79, 160, 208, 0.3);
 }
+.btn-radio__label_disabled:hover,
+.btn-radio__label_disabled:active,
+.btn-radio__label_disabled:focus,
+.btn-radio__label_disabled{
+  cursor: not-allowed;
+  color: #8e8e8e;
+  background-color: rgba(208, 204, 197, 0.3);
+}
 
 .btn-radio:checked + .btn-radio__label{
   background-color: #4FA0D0;
