@@ -34,7 +34,6 @@ export const Time = ( { cartKey, productId } ) => {
   const events = event[ eventGroup ];
   const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
     const timeOffset = new Date( eventItem.start );
-    const buyTimeOffset = directions[`${ productId }.${ direction }`].buyTimeOffset || 0;
     timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
     const isOffset = new Date() > timeOffset;
 
