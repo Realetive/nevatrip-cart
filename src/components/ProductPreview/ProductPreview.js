@@ -1,7 +1,9 @@
 import React from 'react';
 import useStoreon from 'storeon/react';
-import format from 'date-fns/format';
-import ru from 'date-fns/locale/ru';
+
+const moment = require( 'moment-timezone' );
+require( 'moment/locale/ru' );
+const tripTimeZone = 'Europe/Moscow';
 
 export const ProductPreview = ({ cartKey, productId }) => {
   const { product, order, direction, ticket } = useStoreon( 'product', 'order', 'direction', 'ticket' );
@@ -12,23 +14,25 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets
   }] = order[cartKey].options || [{}];
-  
+
+  const theEvent = selectedEvent && selectedEvent.start;
+
   const renderTime = () => {
-    return selectedEvent && selectedEvent.start ? format( new Date( selectedEvent.start ), 'HH:mm' ) : '';
+    return theEvent ? moment( theEvent ).tz( tripTimeZone ).format( "LT" ) : '';
   }
 
   const renderDate = () => {
-    if (!selectedEvent || !selectedEvent.start) return;
-    const selectedDate = new Date(selectedEvent.start);
+    if ( !selectedEvent || !selectedEvent.start ) return;
+    const selectedDate = moment( moment( selectedEvent.start ).tz( tripTimeZone ).format( "YYYY-MM-DD LT:ss" )).toDate();
 
-    const hours = selectedDate.getHours();
-    if (hours > 2 && hours < 22) {
-      return format(selectedDate, 'dd MMMM', { locale: ru });
+    const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
+
+    if ( hours > 21) {
+      return `В ночь с ${ moment( selectedDate ).format( "D MMMM" ) } на ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
+    } else if ( hours < 4  || hours === '0:') {
+      return `В ночь с ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) }  на ${ moment( selectedDate ).format( "D MMMM" ) }`;
     } else {
-      const prevDate = new Date(selectedDate);
-      prevDate.setDate(prevDate.getDate() - 1);
-      const dateFrom = format(prevDate, prevDate.getMonth() === selectedDate.getMonth() ? 'dd' : 'dd MMMM', { locale: ru });
-      return `в ночь с ${dateFrom} на ${ format(selectedDate, 'dd MMMM', { locale: ru }) }`
+      return moment( selectedDate ).format( "D MMMM" )
     }
   }
 
