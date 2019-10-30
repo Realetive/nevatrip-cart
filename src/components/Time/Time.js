@@ -7,39 +7,27 @@ const moment = require( 'moment-timezone' );
 require( 'moment/locale/ru' );
 const tripTimeZone = 'Europe/Moscow';
 
+function pad (value) {
+    return value < 10 ? '0' + value : value;
+}
+
+function formatOffset(offset) {
+    const sign = (offset > 0) ? "-" : "+";
+    const _offset = Math.abs(offset);
+    const hours = pad(Math.floor(_offset / 60));
+    const minutes = pad(_offset % 60);
+    return sign + hours + ":" + minutes;
+}
+
 export const Time = ( { cartKey, productId } ) => {
   const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
   const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
   const [ time, setTime ] = useState( selectedEvent );
-
-  useEffect(() => {
-    const getTimes = async ( direction, date ) => {
-      const scheduleDate = new Date( date );
-      const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-      const times = await api.product.getProductTime( productId, direction, formatDate );
-
-      if ( !times.length ) return;
-
-      setTime( times[ 0 ]._key );
-      dispatch('event/add', { [ `${ productId }.${ direction }.${ formatDate }` ]: times });
-    }
-
-    getTimes( direction, date );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ direction, date ]);
-
-  useEffect(() => {
-    if ( !event ) return;
-    const scheduleDate = new Date( date );
-    const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-    const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
-    const action = events.find(eventItem => eventItem._key === time );
-
-    order[ cartKey ].options[ 0 ].event = action;
-
-    dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [time, event])
+  const {
+    timeOffset = -180,
+    buyTimeOffset = 0,
+  } = directions[`${productId}.${direction}`];
+  const userTimeOffset = new Date().getTimezoneOffset();  
 
   const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
   const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
@@ -76,9 +64,45 @@ export const Time = ( { cartKey, productId } ) => {
     );
   } ) : [];
 
+  useEffect(() => {
+    const getTimes = async ( direction, date ) => {
+      const scheduleDate = new Date( date );
+      const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+      const times = await api.product.getProductTime( productId, direction, formatDate );
+
+      if ( !times.length ) return;
+
+      setTime( times[ 0 ]._key );
+      dispatch('event/add', { [ `${ productId }.${ direction }.${ formatDate }` ]: times });
+    }
+
+    getTimes( direction, date );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ direction, date ]);
+
+  useEffect(() => {
+    if ( !event ) return;
+    const scheduleDate = new Date( date );
+    const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+    const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
+    const action = events.find(eventItem => eventItem._key === time );
+
+    order[ cartKey ].options[ 0 ].event = action;
+
+    dispatch('order/update', order);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time, event]);
+
   return (
     <div>
-      <span className = 'caption'>Выберите время отправления</span>
+      {
+        userTimeOffset !== timeOffset &&
+          <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
+            Похоже, часовой пояс экскурсии отличается от вашего (UTC{ formatOffset(userTimeOffset) }).
+            Указано отправление по местному времени (UTC{ formatOffset(timeOffset) }).
+          </div>
+      }
+      <div className='caption'>Выберите время отправления</div>
       {
         <ul className='grid-list'>
           { renderTimes }

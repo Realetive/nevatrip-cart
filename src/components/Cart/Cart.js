@@ -53,40 +53,31 @@ function throttle(func, wait, options) {
 };
 
 export const Cart = ({session}) => {
-  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
+  const { dispatch, cart, user, order, ticket } = useStoreon('cart', 'user', 'order', 'ticket');
   const { fullName, email, phone } = user;
-  const [isShowPromocode, setShowPromocode] = useState(false);
-  const [sale, setSale] = useState(0);
-  const [promocode, setPromocode] = useState('');
+  const [ isShowPromocode, setShowPromocode ] = useState(false);
+  const [ sale, setSale ] = useState(0);
+  const [ promocode, setPromocode ] = useState('');
+  const [ paid, setPaid ] = useState(false);
+  const [ emailContent, setEmailContent ] = useState();
   const throttled = useRef(throttle(async (newValue) => {
     if (newValue) {
       const resp = await api.order.promocode(57, newValue);
       setSale(resp);
     }
   }, 700));
-
-  useEffect(() => {
-    throttled.current(promocode)
-  }, [promocode])
-
-  useEffect(() => {
-    dispatch('cart/get', session);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  const products = () => cart.map( key => {
+  const products = () => cart.map(key => {
     const { productId } = order[key];
 
     return (
-      <li className='cart__item cart__item_view_product' key={ key }>
+      <li className='cart__item cart__item_view_product' key={key}>
         <Product
           cartKey={key}
           productId={productId}
         />
       </li>
     );
-  } )
-
+  });
   const productsPreview = () => cart.map( key => {
     const { productId } = order[key];
 
@@ -98,14 +89,12 @@ export const Cart = ({session}) => {
         />
       </li>
     );
-  } )
-
-  const setUserData = (event) => {
+  });
+  const setUserData = event => {
     user[event.target.name] = event.target.value;
 
     dispatch('user/update', user);
   };
-
   const sum = Object.values(order).reduce( ( sum, cartItem ) => {
     if ( !cartItem.options || !cartItem.options.length ) return 0;
 
@@ -132,19 +121,13 @@ export const Cart = ({session}) => {
     } );
 
     return sum;
-  }, 0 );
-
+  }, 0);
   const checkOut = async e => {
     e.preventDefault();
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-    console.log('createOrder', createOrder);
-    
-    // Get first product's oldId for redirect
-    const productOldId = Object.values(product)[0].oldId;
-    
     if (sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
   
@@ -166,7 +149,7 @@ export const Cart = ({session}) => {
         function (success) { // success
           console.log('success', success);
   
-          window.location.href = `http://nevatrip.ru/index.php?id=${ productOldId }`;
+          setPaid(createOrder.id);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -178,11 +161,32 @@ export const Cart = ({session}) => {
   
       pay();
     } else {
-      alert('Заказ по 100% промокоду успешно зарегистрирован')
-      window.location.href = `http://nevatrip.ru/index.php?id=${ productOldId }`;
+      setPaid(createOrder.id);
     }
-
   };
+  
+  useEffect(() => {
+    throttled.current(promocode)
+  }, [promocode])
+
+  useEffect(() => {
+    dispatch('cart/get', session);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+  
+  useEffect(() => {
+    setTimeout(async () => {
+      const _emailContent = await api.order.getMail( paid );
+      setEmailContent( _emailContent );
+      const sheet = document.createElement('link');
+      sheet.rel = 'stylesheet';
+      sheet.href = '//api.nevatrip.ru/assets/css/web-desktop.min.css';
+      sheet.type = 'text/css';
+      document.head.appendChild(sheet);
+    }, 1000);
+  }, [paid])
+
+  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>)
 
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
