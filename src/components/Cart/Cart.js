@@ -53,19 +53,22 @@ function throttle(func, wait, options) {
 };
 
 export const Cart = ({session}) => {
-  const { dispatch, cart, user, order, ticket } = useStoreon('cart', 'user', 'order', 'ticket');
+  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
   const [ promocode, setPromocode ] = useState('');
   const [ paid, setPaid ] = useState(false);
   const [ emailContent, setEmailContent ] = useState();
-  const throttled = useRef(throttle(async (newValue) => {
+  const [ oldId, setOldId ] = useState(0);
+
+  const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
-      const resp = await api.order.promocode(57, newValue);
+      const resp = await api.order.promocode(oldId, newValue);
       setSale(resp);
     }
   }, 700));
+
   const products = () => cart.map(key => {
     const { productId } = order[key];
 
@@ -78,7 +81,8 @@ export const Cart = ({session}) => {
       </li>
     );
   });
-  const productsPreview = () => cart.map( key => {
+
+  const productsPreview = () => cart.map(key => {
     const { productId } = order[key];
 
     return (
@@ -90,12 +94,14 @@ export const Cart = ({session}) => {
       </li>
     );
   });
+
   const setUserData = event => {
     user[event.target.name] = event.target.value;
 
     dispatch('user/update', user);
   };
-  const sum = Object.values(order).reduce( ( sum, cartItem ) => {
+
+  const sum = Object.values(order).reduce((sum, cartItem) => {
     if ( !cartItem.options || !cartItem.options.length ) return 0;
 
     const {
@@ -122,13 +128,14 @@ export const Cart = ({session}) => {
 
     return sum;
   }, 0);
+
   const checkOut = async e => {
     e.preventDefault();
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-    if (sale < 100 && createOrder.payment.Model.Number) {
+    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
   
       const pay = function () {
@@ -166,8 +173,14 @@ export const Cart = ({session}) => {
   };
   
   useEffect(() => {
-    throttled.current(promocode)
-  }, [promocode])
+    if (product && order && cart && cart[0] && order[cart[0]]) {
+      setOldId( product[order[cart[0]].productId].oldId );
+
+      throttled.current(oldId, promocode)
+    }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [promocode, oldId])
 
   useEffect(() => {
     dispatch('cart/get', session);
