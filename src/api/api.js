@@ -106,8 +106,8 @@ export const api = {
       return 0;
     },
 
-    async getMail (orderId) {
-      const response = await fetch( `${MAIN_URL}/orders/${ orderId }/preview` );
+    async getMail (orderId, hash) {
+      const response = await fetch( `${MAIN_URL}/orders/${ orderId }/preview?hash=${ hash }` );
 
       return response.text();
     },

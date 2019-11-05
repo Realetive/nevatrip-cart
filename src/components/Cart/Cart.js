@@ -134,7 +134,7 @@ export const Cart = ({session}) => {
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
-
+    
     if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
   
@@ -156,7 +156,7 @@ export const Cart = ({session}) => {
         function (success) { // success
           console.log('success', success);
   
-          setPaid(createOrder.id);
+          setPaid(createOrder);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -168,7 +168,7 @@ export const Cart = ({session}) => {
   
       pay();
     } else {
-      setPaid(createOrder.id);
+      setPaid(createOrder);
     }
   };
   
@@ -189,7 +189,7 @@ export const Cart = ({session}) => {
   
   useEffect(() => {
     setTimeout(async () => {
-      const _emailContent = await api.order.getMail( paid );
+      const _emailContent = await api.order.getMail( paid.id, paid.hash );
       setEmailContent( _emailContent );
       const sheet = document.createElement('link');
       sheet.rel = 'stylesheet';
