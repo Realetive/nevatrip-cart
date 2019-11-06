@@ -61,6 +61,7 @@ export const Cart = ({session}) => {
   const [ paid, setPaid ] = useState(false);
   const [ emailContent, setEmailContent ] = useState();
   const [ oldId, setOldId ] = useState(0);
+  const [ inProcess, setInProcess ] = useState(false);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -131,6 +132,7 @@ export const Cart = ({session}) => {
 
   const checkOut = async e => {
     e.preventDefault();
+    setInProcess(true);
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
@@ -170,6 +172,8 @@ export const Cart = ({session}) => {
     } else {
       setPaid(createOrder);
     }
+    
+    setInProcess(false);
   };
   
   useEffect(() => {
@@ -268,7 +272,7 @@ export const Cart = ({session}) => {
               <a href="https://nevatrip.ru/oferta" target="_blank" rel="noopener noreferrer">условиями покупки</a>
             </label>
           </span>
-            <button className='btn btn_block btn_primary'>
+            <button className='btn btn_block btn_primary' disabled={inProcess}>
               Оплатить { sum } ₽
             </button>
           </div>
