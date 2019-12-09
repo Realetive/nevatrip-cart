@@ -21,18 +21,28 @@ function formatOffset(offset) {
 
 export const Time = ( { cartKey, productId } ) => {
   const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
-  const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
+  const [{
+    direction,
+    date,
+    event: selectedEvent,
+    isOpenTime: selectedIsOpenTime = false
+  }] = order[cartKey].options;
   const [ time, setTime ] = useState( selectedEvent );
+  const [ isOpenTime, setIsOpenTime ] = useState( selectedIsOpenTime );
   const {
     timeOffset = -180,
     buyTimeOffset = 0,
+    dates,
+    datesOpenTime,
   } = directions[`${productId}.${direction}`];
   const userTimeOffset = new Date().getTimezoneOffset();  
 
   const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
   const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
   const events = event[ eventGroup ];
-  const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
+  const renderTimes = events ? ( events || [] )
+    .filter( eventItem => eventItem.allDay === isOpenTime )
+    .map( ( eventItem, index ) => {
     const timeOffset = new Date( eventItem.start );
     timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
     const isOffset = new Date() > timeOffset;
@@ -51,11 +61,11 @@ export const Time = ( { cartKey, productId } ) => {
             checked = { isOffset ? false : time ? time === eventItem._key : !index }
             onChange = { e => setTime( e.target.value ) }
             id = { eventItem._key }
-            disabled = { isOffset }
+            disabled = { isOffset || isOpenTime }
           />
 
         <label
-          className = { isOffset ? 'btn-radio__label btn-radio__label_disabled'  : 'btn-radio__label'  }
+          className = { isOffset || isOpenTime ? 'btn-radio__label btn-radio__label_disabled'  : 'btn-radio__label' }
           htmlFor = { eventItem._key }>
           {formatTime}
         </label>
@@ -92,16 +102,33 @@ export const Time = ( { cartKey, productId } ) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time, event]);
 
+  useEffect(() => {
+    order[ cartKey ].options[ 0 ].isOpenTime = isOpenTime;
+    
+    dispatch('order/update', order);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpenTime])
+
   return (
     <div>
       {
-        userTimeOffset !== timeOffset &&
+        userTimeOffset !== timeOffset ?
           <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
             Похоже, часовой пояс экскурсии отличается от вашего (UTC{ formatOffset(userTimeOffset) }).
             Указано отправление по местному времени (UTC{ formatOffset(timeOffset) }).
-          </div>
+          </div> : null
       }
-      <div className='caption'>Выберите время отправления</div>
+      { dates.length && datesOpenTime.length ?
+          <label>
+            <input type="checkbox" checked={isOpenTime} onChange={ e => setIsOpenTime( !isOpenTime ) } />
+            Билет действует в течение дня по расписанию
+          </label> : null
+      }
+      <div className='caption'>
+        {
+          isOpenTime ? 'Ознакомьтесь с расписанием' : 'Выберите время отправления'
+        }
+      </div>
       {
         <ul className='grid-list'>
           { renderTimes }

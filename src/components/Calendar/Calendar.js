@@ -3,7 +3,6 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import ru from 'date-fns/locale/ru';
 import useStoreon from 'storeon/react';
 
-
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
@@ -13,39 +12,60 @@ const tripTimeZone = 'Europe/Moscow';
 
 registerLocale('ru-RU', ru);
 
-const getNearestDate = ( date = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" )).toDate(), dates = [] ) => dates.includes( date ) ? date : dates[ 0 ];
+const getNearestDate = ( dates = [], date ) => {
+  return dates.includes( date ) ? date : dates[ 0 ];
+};
+
+const getAvailableDates = ( dates, timeOffset ) => {
+  return dates
+    .filter( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() >= timeOffset )
+    .sort()
+    .map( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() );
+}
 
 export const Calendar = ( { cartKey, productId } ) => {
   const { dispatch, direction, order } = useStoreon( 'direction', 'order' );
   const [ {
     direction: selectedDirection,
     date: selectedDate,
+    isOpenTime: selectedIsOpenTime,
   } ] = order[ cartKey ].options;
-
   const {
-    dates,
+    dates = [],
+    datesOpenTime = [],
     buyTimeOffset = 0,
   } = direction[ `${ productId }.${ selectedDirection }` ];
-  const timeOffset = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate();
 
+  useEffect(() => {
+    order[ cartKey ].options[ 0 ].isOpenTime = !dates.length && datesOpenTime.length ? true : selectedIsOpenTime;
+
+    dispatch( 'order/update', order );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [] );
+
+  const timeOffset = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate();
   timeOffset.setMinutes( timeOffset.getMinutes() + buyTimeOffset );
 
-  const availableDates = dates
-    .filter( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() )
-    .sort()
-    .map( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() );
-  const [ date, setDate ] = useState( getNearestDate( selectedDate, availableDates ) );
+  const [ availableDates, setAvailableDates ] = useState( getAvailableDates( selectedIsOpenTime ? datesOpenTime : dates, timeOffset ) );
+  const [ date, setDate ] = useState( getNearestDate( availableDates, selectedDate ) );
+  
+  useEffect(() => {
+    setAvailableDates( getAvailableDates( selectedIsOpenTime ? datesOpenTime : dates, timeOffset ) );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ selectedIsOpenTime ] );
+  
+  useEffect(() => {
+    setDate( getNearestDate( availableDates, date ) );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ availableDates ] );
 
   useEffect(() => {
     order[ cartKey ].options[ 0 ].date = date;
-    dispatch('order/update', order );
+
+    dispatch( 'order/update', order );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ date ] );
 
-  useEffect(() => {
-    setDate( getNearestDate( date, availableDates ) );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ selectedDirection ] );
   return (
     <>
       <label>

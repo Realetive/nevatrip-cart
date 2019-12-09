@@ -550,7 +550,7 @@ button:not(:disabled) {
   background-color: rgba(208, 204, 197, 0.3);
 }
 
-.btn-radio:checked + .btn-radio__label{
+.btn-radio:checked + .btn-radio__label:not(.btn-radio__label_disabled){
   background-color: #4FA0D0;
   color: #FFFFFF;
   border-color: #E1E1E1;

@@ -13,14 +13,10 @@ import './Product.css';
 export const Product = (props) => {
   const { cartKey, productId } = props;
   const { product, order } = useStoreon( 'product', 'order' );
-  const title = product[productId].title.ru.name;
-  let direction, date;
-  if (order[cartKey].options && order[cartKey].options.length) {
-    direction = order[cartKey].options[0].direction;
-    date = order[cartKey].options[0].date;
-  }
+  const title = product[ productId ].title.ru.name;
+  const [ { direction, date } ] = order[ cartKey ].options || [ {} ];
   
-  const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
+  const urlToProduct = product[ productId ].oldId ? `//nevatrip.ru/index.php?id=${ product[ productId ].oldId }` : '';
 
   return (
     <fieldset className='product product_view_form'>

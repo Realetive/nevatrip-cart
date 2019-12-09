@@ -192,15 +192,17 @@ export const Cart = ({session}) => {
   }, [session]);
   
   useEffect(() => {
-    setTimeout(async () => {
-      const _emailContent = await api.order.getMail( paid.id, paid.hash );
-      setEmailContent( _emailContent );
-      const sheet = document.createElement('link');
-      sheet.rel = 'stylesheet';
-      sheet.href = '//api.nevatrip.ru/assets/css/web-desktop.min.css';
-      sheet.type = 'text/css';
-      document.head.appendChild(sheet);
-    }, 1000);
+    if (paid.id && paid.hash) {
+      setTimeout(async () => {
+        const _emailContent = await api.order.getMail( paid.id, paid.hash );
+        setEmailContent( _emailContent );
+        const sheet = document.createElement('link');
+        sheet.rel = 'stylesheet';
+        sheet.href = '//api.nevatrip.ru/assets/css/web-desktop.min.css';
+        sheet.type = 'text/css';
+        document.head.appendChild(sheet);
+      }, 1000);
+    }
   }, [paid])
 
   if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>)

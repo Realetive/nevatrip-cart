@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useStoreon from 'storeon/react';
+import { format } from 'date-fns';
+
+import { api } from "../../api";
 
 const moment = require( 'moment-timezone' );
 require( 'moment/locale/ru' );
@@ -12,14 +15,29 @@ export const ProductPreview = ({ cartKey, productId }) => {
     direction: selectedDirectionId,
     date,
     event: selectedEvent,
-    tickets
+    tickets,
+    isOpenTime,
   }] = order[cartKey].options || [{}];
-
+  const [time, setTime] = useState();
+  const selectedDirection = `${productId}.${selectedDirectionId}`;
   const theEvent = selectedEvent && selectedEvent.start;
 
-  const renderTime = () => {
-    return theEvent ? moment( theEvent ).tz( tripTimeZone ).format( "LT" ) : '';
-  }
+  useEffect(() => {
+    (async () => {
+      if (isOpenTime) {
+        const scheduleDate = new Date( date );
+        const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+        const times = await api.product.getProductTime( productId, selectedDirectionId, formatDate );
+        console.log( 'times', times );
+        setTime( times.filter( time => time.allDay === true ).map( time => moment(time.start).tz(tripTimeZone).format("LT") ).join(', ') );
+      } else {
+        setTime( theEvent ? moment(theEvent).tz(tripTimeZone).format("LT") : '' );
+      }
+    })()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEvent])
+  
+  if (!selectedDirectionId) return null;
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
@@ -35,8 +53,6 @@ export const ProductPreview = ({ cartKey, productId }) => {
       return moment( selectedDate ).format( "D MMMM" )
     }
   }
-
-  const selectedDirection = `${productId}.${selectedDirectionId}`;
 
   const renderTicket = () => {
     return Object.keys(tickets).map(ticketKey => {
@@ -74,7 +90,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
             <b>время</b>&nbsp;/&nbsp;<span className="text_en">time</span>
           </div>
           <div className="listPreviewDataLi__p">
-            { renderTime() }
+            { time }
           </div>
         </li> }
 
