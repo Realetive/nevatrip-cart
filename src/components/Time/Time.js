@@ -21,7 +21,7 @@ function formatOffset(offset) {
 }
 
 export const Time = ( { cartKey, productId } ) => {
-  const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
+  const { dispatch, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
   const [{
     direction,
     date,
@@ -29,6 +29,7 @@ export const Time = ( { cartKey, productId } ) => {
     isOpenTime: selectedIsOpenTime = false
   }] = order[cartKey].options;
   const [ time, setTime ] = useState( selectedEvent );
+  const [ times = [], setTimes ] = useState( [] );
   const [ isOpenTime, setIsOpenTime ] = useState( selectedIsOpenTime );
   const {
     timeOffset = -180,
@@ -37,78 +38,48 @@ export const Time = ( { cartKey, productId } ) => {
     datesOpenTime,
   } = directions[`${productId}.${direction}`];
   const userTimeOffset = new Date().getTimezoneOffset();  
-
   const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
-  const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
-  const events = event[ eventGroup ];
-  const renderTimes = events ? ( events || [] )
-    .filter( eventItem => eventItem.allDay === isOpenTime )
-    .map( ( eventItem, index ) => {
-      const timeOffset = new Date( eventItem.start );
-      timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
-      const isOffset = new Date() > timeOffset;
-
-      const formatTime = moment( eventItem.start ).tz( tripTimeZone ).format( "LT" );
-
-      return (
-        <li key={ eventItem._key }
-            title={ isOffset ? 'Это время уже не доступно'  : `${formatDate} в ${ formatTime }`  }
-            className = 'grid-list__item'>
-            <input
-              type="radio"
-              className = 'btn-radio'
-              name = { eventGroup }
-              value = { eventItem._key }
-              checked = { isOffset ? false : time ? time === eventItem._key : !index }
-              onChange = { e => setTime( e.target.value ) }
-              id = { eventItem._key }
-              disabled = { isOffset || isOpenTime }
-            />
-
-          <label
-            className = { isOffset || isOpenTime ? 'btn-radio__label btn-radio__label_disabled'  : 'btn-radio__label' }
-            htmlFor = { eventItem._key }>
-            {formatTime}
-          </label>
-        </li>
-      );
-  } ) : [];
 
   useEffect(() => {
     const getTimes = async ( direction, date ) => {
       const scheduleDate = new Date( date );
       const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-      const times = await api.product.getProductTime( productId, direction, formatDate );
-      
-      if ( !times.length ) return;
-
-      setTime( times.find( ( { allDay } ) => allDay === isOpenTime )._key );
-      dispatch('event/add', { [ `${ productId }.${ direction }.${ formatDate }` ]: times });
+      const _times = await api.product.getProductTime( productId, direction, formatDate );
+      setTimes( _times.filter( ( { allDay } ) => allDay === isOpenTime ) );
     }
-
+    
     getTimes( direction, date );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ direction, date ]);
 
   useEffect(() => {
-    if ( !event ) return;
-    const scheduleDate = new Date( date );
-    const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-    const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
-    const action = events.find( ( { _key } ) => _key === time );
+    if ( !times.length ) return;
+
+    setTime( times[ 0 ]._key );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ times ])
+
+  useEffect(() => {
+    const action = times.find( ( { _key } ) => _key === time );
 
     order[ cartKey ].options[ 0 ].event = action;
 
     dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ time ]);
 
   useEffect(() => {
     order[ cartKey ].options[ 0 ].isOpenTime = isOpenTime;
+    
+    if (isOpenTime) {
+      order[ cartKey ].options[ 0 ].schedule = times;
+    } else {
+      delete order[ cartKey ].options[ 0 ].schedule;
+    }
 
     dispatch('order/update', order);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpenTime])
+  }, [isOpenTime, times])
 
   return (
     <div>
@@ -129,7 +100,38 @@ export const Time = ( { cartKey, productId } ) => {
         { isOpenTime ? 'Ознакомьтесь с расписанием' : 'Выберите время отправления' }
       </div>
       <ul className='grid-list'>
-        { renderTimes }
+        {
+          times.map( ( eventItem, index ) => {
+            const timeOffset = new Date( eventItem.start );
+            timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
+            const isOffset = new Date() > timeOffset;
+
+            const formatTime = moment( eventItem.start ).tz( tripTimeZone ).format( "LT" );
+
+            return (
+              <li key={ eventItem._key }
+                  title={ isOffset ? 'Это время уже не доступно'  : `${formatDate} в ${ formatTime }`  }
+                  className = 'grid-list__item'>
+                  <input
+                    type="radio"
+                    className = 'btn-radio'
+                    name = { `${ productId }.${ direction }.${ formatDate }` }
+                    value = { eventItem._key }
+                    checked = { isOffset ? false : time ? time === eventItem._key : !index }
+                    onChange = { e => setTime( e.target.value ) }
+                    id = { eventItem._key }
+                    disabled = { isOffset || isOpenTime }
+                  />
+
+                <label
+                  className = { isOffset || isOpenTime ? 'btn-radio__label btn-radio__label_disabled'  : 'btn-radio__label' }
+                  htmlFor = { eventItem._key }>
+                  {formatTime}
+                </label>
+              </li>
+            );
+          } )
+        }
       </ul>
     </div>
   );

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useStoreon from 'storeon/react';
-import { format } from 'date-fns';
 
-import { api } from "../../api";
-
-const moment = require( 'moment-timezone' );
+const moment = require('moment-timezone');
 require( 'moment/locale/ru' );
 const tripTimeZone = 'Europe/Moscow';
 
@@ -17,23 +14,19 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets,
     isOpenTime,
+    schedule = [],
   }] = order[cartKey].options || [{}];
   const [time, setTime] = useState();
   const selectedDirection = `${productId}.${selectedDirectionId}`;
   const theEvent = selectedEvent && selectedEvent.start;
 
   useEffect(() => {
-    (async () => {
-      if (isOpenTime) {
-        const scheduleDate = new Date( date );
-        const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-        const times = await api.product.getProductTime( productId, selectedDirectionId, formatDate );
-        setTime( times.filter( time => time.allDay === true ).map( time => moment(time.start).tz(tripTimeZone).format("LT") ).join(', ') );
-      } else {
-        setTime( theEvent ? moment(theEvent).tz(tripTimeZone).format("LT") : '' );
-      }
-    })()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isOpenTime) {
+      setTime( schedule.filter( time => time.allDay === true ).map( time => moment(time.start).tz(tripTimeZone).format("LT") ).join(', ') );
+    } else {
+      setTime( theEvent ? moment(theEvent).tz(tripTimeZone).format("LT") : '' );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEvent])
   
   if (!selectedDirectionId) return null;
