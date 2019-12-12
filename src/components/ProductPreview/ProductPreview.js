@@ -28,7 +28,6 @@ export const ProductPreview = ({ cartKey, productId }) => {
         const scheduleDate = new Date( date );
         const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
         const times = await api.product.getProductTime( productId, selectedDirectionId, formatDate );
-        console.log( 'times', times );
         setTime( times.filter( time => time.allDay === true ).map( time => moment(time.start).tz(tripTimeZone).format("LT") ).join(', ') );
       } else {
         setTime( theEvent ? moment(theEvent).tz(tripTimeZone).format("LT") : '' );

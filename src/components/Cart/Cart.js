@@ -133,7 +133,7 @@ export const Cart = ({session}) => {
   const checkOut = async e => {
     e.preventDefault();
     setInProcess(true);
-
+    
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
     
@@ -388,4 +388,5 @@ export const Cart = ({session}) => {
           </div>
         </div>
       </div>
+
 };
