@@ -94,7 +94,7 @@ export const Time = ( { cartKey, productId } ) => {
         <div className="checkboxScroll">
           <input className="checkboxScrollInput" type="checkbox" checked={isOpenTime} id="datesOpenTime"
                  onChange={e => setIsOpenTime(!isOpenTime)}/>
-          <label className="checkboxScrollLabel" htmlFor="datesOpenTime">Билет без точной даты <span className="checkboxScrollDisabled">(действует в течение дня по расписанию)</span></label>
+          <label className="checkboxScrollLabel" htmlFor="datesOpenTime">Билет с «открытым временем» <span className="checkboxScrollDisabled">(действует в течение дня по расписанию)</span></label>
         </div>: null
       }
       <div className='caption'>

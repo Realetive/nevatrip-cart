@@ -915,7 +915,7 @@ button:not(:disabled) {
   content: '';
   position: absolute;
   top: 1px;
-  right: 2px;
+  right: 26px;
   width: 22px;
   height: 22px;
   border-radius: 10px;
@@ -926,7 +926,7 @@ button:not(:disabled) {
   background: #4ea0d0;
 }
 .checkboxScrollInput:checked + .checkboxScrollLabel:after {
-  right: 26px;
+  right: 2px;
 }
 .checkboxScrollDisabled{
   color: #6c757d;
