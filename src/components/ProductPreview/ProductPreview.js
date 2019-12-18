@@ -38,11 +38,11 @@ export const ProductPreview = ({ cartKey, productId }) => {
     const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
 
     if ( hours > 21) {
-      return `В ночь с ${ moment( selectedDate ).format( "D MMMM" ) } на ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
+      return `В ночь с ${ moment( selectedDate ).format( "D MMMM YYYY" ) } на ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM YYYY" ) }`;
     } else if ( hours < 4  || hours === '0:') {
-      return `В ночь с ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) }  на ${ moment( selectedDate ).format( "D MMMM" ) }`;
+      return `В ночь с ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM YYYY" ) } на ${ moment( selectedDate ).format( "D MMMM YYYY" ) }`;
     } else {
-      return moment( selectedDate ).format( "D MMMM" )
+      return moment( selectedDate ).format( "D MMMM YYYY" )
     }
   }
 
