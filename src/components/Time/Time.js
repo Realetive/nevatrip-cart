@@ -97,6 +97,11 @@ export const Time = ( { cartKey, productId } ) => {
           <label className="checkboxScrollLabel" htmlFor="datesOpenTime">{isOpenTime ? 'Выключить' : 'Включить'} билет с «открытым временем» <span className="checkboxScrollDisabled">(действует в течение дня по расписанию)</span></label>
         </div>: null
       }
+      {
+        isOpenTime && times.length === 1
+          ? <p style={{ fontSize: '16px', marginTop: 0 }}><b>NB!</b> В этот день в расписании доступна только одна экскурсия с открытым временем.</p>
+          : null
+      }
       <div className='caption'>
         { isOpenTime ? 'Ознакомьтесь с расписанием' : 'Выберите время отправления' }
       </div>
