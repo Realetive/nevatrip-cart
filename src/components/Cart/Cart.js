@@ -53,19 +53,23 @@ function throttle(func, wait, options) {
 };
 
 export const Cart = ({session}) => {
-  const { dispatch, cart, user, order, ticket } = useStoreon('cart', 'user', 'order', 'ticket');
+  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
   const [ promocode, setPromocode ] = useState('');
   const [ paid, setPaid ] = useState(false);
   const [ emailContent, setEmailContent ] = useState();
-  const throttled = useRef(throttle(async (newValue) => {
+  const [ oldId, setOldId ] = useState(0);
+  const [ inProcess, setInProcess ] = useState(false);
+
+  const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
-      const resp = await api.order.promocode(57, newValue);
+      const resp = await api.order.promocode(oldId, newValue);
       setSale(resp);
     }
   }, 700));
+
   const products = () => cart.map(key => {
     const { productId } = order[key];
 
@@ -78,7 +82,8 @@ export const Cart = ({session}) => {
       </li>
     );
   });
-  const productsPreview = () => cart.map( key => {
+
+  const productsPreview = () => cart.map(key => {
     const { productId } = order[key];
 
     return (
@@ -90,12 +95,14 @@ export const Cart = ({session}) => {
       </li>
     );
   });
+
   const setUserData = event => {
     user[event.target.name] = event.target.value;
 
     dispatch('user/update', user);
   };
-  const sum = Object.values(order).reduce( ( sum, cartItem ) => {
+
+  const sum = Object.values(order).reduce((sum, cartItem) => {
     if ( !cartItem.options || !cartItem.options.length ) return 0;
 
     const {
@@ -125,11 +132,12 @@ export const Cart = ({session}) => {
 
   const checkOut = async e => {
     e.preventDefault();
+    setInProcess(true);
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
-
-    if (sale < 100 && createOrder.payment.Model.Number) {
+    
+    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
   
       const pay = function () {
@@ -150,7 +158,7 @@ export const Cart = ({session}) => {
         function (success) { // success
           console.log('success', success);
   
-          setPaid(createOrder.id);
+          setPaid(createOrder);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -162,13 +170,21 @@ export const Cart = ({session}) => {
   
       pay();
     } else {
-      setPaid(createOrder.id);
+      setPaid(createOrder);
     }
+    
+    setInProcess(false);
   };
   
   useEffect(() => {
-    throttled.current(promocode)
-  }, [promocode])
+    if (product && order && cart && cart[0] && order[cart[0]]) {
+      setOldId( product[order[cart[0]].productId].oldId );
+
+      throttled.current(oldId, promocode)
+    }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [promocode, oldId])
 
   useEffect(() => {
     dispatch('cart/get', session);
@@ -177,7 +193,7 @@ export const Cart = ({session}) => {
   
   useEffect(() => {
     setTimeout(async () => {
-      const _emailContent = await api.order.getMail( paid );
+      const _emailContent = await api.order.getMail( paid.id, paid.hash );
       setEmailContent( _emailContent );
       const sheet = document.createElement('link');
       sheet.rel = 'stylesheet';
@@ -256,7 +272,7 @@ export const Cart = ({session}) => {
               <a href="https://nevatrip.ru/oferta" target="_blank" rel="noopener noreferrer">условиями покупки</a>
             </label>
           </span>
-            <button className='btn btn_block btn_primary'>
+            <button className='btn btn_block btn_primary' disabled={inProcess}>
               Оплатить { sum } ₽
             </button>
           </div>

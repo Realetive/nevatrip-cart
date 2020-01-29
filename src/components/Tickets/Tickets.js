@@ -9,6 +9,7 @@ export const Tickets = ({ cartKey, productId }) => {
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
+
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
     obj[ _key ] = count;
@@ -44,6 +45,7 @@ export const Tickets = ({ cartKey, productId }) => {
             defaultValue={ count }
             tickets={ _tickets }
             setTickets={ _setTickets }
+            price={ price }
           />
         </dd>
       </div>
@@ -58,6 +60,9 @@ export const Tickets = ({ cartKey, productId }) => {
       <dl className='ticketsDl'>
         { _renderTickets }
       </dl>
+      {/* <div class="caption" style={{ padding: '8px', borderRadius: '4px', backgroundColor: 'rgb(232, 176, 197)' }}>
+        Вы выбрали бесплатную категорию билетов — нужно выбрать сопровождающего, например, билет категории «Взрослый»
+      </div> */}
     </div>
   );
 };

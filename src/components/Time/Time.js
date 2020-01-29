@@ -23,42 +23,17 @@ export const Time = ( { cartKey, productId } ) => {
   const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
   const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
   const [ time, setTime ] = useState( selectedEvent );
-
-  useEffect(() => {
-    const getTimes = async ( direction, date ) => {
-      const scheduleDate = new Date( date );
-      const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-      const times = await api.product.getProductTime( productId, direction, formatDate );
-
-      if ( !times.length ) return;
-
-      setTime( times[ 0 ]._key );
-      dispatch('event/add', { [ `${ productId }.${ direction }.${ formatDate }` ]: times });
-    }
-
-    getTimes( direction, date );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ direction, date ]);
-
-  useEffect(() => {
-    if ( !event ) return;
-    const scheduleDate = new Date( date );
-    const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
-    const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
-    const action = events.find(eventItem => eventItem._key === time );
-
-    order[ cartKey ].options[ 0 ].event = action;
-
-    dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [time, event])
+  const {
+    timeOffset = -180,
+    buyTimeOffset = 0,
+  } = directions[`${productId}.${direction}`];
+  const userTimeOffset = new Date().getTimezoneOffset();  
 
   const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
   const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
   const events = event[ eventGroup ];
   const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
     const timeOffset = new Date( eventItem.start );
-    const buyTimeOffset = directions[`${ productId }.${ direction }`].buyTimeOffset || 0;
     timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
     const isOffset = new Date() > timeOffset;
 
@@ -87,6 +62,35 @@ export const Time = ( { cartKey, productId } ) => {
       </li>
     );
   } ) : [];
+
+  useEffect(() => {
+    const getTimes = async ( direction, date ) => {
+      const scheduleDate = new Date( date );
+      const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+      const times = await api.product.getProductTime( productId, direction, formatDate );
+
+      if ( !times.length ) return;
+
+      setTime( times[ 0 ]._key );
+      dispatch('event/add', { [ `${ productId }.${ direction }.${ formatDate }` ]: times });
+    }
+
+    getTimes( direction, date );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ direction, date ]);
+
+  useEffect(() => {
+    if ( !event ) return;
+    const scheduleDate = new Date( date );
+    const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+    const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
+    const action = events.find(eventItem => eventItem._key === time );
+
+    order[ cartKey ].options[ 0 ].event = action;
+
+    dispatch('order/update', order);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time, event]);
 
   return (
     <div>
