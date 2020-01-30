@@ -7,6 +7,7 @@
     "date-fns": "^2.0.0-beta.2",
     "date-fns-timezone": "^0.1.4",
     "date-fns-tz": "^1.0.8",
+    "i18next": "^19.1.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "nanoid": "^2.0.3",
@@ -14,7 +15,8 @@
     "react": "^16.8.6",
     "react-datepicker": "^2.7.0",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
+    "react-i18next": "^11.3.1",
+    "react-scripts": "^3.3.0",
     "storeon": "^0.9.1"
   },
   "scripts": {

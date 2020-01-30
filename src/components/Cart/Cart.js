@@ -1,19 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
 import useStoreon from 'storeon/react';
+import { useTranslation } from 'react-i18next';
 
 import { Product } from '../Product/Product';
 import { ProductPreview } from '../ProductPreview/ProductPreview';
 
-import { api } from "../../api";
+import { api } from '../../api';
 
 import './Cart.css';
 
 import format from 'date-fns/format';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ru from 'date-fns/locale/ru';
+import en from 'date-fns/locale/en-US';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../Calendar/Calendar.css';
-registerLocale('ru-RU', ru);
+
+// registerLocale('ru-RU', ru);
+registerLocale('en-US', en);
 
 // Returns a function, that, when invoked, will only be triggered at most once
 // during a given window of time. Normally, the throttled function will run
@@ -52,7 +56,8 @@ function throttle(func, wait, options) {
   };
 };
 
-export const Cart = ({session}) => {
+export const Cart = ({session, lang}) => {
+  const { t } = useTranslation();
   const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
@@ -187,7 +192,7 @@ export const Cart = ({session}) => {
   }, [promocode, oldId])
 
   useEffect(() => {
-    dispatch('cart/get', session);
+    dispatch('cart/get', {session, lang});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
   
@@ -210,7 +215,7 @@ export const Cart = ({session}) => {
         <ul className='list'>{ products() }</ul>
         <div className='aside'>
           <div className="aside__blank">
-            <span className = 'caption caption_l'>Ваш заказ</span>
+            <span className = 'caption caption_l'>{ t( 'Ваш заказ' ) }</span>
             <ul className='listPreview'>{ productsPreview() }</ul>
           </div>
 
@@ -220,21 +225,21 @@ export const Cart = ({session}) => {
             <div className='cart__user'>
               {
                 [
-                  { name: 'fullName', type: 'text', value: fullName, label: 'Фамилия и имя' },
-                  { name: 'email', type: 'email', value: email, label: 'E-mail' },
-                  { name: 'phone', type: 'phone', value: phone, label: 'Телефон' }
+                  { name: 'fullName', type: 'text', value: fullName, label: t( 'Фамилия и имя' ) },
+                  { name: 'email', type: 'email', value: email, label: t( 'E-mail' ) },
+                  { name: 'phone', type: 'phone', value: phone, label: t( 'Телефон' ) }
                 ].map( field => (
-                  <div key={ field.name }>
+                  <div key={field.name}>
                     <label className='form-label'>
                     <span className='caption'>
-                      {field.label}
+                      { field.label }
                     </span>
                       <input
                         className='input'
-                        type={ field.type }
-                        name={ field.name }
-                        defaultValue={ field.value }
-                        onBlur={ setUserData }
+                        type={field.type}
+                        name={field.name}
+                        defaultValue={field.value}
+                        onBlur={setUserData}
                         required
                       />
                     </label>
@@ -247,7 +252,7 @@ export const Cart = ({session}) => {
                 isShowPromocode
                   ? <label className='form-label'>
                   <span className='caption'>
-                    Промокод&nbsp;
+                    { t( 'Промокод' ) }&nbsp;
                     {
                       sale > 0 ? `«${ promocode.toUpperCase() }» на ${ sale }% 👍` : null
                     }
@@ -262,18 +267,18 @@ export const Cart = ({session}) => {
                       onBlur={()=> !promocode && setShowPromocode(false)}
                     />
                   </label>
-                  : <button className="btn-radio__label" onClick={ () => setShowPromocode(true) }>У меня есть промокод</button>
+                  : <button className="btn-radio__label" onClick={ () => setShowPromocode(true) }>{ t('У меня есть промокод') }</button>
               }
             </div>
             <span className='checkbox'>
             <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
             <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
-              Согласен(-на) с&nbsp;
-              <a href="https://nevatrip.ru/oferta" target="_blank" rel="noopener noreferrer">условиями покупки</a>
+              { t( 'Я согласен' ) }&nbsp;
+            <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки' ) }</a>
             </label>
           </span>
             <button className='btn btn_block btn_primary' disabled={inProcess}>
-              Оплатить { sum } ₽
+              { t( 'Оплатить' ) } { sum } ₽
             </button>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ru from 'date-fns/locale/ru';
+import en from 'date-fns/locale/en-US';
 import useStoreon from 'storeon/react';
 
 
@@ -11,12 +13,14 @@ const moment = require( 'moment-timezone' );
 require( 'moment/locale/ru' );
 const tripTimeZone = 'Europe/Moscow';
 
-registerLocale('ru-RU', ru);
+// registerLocale('calendarLocale', ru);
+registerLocale('calendarLocale', en);
 
 const getNearestDate = ( date = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" )).toDate(), dates = [] ) => dates.includes( date ) ? date : dates[ 0 ];
 
 export const Calendar = ( { cartKey, productId } ) => {
-  const { dispatch, direction, order } = useStoreon( 'direction', 'order' );
+  const { t } = useTranslation();
+  const { dispatch, direction, order } = useStoreon('direction', 'order');
   const [ {
     direction: selectedDirection,
     date: selectedDate,
@@ -49,12 +53,12 @@ export const Calendar = ( { cartKey, productId } ) => {
   return (
     <>
       <label>
-        <span className = 'caption'>Дата поездки</span>
+        <span className='caption'>{ t( 'Дата поездки' ) }</span>
         <input
           readOnly
-          type = 'text'
-          value = { moment( date ).format( 'LL' ) }
-          className = 'input input_calendar'
+          type='text'
+          value={ moment( date ).format( 'LL' ) }
+          className='input input_calendar'
         />
       </label>
       <div className='calendarWrapper'>
@@ -63,7 +67,7 @@ export const Calendar = ( { cartKey, productId } ) => {
           calendarClassName='calendar'
           dateFormat='dd MMMM yyyy'
           includeDates={ availableDates }
-          locale='ru-RU'
+          locale='calendarLocale'
           selected={ date }
           onChange={ date => setDate( date ) }
         />

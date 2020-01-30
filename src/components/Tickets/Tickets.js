@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStoreon from 'storeon/react';
 
 import Counter from '../Counter/Counter';
@@ -6,6 +7,7 @@ import Counter from '../Counter/Counter';
 import './Tickets.css';
 
 export const Tickets = ({ cartKey, productId }) => {
+  const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
@@ -55,7 +57,7 @@ export const Tickets = ({ cartKey, productId }) => {
   return (
     <div className='ticketsWrapper'>
       <span className='caption'>
-        Выберите категории билетов
+        { t( 'Выберите категории билетов' ) }
       </span>
       <dl className='ticketsDl'>
         { _renderTickets }

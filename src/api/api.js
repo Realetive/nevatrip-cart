@@ -43,9 +43,9 @@ export const api = {
     },
   },
   product: {
-    async getProductData (productId) {
+    async getProductData(productId, lang = 'ru') {
       const response = await fetch(
-        `${MAIN_URL}/product/${productId}/cart`,
+        `${MAIN_URL}/product/${productId}/cart?lang=${ lang }`,
         {
           method: 'GET',
           headers,
@@ -55,7 +55,7 @@ export const api = {
       return response.json();
     },
 
-    async productDates (productId) {
+    async productDates(productId) {
       const response = await fetch(
         `${MAIN_URL}/product/${productId}/dates`,
         {

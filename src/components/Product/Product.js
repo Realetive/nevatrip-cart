@@ -13,7 +13,7 @@ import './Product.css';
 export const Product = (props) => {
   const { cartKey, productId } = props;
   const { product, order } = useStoreon( 'product', 'order' );
-  const title = product[productId].title.ru.name;
+  const title = product[productId].title;
   let direction, date;
   if (order[cartKey].options && order[cartKey].options.length) {
     direction = order[cartKey].options[0].direction;

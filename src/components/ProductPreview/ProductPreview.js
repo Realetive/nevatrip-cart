@@ -1,13 +1,16 @@
 import React from 'react';
 import useStoreon from 'storeon/react';
+import { useTranslation } from 'react-i18next';
 
 const moment = require( 'moment-timezone' );
-require( 'moment/locale/ru' );
+// require( 'moment/locale/ru' );
+require( 'moment/locale/en-gb' );
 const tripTimeZone = 'Europe/Moscow';
 
 export const ProductPreview = ({ cartKey, productId }) => {
+  const { t } = useTranslation();
   const { product, order, direction, ticket } = useStoreon( 'product', 'order', 'direction', 'ticket' );
-  const title = product[productId].title.ru.name;
+  const title = product[productId].title;
   const [{
     direction: selectedDirectionId,
     date,
@@ -28,9 +31,9 @@ export const ProductPreview = ({ cartKey, productId }) => {
     const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
 
     if ( hours > 21) {
-      return `В ночь с ${ moment( selectedDate ).format( "D MMMM" ) } на ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
+      return `${ t( 'В ночь с' ) } ${ moment( selectedDate ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
     } else if ( hours < 4  || hours === '0:') {
-      return `В ночь с ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) }  на ${ moment( selectedDate ).format( "D MMMM" ) }`;
+      return `${ t( 'В ночь с' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate ).format( "D MMMM" ) }`;
     } else {
       return moment( selectedDate ).format( "D MMMM" )
     }
@@ -64,14 +67,14 @@ export const ProductPreview = ({ cartKey, productId }) => {
       <ul className='listPreviewData'>
         { date && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
-            <b>дата</b>&nbsp;/&nbsp;<span className="text_en">date</span>
+            <b>{ t( 'дата' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">{ renderDate() }</div>
         </li> }
 
         { selectedEvent && <li className='listPreviewDataLi'>
           <div className="listPreviewDataLi__h">
-            <b>время</b>&nbsp;/&nbsp;<span className="text_en">time</span>
+            <b>{ t( 'время' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">
             { renderTime() }
@@ -90,7 +93,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
       { tickets &&
       <div className='listPreviewTickets'>
         <div className="listPreviewDataLi__h">
-          <b>билеты</b>&nbsp;/&nbsp;<span className="text_en">tickets</span>
+          <b>{ t( 'билеты' ) }</b>
         </div>
         <div className="listPreviewDataLi__p">
           { renderTicket() }

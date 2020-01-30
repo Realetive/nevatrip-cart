@@ -10,14 +10,14 @@ export default (store) => {
     return { ...state, cart }
   });
 
-  store.on('cart/get', async (state, session) => {
+  store.on('cart/get', async (state, {session, lang}) => {
     try {
       store.dispatch('cart/loading', true);
       
       const { products: cart } = await api.cart.newCart(session);
       const products = await Promise.all(
         [...new Set(cart.map(item => item.productId))].map((item) => {
-          return api.product.getProductData(item);
+          return api.product.getProductData(item, lang);
         })
       );
 

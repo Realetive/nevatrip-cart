@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStoreon from 'storeon/react';
 import { format } from 'date-fns';
 import { api } from "../../api";
@@ -20,6 +21,7 @@ function formatOffset(offset) {
 }
 
 export const Time = ( { cartKey, productId } ) => {
+  const { t } = useTranslation();
   const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
   const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
   const [ time, setTime ] = useState( selectedEvent );
@@ -101,7 +103,7 @@ export const Time = ( { cartKey, productId } ) => {
             Указано отправление по местному времени (UTC{ formatOffset(timeOffset) }).
           </div>
       }
-      <div className='caption'>Выберите время отправления</div>
+      <div className='caption'>{ t( 'Выберите время отправления' ) }</div>
       {
         <ul className='grid-list'>
           { renderTimes }
