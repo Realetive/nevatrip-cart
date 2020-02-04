@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-scripts/config/webpack.config.js b/node_modules/react-scripts/config/webpack.config.js
-index d34d06f..d701a6c 100644
+index d34d06f..44c7183 100644
 --- a/node_modules/react-scripts/config/webpack.config.js
 +++ b/node_modules/react-scripts/config/webpack.config.js
 @@ -184,13 +184,13 @@ module.exports = function(webpackEnv) {
@@ -18,7 +18,15 @@ index d34d06f..d701a6c 100644
          : isEnvDevelopment && 'static/js/[name].chunk.js',
        // We inferred the "public path" (such as / or /my-project) from homepage.
        // We use "/" in development.
-@@ -641,8 +641,8 @@ module.exports = function(webpackEnv) {
+@@ -215,6 +215,7 @@ module.exports = function(webpackEnv) {
+       minimizer: [
+         // This is only used in production mode
+         new TerserPlugin({
++          extractComments: false,
+           terserOptions: {
+             parse: {
+               // We want terser to parse ecma 8 code. However, we don't want it
+@@ -641,8 +642,8 @@ module.exports = function(webpackEnv) {
          new MiniCssExtractPlugin({
            // Options similar to the same options in webpackOptions.output
            // both options are optional
