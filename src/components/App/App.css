@@ -333,7 +333,7 @@ body {
   #root {
     position: relative;
     padding: 10px 20px 30px;
-    background: #393c45 url(https://nevatrip.ru/assets/img/email/successbg.jpg) no-repeat center /cover;
+    /* background: #393c45 url(https://nevatrip.ru/assets/img/email/successbg.jpg) no-repeat center /cover; */
     height: 100%;
     width: 100%;
     margin-bottom: -20px;

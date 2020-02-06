@@ -3,21 +3,21 @@ import { useTranslation } from 'react-i18next';
 import useStoreon from 'storeon/react';
 import { format } from 'date-fns';
 import { api } from "../../api";
+import moment from "moment-timezone";
 
-const moment = require( 'moment-timezone' );
-require( 'moment/locale/ru' );
 const tripTimeZone = 'Europe/Moscow';
 
 function pad (value) {
-    return value < 10 ? '0' + value : value;
+  return value < 10 ? '0' + value : value;
 }
 
 function formatOffset(offset) {
-    const sign = (offset > 0) ? "-" : "+";
-    const _offset = Math.abs(offset);
-    const hours = pad(Math.floor(_offset / 60));
-    const minutes = pad(_offset % 60);
-    return sign + hours + ":" + minutes;
+  const sign = (offset > 0) ? "-" : "+";
+  const _offset = Math.abs(offset);
+  const hours = pad(Math.floor(_offset / 60));
+  const minutes = pad(_offset % 60);
+
+  return sign + hours + ":" + minutes;
 }
 
 export const Time = ( { cartKey, productId } ) => {

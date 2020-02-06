@@ -3,8 +3,6 @@ import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
 const moment = require( 'moment-timezone' );
-// require( 'moment/locale/ru' );
-require( 'moment/locale/en-gb' );
 const tripTimeZone = 'Europe/Moscow';
 
 export const ProductPreview = ({ cartKey, productId }) => {
@@ -26,8 +24,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
-    const selectedDate = moment( moment( selectedEvent.start ).tz( tripTimeZone ).format( "YYYY-MM-DD LT:ss" )).toDate();
-
+    const selectedDate = moment( selectedEvent.start ).tz( tripTimeZone );
     const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
 
     if ( hours > 21) {
