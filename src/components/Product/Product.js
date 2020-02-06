@@ -1,8 +1,6 @@
-// Core
 import React from 'react';
 import useStoreon from 'storeon/react';
 
-// Components
 import { Calendar } from '../Calendar/Calendar';
 import { Directions } from '../Directions/Directions';
 import { Time } from '../Time/Time';
