@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import ru from 'date-fns/locale/ru';
-import en from 'date-fns/locale/en-US';
+import DatePicker from 'react-datepicker';
 import useStoreon from 'storeon/react';
 
 
@@ -10,11 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
 const moment = require( 'moment-timezone' );
-require( 'moment/locale/ru' );
 const tripTimeZone = 'Europe/Moscow';
-
-// registerLocale('calendarLocale', ru);
-registerLocale('calendarLocale', en);
 
 const getNearestDate = ( date = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" )).toDate(), dates = [] ) => dates.includes( date ) ? date : dates[ 0 ];
 
