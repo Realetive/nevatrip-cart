@@ -141,8 +141,8 @@ export const Cart = ({session, lang}) => {
         const cp = window.cp;
         const widget = new cp.CloudPayments();
         widget.charge({
-          publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
-          description: 'Оплата на сайте NevaTrip.ru', //назначение
+          publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
+          description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
           amount: sum, //сумма
           currency: 'RUB', //валюта
           invoiceId, //номер заказа  (необязательно)

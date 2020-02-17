@@ -95,7 +95,7 @@ export const api = {
 
     async promocode(productId, code) {
       if (productId && code) {
-        const url = new URL('https://nevatrip.ru/api/promo');
+        const url = new URL(process.env.REACT_APP_API_PROMOCODE);
         url.searchParams.append('id', productId);
         url.searchParams.append('code', code);
         const response = await fetch(url);
