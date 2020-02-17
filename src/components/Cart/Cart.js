@@ -119,7 +119,7 @@ export const Cart = ({session, lang}) => {
       if ( ticket.hasOwnProperty( ticketKey ) ) {
         const { price } = ticket[ ticketKey ];
         const priceSale = Math.ceil( price - ( price * ( sale / 100 ) ) )
-        
+
         sum += count * priceSale;
       }
     } );
@@ -133,10 +133,10 @@ export const Cart = ({session, lang}) => {
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
-    
+
     if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
-  
+
       const pay = function () {
         const cp = window.cp;
         const widget = new cp.CloudPayments();
@@ -154,25 +154,25 @@ export const Cart = ({session, lang}) => {
         },
         function (success) { // success
           console.log('success', success);
-  
+
           setPaid(createOrder);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
           console.log('fail', fail);
-  
+
           alert( 'Оплата не прошла' );
         });
       };
-  
+
       pay();
     } else {
       setPaid(createOrder);
     }
-    
+
     setInProcess(false);
   };
-  
+
   useEffect(() => {
     if (product && order && cart && cart[0] && order[cart[0]]) {
       setOldId( product[order[cart[0]].productId].oldId );
@@ -187,7 +187,7 @@ export const Cart = ({session, lang}) => {
     dispatch('cart/get', {session, lang});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-  
+
   useEffect(() => {
     setTimeout(async () => {
       const _emailContent = await api.order.getMail( paid.id, paid.hash );
@@ -217,9 +217,30 @@ export const Cart = ({session, lang}) => {
             <div className='cart__user'>
               {
                 [
-                  { name: 'fullName', type: 'text', value: fullName, label: t( 'Фамилия и имя' ) },
-                  { name: 'email', type: 'email', value: email, label: t( 'E-mail' ) },
-                  { name: 'phone', type: 'phone', value: phone, label: t( 'Телефон' ) }
+                  {
+                    name: 'fullName',
+                    type: 'text',
+                    value: fullName,
+                    label: t( 'Фамилия и имя' ),
+                    maxlength: '250'
+                  },
+                  {
+                    name: 'email',
+                    type: 'email',
+                    value: email,
+                    label: t( 'E-mail' ),
+                    pattern: '^[-._a-zA-Za-яA-я0-9]{2,}@(?:[a-zA-Za-яА-Я0-9][-a-z-A-Z-a-я-А-Я0-9]+\\.)+[a-za-я]{2,6}$',
+                    maxlength: '250'
+                  },
+                  {
+                    name: 'phone',
+                    type: 'phone',
+                    value: phone,
+                    label: t( 'Телефон' ),
+                    pattern: '(\\+?\\d[- .]*){11,13}',
+                    maxlength: '15',
+                    placeholder: '+79ХХХХХХХХХ'
+                  }
                 ].map( field => (
                   <div key={field.name}>
                     <label className='form-label'>
@@ -232,6 +253,9 @@ export const Cart = ({session, lang}) => {
                         name={field.name}
                         defaultValue={field.value}
                         onBlur={setUserData}
+                        maxlength={field.maxlength}
+                        pattern={field.pattern}
+                        placeholder={field.placeholder}
                         required
                       />
                     </label>
