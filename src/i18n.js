@@ -30,6 +30,8 @@ export default function i18n(lang) {
             'Выберите категории билетов': 'Select ticket type',
             'Дата поездки': 'Select date',
             'date_format': 'm/d/yyyy',
+            'currency': '€',
+            'currencyTag': 'EUR',
           }
         },
         ru: {
@@ -54,6 +56,8 @@ export default function i18n(lang) {
             'Выберите категории билетов': 'Выберите категории билетов',
             'Дата поездки': 'Выберите дату',
             'date_format': 'dd.mm.yyyy',
+            'currency': '₽',
+            'currencyTag': 'RUB',
           }
         },
         de: {

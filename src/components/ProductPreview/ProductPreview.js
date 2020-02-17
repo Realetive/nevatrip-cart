@@ -15,7 +15,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets
   }] = order[cartKey].options || [{}];
-
+  
   const theEvent = selectedEvent && selectedEvent.start;
 
   const renderTime = () => {
@@ -52,7 +52,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
-          <div dangerouslySetInnerHTML={{__html: `${name}: ${price}&nbsp;₽ × ${count} = ${count * price}&nbsp;₽`}} />
+          <div dangerouslySetInnerHTML={{__html: `${name}: ${price}&nbsp;${t( 'currency' )} × ${count} = ${count * price}&nbsp;${t( 'currency' )}`}} />
         </li>
       );
     } )

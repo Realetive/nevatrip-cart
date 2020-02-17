@@ -144,7 +144,7 @@ export const Cart = ({session, lang}) => {
           publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
           description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
           amount: sum, //сумма
-          currency: 'RUB', //валюта
+          currency: t( 'currencyTag' ), //валюта
           invoiceId, //номер заказа  (необязательно)
           accountId: user.email, //идентификатор плательщика (необязательно)
           skin: "mini", //дизайн виджета
@@ -270,7 +270,7 @@ export const Cart = ({session, lang}) => {
             </label>
           </span>
             <button className='btn btn_block btn_primary' disabled={inProcess}>
-              { t( 'Оплатить' ) } { sum } ₽
+              { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
           </div>
         </div>
