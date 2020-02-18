@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const Counter = ({ _key, tickets, setTickets, defaultValue, price }) => {
+const Counter = ({ _key, tickets, setTickets, defaultValue, price, getCount }) => {
   const [count, _setValue] = useState(defaultValue || 0);
   
   useEffect(() => {
-    setTickets({ ...tickets, [ _key ]: count });
+    setTickets({ ...tickets, [_key]: count });
+    getCount(count);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
-
+  
   return (
     <>
       <button type='button' className='counterBtn' disabled={ count <= 0 } onClick={ () => _setValue( count - 1 ) }>–</button>

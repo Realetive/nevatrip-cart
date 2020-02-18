@@ -58,6 +58,7 @@ export const Cart = ({session, lang}) => {
   const [ emailContent, setEmailContent ] = useState();
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
+  const [ ticketStatus, setTicketStatus ] = useState({});
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -65,9 +66,14 @@ export const Cart = ({session, lang}) => {
       setSale(resp);
     }
   }, 700));
-
+  
   const products = () => cart.map(key => {
     const { productId } = order[key];
+    
+    const getStatus = (status) => setTicketStatus({
+        ...ticketStatus,
+        [key]: status,
+      });
 
     return (
       <li className='cart__item cart__item_view_product' key={key}>
@@ -75,6 +81,7 @@ export const Cart = ({session, lang}) => {
           cartKey={key}
           productId={productId}
           lang={lang}
+          getStatus={getStatus}
         />
       </li>
     );
@@ -129,48 +136,54 @@ export const Cart = ({session, lang}) => {
 
   const checkOut = async e => {
     e.preventDefault();
-    setInProcess(true);
-
-    await api.cart.updateCart(session, Object.values(order), promocode);
-    const createOrder = await api.order.newOrder({ sessionId: session, user });
-
-    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
-      const invoiceId = createOrder.payment.Model.Number;
-
-      const pay = function () {
-        const cp = window.cp;
-        const widget = new cp.CloudPayments();
-        widget.charge({
-          publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
-          description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
-          amount: sum, //сумма
-          currency: t( 'currencyTag' ), //валюта
-          invoiceId, //номер заказа  (необязательно)
-          accountId: user.email, //идентификатор плательщика (необязательно)
-          skin: "mini", //дизайн виджета
-          // data: {
-          //   myProp: 'myProp value' //произвольный набор параметров
-          // }
-        },
-        function (success) { // success
-          console.log('success', success);
-
-          setPaid(createOrder);
-        },
-        function (reason, fail) { // fail
-          console.log('reason', reason);
-          console.log('fail', fail);
-
-          alert( 'Оплата не прошла' );
-        });
-      };
-
-      pay();
+    const currentTicketStatus = Object.values(ticketStatus).every(item => item);
+    
+    if (currentTicketStatus) {
+      setInProcess(true);
+      await api.cart.updateCart(session, Object.values(order), promocode);
+      const createOrder = await api.order.newOrder({ sessionId: session, user });
+  
+      if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
+        const invoiceId = createOrder.payment.Model.Number;
+  
+        const pay = function () {
+          const cp = window.cp;
+          const widget = new cp.CloudPayments();
+          widget.charge({
+            publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
+            description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
+            amount: sum, //сумма
+            currency: t( 'currencyTag' ), //валюта
+            invoiceId, //номер заказа  (необязательно)
+            accountId: user.email, //идентификатор плательщика (необязательно)
+            skin: "mini", //дизайн виджета
+            // data: {
+            //   myProp: 'myProp value' //произвольный набор параметров
+            // }
+          },
+          function (success) { // success
+            console.log('success', success);
+  
+            setPaid(createOrder);
+          },
+          function (reason, fail) { // fail
+            console.log('reason', reason);
+            console.log('fail', fail);
+  
+            alert( 'Оплата не прошла' );
+          });
+        };
+  
+        pay();
+      } else {
+        setPaid(createOrder);
+      }
+  
+      setInProcess(false);
     } else {
-      setPaid(createOrder);
+      alert('Need select tickets');
     }
 
-    setInProcess(false);
   };
 
   useEffect(() => {
@@ -222,7 +235,7 @@ export const Cart = ({session, lang}) => {
                     type: 'text',
                     value: fullName,
                     label: t( 'Фамилия и имя' ),
-                    maxlength: '250'
+                    maxLength: '250'
                   },
                   {
                     name: 'email',
@@ -230,7 +243,7 @@ export const Cart = ({session, lang}) => {
                     value: email,
                     label: t( 'E-mail' ),
                     pattern: '^[-._a-zA-Za-яA-я0-9]{2,}@(?:[a-zA-Za-яА-Я0-9][-a-z-A-Z-a-я-А-Я0-9]+\\.)+[a-za-я]{2,6}$',
-                    maxlength: '250'
+                    maxLength: '250'
                   },
                   {
                     name: 'phone',
@@ -238,7 +251,7 @@ export const Cart = ({session, lang}) => {
                     value: phone,
                     label: t( 'Телефон' ),
                     pattern: '(\\+?\\d[- .]*){10,22}',
-                    maxlength: '22',
+                    maxLength: '22',
                     placeholder: '+79ХХХХХХХХХ'
                   }
                 ].map( field => (
@@ -254,7 +267,7 @@ export const Cart = ({session, lang}) => {
                         name={field.name}
                         defaultValue={field.value}
                         onBlur={setUserData}
-                        maxlength={field.maxlength}
+                        maxLength={field.maxLength}
                         pattern={field.pattern}
                         placeholder={field.placeholder}
                         required

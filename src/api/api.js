@@ -106,8 +106,10 @@ export const api = {
       return 0;
     },
 
-    async getMail (orderId, hash) {
-      const response = await fetch( `${MAIN_URL}/orders/${ orderId }/preview?hash=${ hash }` );
+    async getMail(orderId, hash) {
+      if (!orderId || !hash) return;
+
+      const response = await fetch(`${MAIN_URL}/orders/${orderId}/preview?hash=${hash}`);
 
       return response.text();
     },

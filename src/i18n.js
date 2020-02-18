@@ -137,6 +137,6 @@ export default function i18n(lang) {
   if (_i18n.language !== 'en') {
     require( `moment/locale/${ momentLocaleKey }` )
   }
-  console.log( 'momentLocaleKey', momentLocaleKey );
-  moment.locale( momentLocaleKey );
+ 
+  moment.locale(momentLocaleKey);
 }
