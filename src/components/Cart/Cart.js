@@ -119,7 +119,7 @@ export const Cart = ({session, lang}) => {
       if ( ticket.hasOwnProperty( ticketKey ) ) {
         const { price } = ticket[ ticketKey ];
         const priceSale = Math.ceil( price - ( price * ( sale / 100 ) ) )
-        
+
         sum += count * priceSale;
       }
     } );
@@ -133,10 +133,10 @@ export const Cart = ({session, lang}) => {
 
     await api.cart.updateCart(session, Object.values(order), promocode);
     const createOrder = await api.order.newOrder({ sessionId: session, user });
-    
+
     if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
-  
+
       const pay = function () {
         const cp = window.cp;
         const widget = new cp.CloudPayments();
@@ -154,25 +154,25 @@ export const Cart = ({session, lang}) => {
         },
         function (success) { // success
           console.log('success', success);
-  
+
           setPaid(createOrder);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
           console.log('fail', fail);
-  
+
           alert( 'Оплата не прошла' );
         });
       };
-  
+
       pay();
     } else {
       setPaid(createOrder);
     }
-    
+
     setInProcess(false);
   };
-  
+
   useEffect(() => {
     if (product && order && cart && cart[0] && order[cart[0]]) {
       setOldId( product[order[cart[0]].productId].oldId );
@@ -187,7 +187,7 @@ export const Cart = ({session, lang}) => {
     dispatch('cart/get', {session, lang});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-  
+
   useEffect(() => {
     setTimeout(async () => {
       const _emailContent = await api.order.getMail( paid.id, paid.hash );
@@ -217,23 +217,50 @@ export const Cart = ({session, lang}) => {
             <div className='cart__user'>
               {
                 [
-                  { name: 'fullName', type: 'text', value: fullName, label: t( 'Фамилия и имя' ) },
-                  { name: 'email', type: 'email', value: email, label: t( 'E-mail' ) },
-                  { name: 'phone', type: 'phone', value: phone, label: t( 'Телефон' ) }
+                  {
+                    name: 'fullName',
+                    type: 'text',
+                    value: fullName,
+                    label: t( 'Фамилия и имя' ),
+                    maxlength: '250'
+                  },
+                  {
+                    name: 'email',
+                    type: 'email',
+                    value: email,
+                    label: t( 'E-mail' ),
+                    pattern: '^[-._a-zA-Za-яA-я0-9]{2,}@(?:[a-zA-Za-яА-Я0-9][-a-z-A-Z-a-я-А-Я0-9]+\\.)+[a-za-я]{2,6}$',
+                    maxlength: '250'
+                  },
+                  {
+                    name: 'phone',
+                    type: 'phone',
+                    value: phone,
+                    label: t( 'Телефон' ),
+                    pattern: '(\\+?\\d[- .]*){10,22}',
+                    maxlength: '22',
+                    placeholder: '+79ХХХХХХХХХ'
+                  }
                 ].map( field => (
                   <div key={field.name}>
                     <label className='form-label'>
                     <span className='caption'>
                       { field.label }
                     </span>
+                    <div className='form-input-wrap'>
                       <input
                         className='input'
                         type={field.type}
                         name={field.name}
                         defaultValue={field.value}
                         onBlur={setUserData}
+                        maxlength={field.maxlength}
+                        pattern={field.pattern}
+                        placeholder={field.placeholder}
                         required
                       />
+                      <svg className='form-icon' fill='green' viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 0 1-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"></path></svg>
+                    </div>
                     </label>
                   </div>
                 ))
