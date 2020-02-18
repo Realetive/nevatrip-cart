@@ -45,7 +45,7 @@ function throttle(func, wait, options) {
     }
     return result;
   };
-};
+}
 
 export const Cart = ({session, lang}) => {
   const { t } = useTranslation();
@@ -58,6 +58,18 @@ export const Cart = ({session, lang}) => {
   const [ emailContent, setEmailContent ] = useState();
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
+
+  console.log(Object.values(order)[0])
+  // for (let i = 0; i < Object.values(order).length; i++) {
+  //   console.log(Object.values(order)[i].options)
+  // }
+
+  const countOfTickets = Object.values(order).reduce((sum, item) => {
+    return sum + (item !== undefined ? item : 0);
+  }, 0);
+  // console.log(countOfTickets);
+  // // console.log('1' + order)
+  // console.log( ticket)
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -254,7 +266,7 @@ export const Cart = ({session, lang}) => {
                         name={field.name}
                         defaultValue={field.value}
                         onBlur={setUserData}
-                        maxlength={field.maxlength}
+                        maxLength={field.maxlength}
                         pattern={field.pattern}
                         placeholder={field.placeholder}
                         required

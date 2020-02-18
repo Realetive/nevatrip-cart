@@ -20,7 +20,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
 
   const renderTime = () => {
     return theEvent ? moment( theEvent ).tz( tripTimeZone ).format( "LT" ) : '';
-  }
+  };
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
@@ -34,7 +34,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
     } else {
       return moment( selectedDate ).format( "D MMMM" )
     }
-  }
+  };
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
 
@@ -43,6 +43,13 @@ export const ProductPreview = ({ cartKey, productId }) => {
       const count = tickets[ticketKey];
 
       if (!count || !ticket[`${productId}.${selectedDirectionId}.${ticketKey}`]) return null;
+
+      const countOfTickets = Object.values(tickets).reduce((sum, item) => {
+              return sum + (item !== undefined ? item : 0);
+      }, 0);
+      // console.log(order);
+      // console.log(tickets);
+      // console.log('product' + countOfTickets);
 
       const {
         _key,
@@ -56,7 +63,11 @@ export const ProductPreview = ({ cartKey, productId }) => {
         </li>
       );
     } )
-  }
+  };
+
+  const submitForm = () => {
+
+  };
 
   return (
     <fieldset className='listPreviewFieldset'>
