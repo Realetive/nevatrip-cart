@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId }) => {
+export const Tickets = ({ cartKey, productId, isValidCountOfTickets }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
@@ -48,6 +48,7 @@ export const Tickets = ({ cartKey, productId }) => {
             tickets={ _tickets }
             setTickets={ _setTickets }
             price={ price }
+            isValidCountOfTickets={isValidCountOfTickets}
           />
         </dd>
       </div>

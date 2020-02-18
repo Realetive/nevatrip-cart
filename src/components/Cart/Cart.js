@@ -58,25 +58,13 @@ export const Cart = ({session, lang}) => {
   const [ emailContent, setEmailContent ] = useState();
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
-
-  if (Object.keys(order).length) {
-    const tickets = Object.values(order)[0].options[0].tickets;
-    // console.log(Object.values(order)[0].options)
-
-    const countOfTickets = Object.values(tickets).reduce((sum, item) => {
-      return sum + (item !== undefined ? item : 0);
-    }, 0);
-
-    console.log(countOfTickets);
-  }
+  const isValidCountOfTickets = [];
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
       const resp = await api.order.promocode(oldId, newValue);
       setSale(resp);
     }
-
-    console.log(Object.values(order)[0]);
   }, 700));
 
   const products = () => cart.map(key => {
@@ -88,6 +76,7 @@ export const Cart = ({session, lang}) => {
           cartKey={key}
           productId={productId}
           lang={lang}
+          isValidCountOfTickets={isValidCountOfTickets}
         />
       </li>
     );
@@ -142,48 +131,61 @@ export const Cart = ({session, lang}) => {
 
   const checkOut = async e => {
     e.preventDefault();
-    setInProcess(true);
+    let flag = false;
 
-    await api.cart.updateCart(session, Object.values(order), promocode);
-    const createOrder = await api.order.newOrder({ sessionId: session, user });
-
-    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
-      const invoiceId = createOrder.payment.Model.Number;
-
-      const pay = function () {
-        const cp = window.cp;
-        const widget = new cp.CloudPayments();
-        widget.charge({
-          publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
-          description: 'Оплата на сайте NevaTrip.ru', //назначение
-          amount: sum, //сумма
-          currency: 'RUB', //валюта
-          invoiceId, //номер заказа  (необязательно)
-          accountId: user.email, //идентификатор плательщика (необязательно)
-          skin: "mini", //дизайн виджета
-          // data: {
-          //   myProp: 'myProp value' //произвольный набор параметров
-          // }
-        },
-        function (success) { // success
-          console.log('success', success);
-
-          setPaid(createOrder);
-        },
-        function (reason, fail) { // fail
-          console.log('reason', reason);
-          console.log('fail', fail);
-
-          alert( 'Оплата не прошла' );
-        });
-      };
-
-      pay();
-    } else {
-      setPaid(createOrder);
+    for (const item of isValidCountOfTickets) {
+      if (item === true) {
+        flag = true;
+        break;
+      }
     }
 
-    setInProcess(false);
+    if (flag === true) {
+      setInProcess(true);
+
+      await api.cart.updateCart(session, Object.values(order), promocode);
+      const createOrder = await api.order.newOrder({sessionId: session, user});
+
+      if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
+        const invoiceId = createOrder.payment.Model.Number;
+
+        const pay = function () {
+          const cp = window.cp;
+          const widget = new cp.CloudPayments();
+          widget.charge({
+                publicId: 'pk_9571506275254507c34463787fa0b',  //id из личного кабинета
+                description: 'Оплата на сайте NevaTrip.ru', //назначение
+                amount: sum, //сумма
+                currency: 'RUB', //валюта
+                invoiceId, //номер заказа  (необязательно)
+                accountId: user.email, //идентификатор плательщика (необязательно)
+                skin: "mini", //дизайн виджета
+                // data: {
+                //   myProp: 'myProp value' //произвольный набор параметров
+                // }
+              },
+              function (success) { // success
+                console.log('success', success);
+
+                setPaid(createOrder);
+              },
+              function (reason, fail) { // fail
+                console.log('reason', reason);
+                console.log('fail', fail);
+
+                alert('Оплата не прошла');
+              });
+        };
+
+        pay();
+      } else {
+        setPaid(createOrder);
+      }
+
+      setInProcess(false);
+    } else {
+      console.log('Выберите хотя бы один билет.')
+    }
   };
 
   useEffect(() => {
@@ -312,6 +314,7 @@ export const Cart = ({session, lang}) => {
             <button className='btn btn_block btn_primary' disabled={inProcess}>
               { t( 'Оплатить' ) } { sum } ₽
             </button>
+            {/*<div>{ t( 'Выберите хотя бы один билет.' ) }</div>*/}
           </div>
         </div>
       </form>

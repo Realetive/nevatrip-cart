@@ -30,6 +30,7 @@ export default function i18n(lang) {
             'Выберите категории билетов': 'Select ticket type',
             'Дата поездки': 'Select date',
             'date_format': 'm/d/yyyy',
+            'Выберите хотя бы один билет.': 'Please select at least one ticket.'
           }
         },
         ru: {
@@ -54,6 +55,7 @@ export default function i18n(lang) {
             'Выберите категории билетов': 'Выберите категории билетов',
             'Дата поездки': 'Выберите дату',
             'date_format': 'dd.mm.yyyy',
+            'Выберите хотя бы один билет.': 'Выберите хотя бы один билет.'
           }
         },
         de: {
@@ -78,6 +80,7 @@ export default function i18n(lang) {
             'Выберите категории билетов': 'Ticketkategorien auswählen',
             'Дата поездки': 'Wählen Sie ein Datum',
             'date_format': 'yyyy-mm-dd',
+            'Выберите хотя бы один билет.': 'Bitte wählen Sie mindestens ein Ticket aus.'
           }
         },
         cz: {
@@ -102,6 +105,7 @@ export default function i18n(lang) {
             'Выберите категории билетов': 'Vyberte kategorie vstupenek',
             'Дата поездки': 'Vyberte datum',
             'date_format': 'd. m. yyyy',
+            'Выберите хотя бы один билет.': 'Vyberte alespoň jeden lístek.'
           }
         },
       },
