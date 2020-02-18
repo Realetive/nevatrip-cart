@@ -59,23 +59,24 @@ export const Cart = ({session, lang}) => {
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
 
-  console.log(Object.values(order)[0])
-  // for (let i = 0; i < Object.values(order).length; i++) {
-  //   console.log(Object.values(order)[i].options)
-  // }
+  if (Object.keys(order).length) {
+    const tickets = Object.values(order)[0].options[0].tickets;
+    // console.log(Object.values(order)[0].options)
 
-  const countOfTickets = Object.values(order).reduce((sum, item) => {
-    return sum + (item !== undefined ? item : 0);
-  }, 0);
-  // console.log(countOfTickets);
-  // // console.log('1' + order)
-  // console.log( ticket)
+    const countOfTickets = Object.values(tickets).reduce((sum, item) => {
+      return sum + (item !== undefined ? item : 0);
+    }, 0);
+
+    console.log(countOfTickets);
+  }
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
       const resp = await api.order.promocode(oldId, newValue);
       setSale(resp);
     }
+
+    console.log(Object.values(order)[0]);
   }, 700));
 
   const products = () => cart.map(key => {

@@ -40,13 +40,13 @@ export const ProductPreview = ({ cartKey, productId }) => {
 
   const renderTicket = () => {
     return Object.keys(tickets).map(ticketKey => {
-      const count = tickets[ticketKey];
+      const count = tickets[ticketKey] || 0;
 
       if (!count || !ticket[`${productId}.${selectedDirectionId}.${ticketKey}`]) return null;
 
-      const countOfTickets = Object.values(tickets).reduce((sum, item) => {
-              return sum + (item !== undefined ? item : 0);
-      }, 0);
+      // const countOfTickets = Object.values(tickets).reduce((sum, item) => {
+      //         return sum + (item !== undefined ? item : 0);
+      // }, 0);
       // console.log(order);
       // console.log(tickets);
       // console.log('product' + countOfTickets);
