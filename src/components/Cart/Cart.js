@@ -67,10 +67,10 @@ export const Cart = ({session, lang}) => {
       setSale(resp);
     }
   }, 700));
-  
+
   const products = () => cart.map(key => {
     const { productId } = order[key];
-    
+
     const getStatus = (status) => setTicketStatus({
         ...ticketStatus,
         [key]: status,
@@ -136,18 +136,45 @@ export const Cart = ({session, lang}) => {
     return sum;
   }, 0 );
 
+  const checkInputsValidation = () => {
+    const inputs = document.querySelectorAll('.aside__blank input');
+
+    const changeDefaultTextError = input => {
+      switch (true) {
+        case input.validity.valueMissing:
+          input.setCustomValidity( t('Заполните это поле.') );
+          break;
+        case input.validity.rangeOverflow:
+          input.setCustomValidity( t('Вы ввели максимальное количество символов.') );
+          break;
+        case input.pattern && input.validity.patternMismatch:
+          input.setCustomValidity( t('Вы ввели данные в неверном формате.') );
+          break;
+        case !input.checked && input.name === 'checkboxInput':
+          input.setCustomValidity( t('Заполните это поле.') );
+          break;
+        default:
+          input.setCustomValidity('');
+      }
+    };
+
+    inputs.forEach(input => {
+      changeDefaultTextError(input);
+    });
+  };
+
   const checkOut = async e => {
     e.preventDefault();
     const currentTicketStatus = Object.values(ticketStatus).every(item => item);
-    
+
     if (currentTicketStatus) {
       setInProcess(true);
       await api.cart.updateCart(session, Object.values(order), promocode);
       const createOrder = await api.order.newOrder({ sessionId: session, user });
-  
+
       if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
         const invoiceId = createOrder.payment.Model.Number;
-  
+
         const pay = function () {
           const cp = window.cp;
           const widget = new cp.CloudPayments();
@@ -158,29 +185,29 @@ export const Cart = ({session, lang}) => {
             currency: t( 'currencyTag' ), //валюта
             invoiceId, //номер заказа  (необязательно)
             accountId: user.email, //идентификатор плательщика (необязательно)
-            skin: "mini", //дизайн виджета
+            skin: 'mini', //дизайн виджета
             // data: {
             //   myProp: 'myProp value' //произвольный набор параметров
             // }
           },
           function (success) { // success
             console.log('success', success);
-  
+
             setPaid(createOrder);
           },
           function (reason, fail) { // fail
             console.log('reason', reason);
             console.log('fail', fail);
-  
+
             alert( 'Оплата не прошла' );
           });
         };
-  
+
         pay();
       } else {
         setPaid(createOrder);
       }
-  
+
       setInProcess(false);
     } else {
       setShowTicketValidationError(true);
@@ -218,7 +245,10 @@ export const Cart = ({session, lang}) => {
   if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>)
 
   return cart && !cart.loading && !cart.error
-    ? <form className='cart' method='post' onSubmit={ checkOut }>
+    ? <form className='cart'
+            method='post'
+            onSubmit={checkOut}
+      >
         <ul className='list'>{ products() }</ul>
         <div className='aside'>
           <div className="aside__blank">
@@ -305,18 +335,18 @@ export const Cart = ({session, lang}) => {
               }
             </div>
             <span className='checkbox'>
-              <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+              <input className='checkboxInput' name='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
               <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
                 { t( 'Я согласен' ) }&nbsp;
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки' ) }</a>
               </label>
             </span>
-            <button className='btn btn_block btn_primary' disabled={inProcess}>
+            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={checkInputsValidation}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
             {
               showTicketValidationError
-                ? <div>Error</div>
+                ? <div class='cart__error-message'>{ t( 'Выберите хотя бы один билет.' ) }</div>
                 : null
             }
           </div>

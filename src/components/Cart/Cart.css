@@ -40,6 +40,14 @@
 .cart label{
   display: block;
 }
+
+.cart__error-message {
+  margin-top: 15px;
+  text-align: center;
+  text-decoration: underline;
+  color: #a94442;
+}
+
 @media (min-width: 1200px){
   .cart {
     width: 1180px;
