@@ -30,10 +30,10 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Select ticket type',
               'Дата поездки': 'Select date',
               'date_format': 'm/d/yyyy',
-              'Выберите хотя бы один билет.': 'Please select at least one ticket.',
-              'Заполните это поле.': 'Fill this field.',
-              'Вы ввели данные в неверном формате.': 'You entered data in the wrong format.',
-              'Вы ввели максимальное количество символов.': 'You have entered the maximum number of characters.'
+              'Выберите хотя бы один билет': 'Please select at least one ticket.',
+              'Заполните это поле': 'Fill this field.',
+              'Вы ввели данные в неверном формате': 'You entered data in the wrong format.',
+              'Вы ввели максимальное количество символов': 'You have entered the maximum number of characters.'
             }
           },
           ru: {
@@ -58,10 +58,10 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Выберите категории билетов',
               'Дата поездки': 'Выберите дату',
               'date_format': 'dd.mm.yyyy',
-              'Выберите хотя бы один билет.': 'Выберите хотя бы один билет.',
-              'Заполните это поле.': 'Заполните это поле.',
-              'Вы ввели данные в неверном формате.': 'Вы ввели данные в неверном формате.',
-              'Вы ввели максимальное количество символов.': 'Вы ввели максимальное количество символов.'
+              'Выберите хотя бы один билет': 'Выберите хотя бы один билет.',
+              'Заполните это поле': 'Заполните это поле.',
+              'Вы ввели данные в неверном формате': 'Вы ввели данные в неверном формате.',
+              'Вы ввели максимальное количество символов': 'Вы ввели максимальное количество символов.'
             }
           },
           de: {
@@ -86,10 +86,10 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Ticketkategorien auswählen',
               'Дата поездки': 'Wählen Sie ein Datum',
               'date_format': 'yyyy-mm-dd',
-              'Выберите хотя бы один билет.': 'Bitte wählen Sie mindestens ein Ticket aus.',
-              'Заполните это поле.': 'Füllen Sie dieses Feld aus.',
-              'Вы ввели данные в неверном формате.': 'Sie haben Daten im falschen Format eingegeben.',
-              'Вы ввели максимальное количество символов.': 'Sie haben die maximale Anzahl von Zeichen eingegeben.'
+              'Выберите хотя бы один билет': 'Bitte wählen Sie mindestens ein Ticket aus.',
+              'Заполните это поле': 'Füllen Sie dieses Feld aus.',
+              'Вы ввели данные в неверном формате': 'Sie haben Daten im falschen Format eingegeben.',
+              'Вы ввели максимальное количество символов': 'Sie haben die maximale Anzahl von Zeichen eingegeben.'
             }
           },
           cz: {
@@ -114,10 +114,10 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Vyberte kategorie vstupenek',
               'Дата поездки': 'Vyberte datum',
               'date_format': 'd. m. yyyy',
-              'Выберите хотя бы один билет.': 'Vyberte alespoň jeden lístek.',
-              'Заполните это поле.': 'Vyplňte toto pole.',
-              'Вы ввели данные в неверном формате.': 'Zadali jste data v nesprávném formátu.',
-              'Вы ввели максимальное количество символов.': 'Zadali jste maximální počet znaků.'
+              'Выберите хотя бы один билет': 'Vyberte alespoň jeden lístek.',
+              'Заполните это поле': 'Vyplňte toto pole.',
+              'Вы ввели данные в неверном формате': 'Zadali jste data v nesprávném formátu.',
+              'Вы ввели максимальное количество символов': 'Zadali jste maximální počet znaků.'
             }
           },
         },

@@ -136,30 +136,29 @@ export const Cart = ({session, lang}) => {
     return sum;
   }, 0 );
 
+  const inputs = {};
   const checkInputsValidation = () => {
-    const inputs = document.querySelectorAll('.aside__blank input');
-
     const changeDefaultTextError = input => {
       switch (true) {
         case input.validity.valueMissing:
-          input.setCustomValidity( t('Заполните это поле.') );
+          input.setCustomValidity( t('Заполните это поле') );
           break;
         case input.validity.rangeOverflow:
-          input.setCustomValidity( t('Вы ввели максимальное количество символов.') );
+          input.setCustomValidity( t('Вы ввели максимальное количество символов') );
           break;
         case input.pattern && input.validity.patternMismatch:
-          input.setCustomValidity( t('Вы ввели данные в неверном формате.') );
+          input.setCustomValidity( t('Вы ввели данные в неверном формате') );
           break;
         case !input.checked && input.name === 'checkboxInput':
-          input.setCustomValidity( t('Заполните это поле.') );
+          input.setCustomValidity( t('Заполните это поле') );
           break;
         default:
           input.setCustomValidity('');
       }
     };
 
-    inputs.forEach(input => {
-      changeDefaultTextError(input);
+    Object.values(inputs).forEach(input => {
+      changeDefaultTextError(input.current);
     });
   };
 
@@ -295,6 +294,10 @@ export const Cart = ({session, lang}) => {
                     <div className='form-input-wrap'>
                       <input
                         className='input'
+                        ref={(() => {
+                          inputs[field.name] = React.createRef();
+                          return inputs[field.name];
+                        })()}
                         type={field.type}
                         name={field.name}
                         defaultValue={field.value}
@@ -335,7 +338,17 @@ export const Cart = ({session, lang}) => {
               }
             </div>
             <span className='checkbox'>
-              <input className='checkboxInput' name='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+              <input
+                  className='checkboxInput'
+                  name='checkboxInput'
+                  type='checkbox'
+                  required='required'
+                  id='ofertaCheck'
+                  ref={(() => {
+                    inputs.checkboxInput = React.createRef();
+                    return inputs.checkboxInput;
+                  })()}
+              />
               <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
                 { t( 'Я согласен' ) }&nbsp;
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки' ) }</a>
@@ -346,7 +359,7 @@ export const Cart = ({session, lang}) => {
             </button>
             {
               showTicketValidationError
-                ? <div class='cart__error-message'>{ t( 'Выберите хотя бы один билет.' ) }</div>
+                ? <div className='cart__error-message'>{ t( 'Выберите хотя бы один билет' ) }</div>
                 : null
             }
           </div>
