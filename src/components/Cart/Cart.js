@@ -59,6 +59,7 @@ export const Cart = ({session, lang}) => {
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
+  const [ showTicketValidationError, setShowTicketValidationError ] = useState(false);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -82,6 +83,7 @@ export const Cart = ({session, lang}) => {
           productId={productId}
           lang={lang}
           getStatus={getStatus}
+          onChangeTicketsCount={setShowTicketValidationError}
         />
       </li>
     );
@@ -181,7 +183,7 @@ export const Cart = ({session, lang}) => {
   
       setInProcess(false);
     } else {
-      alert('Need select tickets');
+      setShowTicketValidationError(true);
     }
 
   };
@@ -303,15 +305,20 @@ export const Cart = ({session, lang}) => {
               }
             </div>
             <span className='checkbox'>
-            <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
-            <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
-              { t( 'Я согласен' ) }&nbsp;
-            <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки' ) }</a>
-            </label>
-          </span>
+              <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+              <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
+                { t( 'Я согласен' ) }&nbsp;
+              <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки' ) }</a>
+              </label>
+            </span>
             <button className='btn btn_block btn_primary' disabled={inProcess}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
+            {
+              showTicketValidationError
+                ? <div>Error</div>
+                : null
+            }
           </div>
         </div>
       </form>

@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus }) => {
+export const Tickets = ({ cartKey, productId, getStatus, onChangeTicketsCount }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
@@ -56,6 +56,7 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
             setTickets={_setTickets}
             price={price}
             getCount={getCount}
+            onChangeTicketsCount={onChangeTicketsCount}
           />
         </dd>
       </div>
