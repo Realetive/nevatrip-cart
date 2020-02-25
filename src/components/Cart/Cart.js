@@ -254,7 +254,7 @@ export const Cart = ({session, lang}) => {
                         name={field.name}
                         defaultValue={field.value}
                         onBlur={setUserData}
-                        maxlength={field.maxlength}
+                        maxLength={field.maxlength}
                         pattern={field.pattern}
                         placeholder={field.placeholder}
                         required
