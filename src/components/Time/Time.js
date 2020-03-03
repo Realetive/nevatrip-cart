@@ -69,16 +69,16 @@ export const Time = ( { cartKey, productId } ) => {
         if (document.documentElement.lang === "de") {
             return (
                 `
-            Anscheinend unterscheidet sich die Zeitzone der Tour von Ihrer (UTC${ time }). 
-            Die Abfahrtszeit ist in der örtlichen Zeitzone (UTC${ time }) angegeben.
-          `
+                Anscheinend unterscheidet sich die Zeitzone der Tour von Ihrer (UTC${ time }). 
+                Die Abfahrtszeit ist in der örtlichen Zeitzone (UTC${ time }) angegeben.
+              `
             );
         } else {
             return (
                 `
-              ${ t( 'Похоже, часовой пояс экскурсии отличается от вашего' ) } (UTC${ time }).
-              ${ t( 'Указано отправление по местному времени' ) } (UTC${ time }).
-          `
+                  ${ t( 'Похоже, часовой пояс экскурсии отличается от вашего' ) } (UTC${ time }).
+                  ${ t( 'Указано отправление по местному времени' ) } (UTC${ time }).
+              `
             );
         }
     }
