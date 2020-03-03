@@ -56,8 +56,8 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Выберите категории билетов',
               'Дата поездки': 'Выберите дату',
               'date_format': 'dd.mm.yyyy',
-              'currency': '₽',
-              'currencyTag': 'RUB',
+              'currency': '€',
+              'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Похоже, часовой пояс экскурсии отличается от вашего',
               'Указано отправление по местному времени': 'Указано отправление по местному времени',
             }
@@ -83,8 +83,8 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Ticketkategorie wählen',
               'Дата поездки': 'Datum wählen',
               'date_format': 'yyyy-mm-dd',
-              'currency': '₽',
-              'currencyTag': 'RUB',
+              'currency': '€',
+              'currencyTag': 'EUR',
             }
           },
           cz: {
@@ -108,8 +108,8 @@ export default function i18n(lang) {
               'Выберите категории билетов': 'Vyberte kategorie vstupenek',
               'Дата поездки': 'Vyberte datum',
               'date_format': 'd. m. yyyy',
-              'currency': '₽',
-              'currencyTag': 'RUB',
+              'currency': '€',
+              'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Vypadá to, že časové pásmo, ve kterém je plavba, je rozdílné od vašeho',
               'Указано отправление по местному времени': 'Čas odjezdu je dle místního času',
             }
