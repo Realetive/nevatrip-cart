@@ -293,7 +293,7 @@ export const Cart = ({session, lang}) => {
             <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
             <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
               { t( 'Я согласен' ) }&nbsp;
-            <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки' ) }</a>
+            <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
             </label>
           </span>
             <button className='btn btn_block btn_primary' disabled={inProcess}>
