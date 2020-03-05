@@ -58,6 +58,7 @@ export const Cart = ({session, lang}) => {
   const [ emailContent, setEmailContent ] = useState();
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
+  const [ ticketStatus, setTicketStatus ] = useState({});
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -69,12 +70,18 @@ export const Cart = ({session, lang}) => {
   const products = () => cart.map(key => {
     const { productId } = order[key];
 
+    const getStatus = (status) => setTicketStatus({
+      ...ticketStatus,
+      [key]: status,
+    });
+
     return (
       <li className='cart__item cart__item_view_product' key={key}>
         <Product
           cartKey={key}
           productId={productId}
           lang={lang}
+          getStatus={getStatus}
         />
       </li>
     );
@@ -129,48 +136,56 @@ export const Cart = ({session, lang}) => {
 
   const checkOut = async e => {
     e.preventDefault();
-    setInProcess(true);
 
-    await api.cart.updateCart(session, Object.values(order), promocode);
-    const createOrder = await api.order.newOrder({ sessionId: session, user });
+    const currentTicketStatus = Object.values(ticketStatus).every(item => item);
+    console.log(currentTicketStatus)
 
-    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
-      const invoiceId = createOrder.payment.Model.Number;
+    if (currentTicketStatus) {
+      setInProcess(true);
 
-      const pay = function () {
-        const cp = window.cp;
-        const widget = new cp.CloudPayments();
-        widget.charge({
-          publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
-          description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
-          amount: sum, //сумма
-          currency: t( 'currencyTag' ), //валюта
-          invoiceId, //номер заказа  (необязательно)
-          accountId: user.email, //идентификатор плательщика (необязательно)
-          skin: "mini", //дизайн виджета
-          // data: {
-          //   myProp: 'myProp value' //произвольный набор параметров
-          // }
-        },
-        function (success) { // success
-          console.log('success', success);
+      await api.cart.updateCart(session, Object.values(order), promocode);
+      const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-          setPaid(createOrder);
-        },
-        function (reason, fail) { // fail
-          console.log('reason', reason);
-          console.log('fail', fail);
+      if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
+        const invoiceId = createOrder.payment.Model.Number;
 
-          alert( 'Оплата не прошла' );
-        });
-      };
+        const pay = function () {
+          const cp = window.cp;
+          const widget = new cp.CloudPayments();
+          widget.charge({
+            publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
+            description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
+            amount: sum, //сумма
+            currency: t( 'currencyTag' ), //валюта
+            invoiceId, //номер заказа  (необязательно)
+            accountId: user.email, //идентификатор плательщика (необязательно)
+            skin: "mini", //дизайн виджета
+            // data: {
+            //   myProp: 'myProp value' //произвольный набор параметров
+            // }
+          },
+          function (success) { // success
+            console.log('success', success);
 
-      pay();
+            setPaid(createOrder);
+          },
+          function (reason, fail) { // fail
+            console.log('reason', reason);
+            console.log('fail', fail);
+
+            alert( 'Оплата не прошла' );
+          });
+        };
+
+        pay();
+      } else {
+        setPaid(createOrder);
+      }
+
+      setInProcess(false);
     } else {
-      setPaid(createOrder);
+      alert('Need select tickets');
     }
-
-    setInProcess(false);
   };
 
   useEffect(() => {
