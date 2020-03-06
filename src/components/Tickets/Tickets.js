@@ -32,14 +32,14 @@ export const Tickets = ({ cartKey, productId }) => {
       _key,
       // category,
       count,
-      name,
-      price
+      price,
     } = ticket[ ticketId ];
+    const name = ticket[ ticketId ].ticket[0].name;
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
-            { name || '???' },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
+            { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
         </dt>
         <dd className='ticketsItemControls' >
           <Counter
