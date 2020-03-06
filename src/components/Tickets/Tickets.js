@@ -11,6 +11,7 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
+  const [statusTickets, setStatusTickets] = useState({});
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -27,7 +28,19 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_tickets]);
 
-  const statusTickets = [];
+  const getCount = (_key, count) => {
+    setStatusTickets({
+      ...statusTickets,
+      [_key]: count,
+    });
+  };
+
+  useEffect(() => {
+    const status = Object.values(statusTickets).some(item => item > 0);
+    getStatus( status );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusTickets] )
+
   const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
     const {
       _key,
@@ -36,12 +49,6 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
       name,
       price
     } = ticket[ ticketId ];
-
-  const getCount = (count) => {
-      statusTickets[ticketIndex] = count;
-      const status = statusTickets.some(item => item > 0);
-      getStatus( status );
-  };
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>

@@ -5,7 +5,7 @@ const Counter = ({ _key, tickets, setTickets, defaultValue, price, getCount }) =
 
   useEffect(() => {
     setTickets({ ...tickets, [ _key ]: count });
-    getCount(count);
+    getCount(_key, count);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 

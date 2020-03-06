@@ -45,7 +45,7 @@ function throttle(func, wait, options) {
     }
     return result;
   };
-};
+}
 
 export const Cart = ({session, lang}) => {
   const { t } = useTranslation();
@@ -59,6 +59,7 @@ export const Cart = ({session, lang}) => {
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
+  const [ error, setError ] = useState(true);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -69,11 +70,12 @@ export const Cart = ({session, lang}) => {
 
   const products = () => cart.map(key => {
     const { productId } = order[key];
-
-    const getStatus = (status) => setTicketStatus({
-      ...ticketStatus,
-      [key]: status,
-    });
+    const getStatus = (status = false) => {
+      setTicketStatus({
+        ...ticketStatus,
+        status,
+      })
+    };
 
     return (
       <li className='cart__item cart__item_view_product' key={key}>
@@ -184,7 +186,7 @@ export const Cart = ({session, lang}) => {
 
       setInProcess(false);
     } else {
-      alert('Need select tickets');
+      // alert('Need select tickets');
     }
   };
 
@@ -197,6 +199,12 @@ export const Cart = ({session, lang}) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promocode, oldId])
+
+  useEffect(() => {
+    if (ticketStatus.status) {
+      setError(ticketStatus.status)
+    }
+  }, [ticketStatus]);
 
   useEffect(() => {
     dispatch('cart/get', {session, lang});
@@ -213,9 +221,9 @@ export const Cart = ({session, lang}) => {
       sheet.type = 'text/css';
       document.head.appendChild(sheet);
     }, 1000);
-  }, [paid])
+  }, [paid]);
 
-  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>)
+  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>);
 
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
@@ -305,15 +313,17 @@ export const Cart = ({session, lang}) => {
               }
             </div>
             <span className='checkbox'>
-            <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
-            <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
-              { t( 'Я согласен' ) }&nbsp;
-            <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
-            </label>
-          </span>
-            <button className='btn btn_block btn_primary' disabled={inProcess}>
+              <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+              <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
+                { t( 'Я согласен' ) }&nbsp;
+              <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
+              </label>
+            </span>
+            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setError(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
+            {/*{ !ticketStatus ? <div>Error</div> : 'suc' }*/}
+             <div> { !error && 'Нет выбранных билетов!'  } </div>
           </div>
         </div>
       </form>
