@@ -323,7 +323,7 @@ export const Cart = ({session, lang}) => {
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
             {/*{ !ticketStatus ? <div>Error</div> : 'suc' }*/}
-             <div> { !error && 'Нет выбранных билетов!'  } </div>
+             <div className='cart__error'> { !error && 'Нет выбранных билетов!'  } </div>
           </div>
         </div>
       </form>
