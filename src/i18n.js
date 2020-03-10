@@ -87,7 +87,7 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
             }
           },
-          cz: {
+          cs: {
             translation: {
               'Ваш заказ': 'Vaše objednávka',
               'Фамилия и имя': 'Příjmení a jméno',
@@ -127,7 +127,7 @@ export default function i18n(lang) {
     'ru': 'ru',
     'en': 'en-US',
     'de': 'de',
-    'cz': 'cs',
+    'cs': 'cs',
   };
   const calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
   const calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
@@ -137,7 +137,7 @@ export default function i18n(lang) {
     'ru': 'ru',
     'en': 'en',
     'de': 'de',
-    'cz': 'cs',
+    'cs': 'cs',
   };
   const momentLocaleKey = momentLocaleObject[_i18n.language];
   if (_i18n.language !== 'en') {

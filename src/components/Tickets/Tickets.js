@@ -37,7 +37,7 @@ export const Tickets = ({ cartKey, productId }) => {
     } = ticket[ ticketId ];
     const name = ticket[ ticketId ].ticket[0].title[currentLang];
 
-      console.log(ticket[ ticketId ])
+    //console.log(ticket[ ticketId ])
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
