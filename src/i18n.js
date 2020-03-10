@@ -33,8 +33,6 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'It seems like the time zone of the tour is different from yours',
               'Указано отправление по местному времени': 'Departure time is indicated according to the local time',
-              'взрослый': 'adult',
-              'детский': 'child',
             }
           },
           ru: {
@@ -62,8 +60,6 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Похоже, часовой пояс экскурсии отличается от вашего',
               'Указано отправление по местному времени': 'Указано отправление по местному времени',
-              'adult': 'взрослый',
-              'child': 'детский',
             }
           },
           de: {
@@ -89,8 +85,6 @@ export default function i18n(lang) {
               'date_format': 'yyyy-mm-dd',
               'currency': '€',
               'currencyTag': 'EUR',
-              'взрослый': 'adult',
-              'детский': 'child',
             }
           },
           cz: {
@@ -118,8 +112,6 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Vypadá to, že časové pásmo, ve kterém je plavba, je rozdílné od vašeho',
               'Указано отправление по местному времени': 'Čas odjezdu je dle místního času',
-              'взрослый': 'adult',
-              'детский': 'child',
             }
           },
         },

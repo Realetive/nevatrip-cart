@@ -11,6 +11,7 @@ export const Tickets = ({ cartKey, productId }) => {
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
+  const currentLang = process.env.REACT_APP_DEFAULT_LANG;
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -34,7 +35,9 @@ export const Tickets = ({ cartKey, productId }) => {
       count,
       price,
     } = ticket[ ticketId ];
-    const name = ticket[ ticketId ].ticket[0].name;
+    const name = ticket[ ticketId ].ticket[0].title[currentLang];
+
+      console.log(ticket[ ticketId ])
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
