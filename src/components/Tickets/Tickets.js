@@ -40,7 +40,7 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
     const status = Object.values(statusTickets).some(item => item > 0);
     getStatus( status );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusTickets] )
+  }, [statusTickets] );
 
   const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
     const {
@@ -50,8 +50,6 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
       price,
     } = ticket[ ticketId ];
     const name = ticket[ ticketId ].ticket[0].title[currentLang];
-
-      console.log(ticket[ ticketId ])
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
