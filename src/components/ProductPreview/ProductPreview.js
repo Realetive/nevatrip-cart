@@ -42,14 +42,16 @@ export const ProductPreview = ({ cartKey, productId }) => {
   const renderTicket = () => {
     return Object.keys(tickets).map(ticketKey => {
       const count = tickets[ticketKey];
+      const ticketItemKey = `${productId}.${selectedDirectionId}.${ticketKey}`;
 
-      if (!count || !ticket[`${productId}.${selectedDirectionId}.${ticketKey}`]) return null;
+      if (!count || !ticket[ticketItemKey]) return null;
 
       const {
         _key,
         price
-      } = ticket[`${productId}.${selectedDirectionId}.${ticketKey}`];
-      const name = (ticket[`${productId}.${selectedDirectionId}.${ticketKey}`].name || {})[currentLang] || ticket[`${productId}.${selectedDirectionId}.${ticketKey}`].ticket[0].title[currentLang];
+      } = ticket[ticketItemKey];
+      const nameKey = ticket[ ticketItemKey ].name || ticket[ ticketItemKey ].ticket[0].title;
+      const name = nameKey[currentLang];
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
