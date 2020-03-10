@@ -45,7 +45,7 @@ function throttle(func, wait, options) {
     }
     return result;
   };
-};
+}
 
 export const Cart = ({session, lang}) => {
   const { t } = useTranslation();
@@ -58,6 +58,8 @@ export const Cart = ({session, lang}) => {
   const [ emailContent, setEmailContent ] = useState();
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
+  const [ ticketStatus, setTicketStatus ] = useState({});
+  const [ valid, setValid ] = useState(true);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -68,6 +70,12 @@ export const Cart = ({session, lang}) => {
 
   const products = () => cart.map(key => {
     const { productId } = order[key];
+    const getStatus = (status = false) => {
+      setTicketStatus({
+        ...ticketStatus,
+        status,
+      })
+    };
 
     return (
       <li className='cart__item cart__item_view_product' key={key}>
@@ -75,6 +83,7 @@ export const Cart = ({session, lang}) => {
           cartKey={key}
           productId={productId}
           lang={lang}
+          getStatus={getStatus}
         />
       </li>
     );
@@ -129,48 +138,56 @@ export const Cart = ({session, lang}) => {
 
   const checkOut = async e => {
     e.preventDefault();
-    setInProcess(true);
 
-    await api.cart.updateCart(session, Object.values(order), promocode);
-    const createOrder = await api.order.newOrder({ sessionId: session, user });
+    const currentTicketStatus = Object.values(ticketStatus).every(item => item);
+    console.log(currentTicketStatus)
 
-    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
-      const invoiceId = createOrder.payment.Model.Number;
+    if (currentTicketStatus) {
+      setInProcess(true);
 
-      const pay = function () {
-        const cp = window.cp;
-        const widget = new cp.CloudPayments();
-        widget.charge({
-          publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
-          description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
-          amount: sum, //сумма
-          currency: t( 'currencyTag' ), //валюта
-          invoiceId, //номер заказа  (необязательно)
-          accountId: user.email, //идентификатор плательщика (необязательно)
-          skin: "mini", //дизайн виджета
-          // data: {
-          //   myProp: 'myProp value' //произвольный набор параметров
-          // }
-        },
-        function (success) { // success
-          console.log('success', success);
+      await api.cart.updateCart(session, Object.values(order), promocode);
+      const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-          setPaid(createOrder);
-        },
-        function (reason, fail) { // fail
-          console.log('reason', reason);
-          console.log('fail', fail);
+      if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
+        const invoiceId = createOrder.payment.Model.Number;
 
-          alert( 'Оплата не прошла' );
-        });
-      };
+        const pay = function () {
+          const cp = window.cp;
+          const widget = new cp.CloudPayments();
+          widget.charge({
+            publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
+            description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
+            amount: sum, //сумма
+            currency: t( 'currencyTag' ), //валюта
+            invoiceId, //номер заказа  (необязательно)
+            accountId: user.email, //идентификатор плательщика (необязательно)
+            skin: "mini", //дизайн виджета
+            // data: {
+            //   myProp: 'myProp value' //произвольный набор параметров
+            // }
+          },
+          function (success) { // success
+            console.log('success', success);
 
-      pay();
+            setPaid(createOrder);
+          },
+          function (reason, fail) { // fail
+            console.log('reason', reason);
+            console.log('fail', fail);
+
+            alert( 'Оплата не прошла' );
+          });
+        };
+
+        pay();
+      } else {
+        setPaid(createOrder);
+      }
+
+      setInProcess(false);
     } else {
-      setPaid(createOrder);
+      // alert('Need select tickets');
     }
-
-    setInProcess(false);
   };
 
   useEffect(() => {
@@ -182,6 +199,12 @@ export const Cart = ({session, lang}) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promocode, oldId])
+
+  useEffect(() => {
+    if (ticketStatus.status) {
+      setValid(ticketStatus.status);
+    }
+  }, [ticketStatus]);
 
   useEffect(() => {
     dispatch('cart/get', {session, lang});
@@ -198,9 +221,9 @@ export const Cart = ({session, lang}) => {
       sheet.type = 'text/css';
       document.head.appendChild(sheet);
     }, 1000);
-  }, [paid])
+  }, [paid]);
 
-  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>)
+  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>);
 
   return cart && !cart.loading && !cart.error
     ? <form className='cart' method='post' onSubmit={ checkOut }>
@@ -290,15 +313,16 @@ export const Cart = ({session, lang}) => {
               }
             </div>
             <span className='checkbox'>
-            <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
-            <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
-              { t( 'Я согласен' ) }&nbsp;
-            <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
-            </label>
-          </span>
-            <button className='btn btn_block btn_primary' disabled={inProcess}>
+              <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+              <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
+                { t( 'Я согласен' ) }&nbsp;
+              <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
+              </label>
+            </span>
+            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setValid(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
+             <div className='cart__error'> { !valid && 'Нет выбранных билетов!'  } </div>
           </div>
         </div>
       </form>
