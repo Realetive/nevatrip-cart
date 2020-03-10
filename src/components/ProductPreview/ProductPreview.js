@@ -49,7 +49,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
         _key,
         price
       } = ticket[`${productId}.${selectedDirectionId}.${ticketKey}`];
-      const name = ticket[`${productId}.${selectedDirectionId}.${ticketKey}`].ticket[0].title[currentLang];
+      const name = (ticket[`${productId}.${selectedDirectionId}.${ticketKey}`].name || {})[currentLang] || ticket[`${productId}.${selectedDirectionId}.${ticketKey}`].ticket[0].title[currentLang];
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
