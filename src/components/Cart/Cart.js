@@ -59,7 +59,7 @@ export const Cart = ({session, lang}) => {
   const [ oldId, setOldId ] = useState(0);
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
-  const [ error, setError ] = useState(true);
+  const [ valid, setValid ] = useState(true);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -202,7 +202,7 @@ export const Cart = ({session, lang}) => {
 
   useEffect(() => {
     if (ticketStatus.status) {
-      setError(ticketStatus.status)
+      setValid(ticketStatus.status);
     }
   }, [ticketStatus]);
 
@@ -319,11 +319,10 @@ export const Cart = ({session, lang}) => {
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
               </label>
             </span>
-            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setError(ticketStatus.status)}>
+            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setValid(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
-            {/*{ !ticketStatus ? <div>Error</div> : 'suc' }*/}
-             <div className='cart__error'> { !error && 'Нет выбранных билетов!'  } </div>
+             <div className='cart__error'> { !valid && 'Нет выбранных билетов!'  } </div>
           </div>
         </div>
       </form>
