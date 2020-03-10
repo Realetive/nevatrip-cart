@@ -68,3 +68,9 @@
     padding: 0;
   }
 }
+
+.cart__error {
+  padding-top: 10px;
+  text-align: center;
+  color: #a94442;
+}

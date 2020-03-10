@@ -6,11 +6,12 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId }) => {
+export const Tickets = ({ cartKey, productId, getStatus }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
+  const [statusTickets, setStatusTickets] = useState({});
   const currentLang = process.env.REACT_APP_DEFAULT_LANG;
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
@@ -28,16 +29,27 @@ export const Tickets = ({ cartKey, productId }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_tickets]);
 
-  const _renderTickets = tickets.map( ticketId => {
+  const getCount = (_key, count) => {
+    setStatusTickets({
+      ...statusTickets,
+      [_key]: count,
+    });
+  };
+
+  useEffect(() => {
+    const status = Object.values(statusTickets).some(item => item > 0);
+    getStatus( status );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusTickets] );
+
+  const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
     const {
       _key,
       // category,
       count,
       price,
     } = ticket[ ticketId ];
-    const name = ticket[ ticketId ].ticket[0].title[currentLang];
-
-    //console.log(ticket[ ticketId ])
+    const name = (ticket[ ticketId ].name || {})[currentLang] || ticket[ ticketId ].ticket[0].title[currentLang];
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
@@ -46,11 +58,12 @@ export const Tickets = ({ cartKey, productId }) => {
         </dt>
         <dd className='ticketsItemControls' >
           <Counter
-            _key={ _key }
-            defaultValue={ count }
-            tickets={ _tickets }
-            setTickets={ _setTickets }
-            price={ price }
+            _key={_key}
+            defaultValue={count}
+            tickets={_tickets}
+            setTickets={_setTickets}
+            price={price}
+            getCount={getCount}
           />
         </dd>
       </div>
