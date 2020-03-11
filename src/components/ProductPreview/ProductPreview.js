@@ -50,8 +50,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
         _key,
         price
       } = ticket[ticketItemKey];
-      const nameKey = ticket[ ticketItemKey ].name || ticket[ ticketItemKey ].ticket[0].title;
-      const name = nameKey[currentLang];
+      const name = (ticket[ ticketItemKey ].name || {})[currentLang] || ticket[ ticketItemKey ].ticket[0].title[currentLang];
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
