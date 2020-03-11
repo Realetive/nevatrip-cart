@@ -5,7 +5,8 @@ import { format } from 'date-fns';
 import { api } from "../../api";
 import moment from "moment-timezone";
 
-const tripTimeZone = 'Europe/Moscow';
+const tripTimeZone = 'Europe/Prague';
+const tripTimeZoneOffset = - moment.tz(tripTimeZone).utcOffset();
 
 function pad (value) {
     return value < 10 ? '0' + value : value;
@@ -26,7 +27,7 @@ export const Time = ( { cartKey, productId } ) => {
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
     const [ time, setTime ] = useState( selectedEvent );
     const {
-        timeOffset = -180,
+        timeOffset = tripTimeZoneOffset,
         buyTimeOffset = 0,
     } = directions[`${productId}.${direction}`];
     const userTimeOffset = new Date().getTimezoneOffset();
@@ -70,14 +71,14 @@ export const Time = ( { cartKey, productId } ) => {
             return (
                 `
                 Anscheinend unterscheidet sich die Zeitzone der Tour von Ihrer (UTC${ time }). 
-                Die Abfahrtszeit ist in der örtlichen Zeitzone (UTC${ time }) angegeben.
+                Die Abfahrtszeit ist in der örtlichen Zeitzone (UTC${ moment.tz(tripTimeZone).format('Z') }) angegeben.
               `
             );
         } else {
             return (
                 `
                   ${ t( 'Похоже, часовой пояс экскурсии отличается от вашего' ) } (UTC${ time }).
-                  ${ t( 'Указано отправление по местному времени' ) } (UTC${ time }).
+                  ${ t( 'Указано отправление по местному времени' ) } (UTC${ moment.tz(tripTimeZone).format('Z') }).
               `
             );
         }
@@ -115,7 +116,7 @@ export const Time = ( { cartKey, productId } ) => {
     return (
         <div>
             {
-                userTimeOffset !== timeOffset &&
+                userTimeOffset !== tripTimeZoneOffset &&
                 <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
                     { checkLanguage( formatOffset(userTimeOffset) ) }
                 </div>

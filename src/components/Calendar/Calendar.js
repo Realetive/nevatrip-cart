@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
 const moment = require( 'moment-timezone' );
-const tripTimeZone = 'Europe/Moscow';
+const tripTimeZone = 'Europe/Prague';
 
 const getNearestDate = ( date = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" )).toDate(), dates = [] ) => dates.includes( date ) ? date : dates[ 0 ];
 
