@@ -264,29 +264,40 @@ export const Cart = ({session, lang}) => {
                     maxlength: '22',
                     placeholder: '+79ХХХХХХХХХ'
                   }
-                ].map( field => (
-                  <div key={field.name}>
-                    <label className='form-label'>
-                    <span className='caption'>
-                      { field.label }
-                    </span>
-                    <div className='form-input-wrap'>
-                      <input
-                        className='input'
-                        type={field.type}
-                        name={field.name}
-                        defaultValue={field.value}
-                        onBlur={setUserData}
-                        maxLength={field.maxlength}
-                        pattern={field.pattern}
-                        placeholder={field.placeholder}
-                        required
-                      />
-                      <svg className='form-icon' fill='green' viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 0 1-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"></path></svg>
-                    </div>
-                    </label>
-                  </div>
-                ))
+                ].map( field => {
+                  const textAboutRules = (field.name === 'fullName' && t('Почему используем имя'))
+                      || (field.name === 'email' && t('Почему используем e-mail'))
+                      || (field.name === 'phone' && t('Почему используем телефон'));
+
+                  return (
+                      <div key={field.name}>
+                        <div className='form-input-title'>
+                          <label className='form-label' htmlFor={`id-${field.name}`}>
+                        <span className='caption'>
+                          { field.label }
+                        </span>
+                          </label>
+                          <button className='tooltip-btn' aria-label={textAboutRules}></button>
+                          <div className='input-tooltip'>{textAboutRules}</div>
+                        </div>
+                        <div className='form-input-wrap'>
+                          <input
+                              className='input'
+                              id={`id-${field.name}`}
+                              type={field.type}
+                              name={field.name}
+                              defaultValue={field.value}
+                              onBlur={setUserData}
+                              maxLength={field.maxlength}
+                              pattern={field.pattern}
+                              placeholder={field.placeholder}
+                              required
+                          />
+                          <svg className='form-icon' fill='green' viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 0 1-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"></path></svg>
+                        </div>
+                      </div>
+                  )
+                })
               }
             </div>
             <div className='cart__promocode'>
