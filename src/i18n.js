@@ -33,6 +33,7 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'It seems like the time zone of the tour is different from yours',
               'Указано отправление по местному времени': 'Departure time is indicated according to the local time',
+              'Это время уже не доступно': 'This time is no longer available',
             }
           },
           ru: {
@@ -60,6 +61,7 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Похоже, часовой пояс экскурсии отличается от вашего',
               'Указано отправление по местному времени': 'Указано отправление по местному времени',
+              'Это время уже не доступно': 'Это время уже не доступно',
             }
           },
           de: {
@@ -85,6 +87,7 @@ export default function i18n(lang) {
               'date_format': 'yyyy-mm-dd',
               'currency': '€',
               'currencyTag': 'EUR',
+              'Это время уже не доступно': 'Diese Zeit ist nicht mehr verfügbar',
             }
           },
           cs: {
@@ -112,6 +115,7 @@ export default function i18n(lang) {
               'currencyTag': 'EUR',
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Vypadá to, že časové pásmo, ve kterém je plavba, je rozdílné od vašeho',
               'Указано отправление по местному времени': 'Čas odjezdu je dle místního času',
+              'Это время уже не доступно': 'Tento čas již není k dispozici',
             }
           },
         },

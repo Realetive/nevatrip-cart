@@ -44,7 +44,7 @@ export const Time = ( { cartKey, productId } ) => {
 
         return (
             <li key={ eventItem._key }
-                title={ isOffset ? 'Это время уже не доступно'  : `${formatDate} в ${ formatTime }`  }
+                title={ isOffset ? t('Это время уже не доступно')  : `${formatDate} ${ formatTime }`  }
                 className = 'grid-list__item'>
                 <input
                     type="radio"
