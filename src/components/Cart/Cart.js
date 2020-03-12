@@ -330,7 +330,7 @@ export const Cart = ({session, lang}) => {
             <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setValid(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
-             <div className='cart__error'> { !valid && 'Нет выбранных билетов!'  } </div>
+             <div className='cart__error'> { !valid && t('Нет выбранных билетов') } </div>
           </div>
         </div>
       </form>
