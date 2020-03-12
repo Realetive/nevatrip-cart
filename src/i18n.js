@@ -34,6 +34,10 @@ export default function i18n(lang) {
               'Похоже, часовой пояс экскурсии отличается от вашего': 'It seems like the time zone of the tour is different from yours',
               'Указано отправление по местному времени': 'Departure time is indicated according to the local time',
               'Это время уже не доступно': 'This time is no longer available',
+              'Почему используем имя': 'We use it to identify you',
+              'Почему используем e-mail': 'We use it to send you a ticket',
+              'Почему используем телефон': 'In case of any changes, we will contact you',
+              'Нет выбранных билетов': 'Choose at least one ticket',
             }
           },
           ru: {
@@ -62,6 +66,10 @@ export default function i18n(lang) {
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Похоже, часовой пояс экскурсии отличается от вашего',
               'Указано отправление по местному времени': 'Указано отправление по местному времени',
               'Это время уже не доступно': 'Это время уже не доступно',
+              'Почему используем имя': 'Используем для персонализации',
+              'Почему используем e-mail': 'На адрес этой почты мы пришлем вам билет на прогулку',
+              'Почему используем телефон': 'В случае изменений, мы оповестим вас по номеру телефона',
+              'Нет выбранных билетов': 'Нет выбранных билетов',
             }
           },
           de: {
@@ -88,6 +96,10 @@ export default function i18n(lang) {
               'currency': '€',
               'currencyTag': 'EUR',
               'Это время уже не доступно': 'Diese Zeit ist nicht mehr verfügbar',
+              'Почему используем имя': 'We use it to identify you',
+              'Почему используем e-mail': 'We use it to send you a ticket',
+              'Почему используем телефон': 'In case of any changes, we will contact you',
+              'Нет выбранных билетов': 'Wählen Sie mindestens ein Ticket',
             }
           },
           cs: {
@@ -96,8 +108,8 @@ export default function i18n(lang) {
               'Фамилия и имя': 'Příjmení a jméno',
               'E-mail': 'E-mail',
               'Телефон': 'Telefon',
-              'Промокод': 'Propagační kód',
-              'У меня есть промокод': 'Mám propagační kód',
+              'Промокод': 'Slevový kód',
+              'У меня есть промокод': 'Mám Slevový kód',
               'Я согласен': 'Souhlasím s',
               'условиями покупки и политикой': 'podmínkami a zásadami ochrany osobních údajů',
               'oferta': 'https://cs.prahartip.cz/obchodni-podminky',
@@ -116,6 +128,10 @@ export default function i18n(lang) {
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Vypadá to, že časové pásmo, ve kterém je plavba, je rozdílné od vašeho',
               'Указано отправление по местному времени': 'Čas odjezdu je dle místního času',
               'Это время уже не доступно': 'Tento čas již není k dispozici',
+              'Почему используем имя': 'We use it to identify you',
+              'Почему используем e-mail': 'We use it to send you a ticket',
+              'Почему используем телефон': 'In case of any changes, we will contact you',
+              'Нет выбранных билетов': 'Vyberte alespoň jednu vstupenku',
             }
           },
         },
