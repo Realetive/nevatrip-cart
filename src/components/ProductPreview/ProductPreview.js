@@ -3,7 +3,7 @@ import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
 const moment = require( 'moment-timezone' );
-const tripTimeZone = 'Europe/Moscow';
+const tripTimeZone = 'Europe/Prague';
 
 export const ProductPreview = ({ cartKey, productId }) => {
   const { t } = useTranslation();
@@ -15,40 +15,42 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets
   }] = order[cartKey].options || [{}];
-  
+  const currentLang = process.env.REACT_APP_DEFAULT_LANG;
+
   const theEvent = selectedEvent && selectedEvent.start;
 
   const renderTime = () => {
     return theEvent ? moment( theEvent ).tz( tripTimeZone ).format( "LT" ) : '';
-  }
+  };
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
     const selectedDate = moment( selectedEvent.start ).tz( tripTimeZone );
-    const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
+    //const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
 
-    if ( hours > 21) {
-      return `${ t( 'В ночь с' ) } ${ moment( selectedDate ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
-    } else if ( hours < 4  || hours === '0:') {
-      return `${ t( 'В ночь с' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate ).format( "D MMMM" ) }`;
-    } else {
+    // if ( hours > 21) {
+    //   return `${ t( 'В ночь с' ) } ${ moment( selectedDate ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
+    // } else if ( hours < 4  || hours === '0:') {
+    //   return `${ t( 'В ночь с' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate ).format( "D MMMM" ) }`;
+    // } else {
       return moment( selectedDate ).format( "D MMMM" )
-    }
-  }
+    //}
+  };
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
 
   const renderTicket = () => {
     return Object.keys(tickets).map(ticketKey => {
       const count = tickets[ticketKey];
+      const ticketItemKey = `${productId}.${selectedDirectionId}.${ticketKey}`;
 
-      if (!count || !ticket[`${productId}.${selectedDirectionId}.${ticketKey}`]) return null;
+      if (!count || !ticket[ticketItemKey]) return null;
 
       const {
         _key,
-        name,
         price
-      } = ticket[`${productId}.${selectedDirectionId}.${ticketKey}`];
+      } = ticket[ticketItemKey];
+      const name = (ticket[ ticketItemKey ].name || {})[currentLang] || ticket[ ticketItemKey ].ticket[0].title[currentLang];
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
@@ -56,7 +58,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
         </li>
       );
     } )
-  }
+  };
 
   return (
     <fieldset className='listPreviewFieldset'>
