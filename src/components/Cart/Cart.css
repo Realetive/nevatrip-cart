@@ -4,6 +4,15 @@
   flex-direction: column;
   width: 375px;
   margin: 0 auto;
+  align-content: center;
+}
+
+.cart>div{
+  position: relative;
+  width: 100%;
+}
+.cart .email__content{
+  margin: 0 auto;
 }
 
 .cart__list {
@@ -58,7 +67,7 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: flex-start;
-    align-content: flex-start;
+    align-content: center;
   }
 
   .list > .cart__item {
