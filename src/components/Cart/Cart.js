@@ -260,7 +260,7 @@ export const Cart = ({session, lang}) => {
                     type: 'phone',
                     value: phone,
                     label: t( 'Телефон' ),
-                    pattern: '(\\+?\\d[- .]*){10,22}',
+                    pattern: '(\\+?\\d[- .()]*){10,22}',
                     maxlength: '22',
                     placeholder: '+79ХХХХХХХХХ'
                   }
