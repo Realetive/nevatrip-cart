@@ -565,6 +565,7 @@ button:not(:disabled) {
   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
   text-align: center;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .btn-radio__label:hover{

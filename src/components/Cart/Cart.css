@@ -13,7 +13,7 @@
 }
 .cart>div.aside{
   position: static;
-  width: auto;
+  width: 380px;
 }
 .cart .email__content{
   margin: 0 auto;
