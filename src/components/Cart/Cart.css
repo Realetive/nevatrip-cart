@@ -13,7 +13,7 @@
 }
 .cart>div.aside{
   position: static;
-  width: 380px;
+  width: auto;
 }
 .cart .email__content{
   margin: 0 auto;
@@ -72,6 +72,10 @@
     justify-content: space-between;
     align-items: flex-start;
     align-content: space-between;
+  }
+  .cart>div.aside{
+    position: static;
+    width: 380px;
   }
 
   .list > .cart__item {
