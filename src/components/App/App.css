@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic');
+
 /*react*/
 .App {
   text-align: center;
@@ -321,7 +323,9 @@ html{
   font-size: 18px;
 }
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  /*font-family:  -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;*/
+  /*font-display: swap;*/
   font-smoothing: antialiased;
   font-variant-ligatures: none;
   -moz-text-size-adjust: 100%;
@@ -510,6 +514,10 @@ button:not(:disabled) {
 
 .form-input-wrap {
   position: relative;
+}
+
+.form-input-wrap input {
+  margin-bottom: 0;
 }
 
 .input:valid {
