@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-scripts/config/webpack.config.js b/node_modules/react-scripts/config/webpack.config.js
-index d34d06f..44c7183 100644
+index 350d424..d233d8b 100644
 --- a/node_modules/react-scripts/config/webpack.config.js
 +++ b/node_modules/react-scripts/config/webpack.config.js
-@@ -184,13 +184,13 @@ module.exports = function(webpackEnv) {
+@@ -175,13 +175,13 @@ module.exports = function(webpackEnv) {
        // There will be one main bundle, and one file per asynchronous chunk.
        // In development, it does not produce real files.
        filename: isEnvProduction
@@ -16,9 +16,9 @@ index d34d06f..44c7183 100644
 -        ? 'static/js/[name].[contenthash:8].chunk.js'
 +        ? 'static/js/[name].chunk.js'
          : isEnvDevelopment && 'static/js/[name].chunk.js',
-       // We inferred the "public path" (such as / or /my-project) from homepage.
-       // We use "/" in development.
-@@ -215,6 +215,7 @@ module.exports = function(webpackEnv) {
+       // webpack uses `publicPath` to determine where the app is being served from.
+       // It requires a trailing slash, or the file assets will get an incorrect path.
+@@ -207,6 +207,7 @@ module.exports = function(webpackEnv) {
        minimizer: [
          // This is only used in production mode
          new TerserPlugin({
@@ -26,7 +26,7 @@ index d34d06f..44c7183 100644
            terserOptions: {
              parse: {
                // We want terser to parse ecma 8 code. However, we don't want it
-@@ -641,8 +642,8 @@ module.exports = function(webpackEnv) {
+@@ -635,8 +636,8 @@ module.exports = function(webpackEnv) {
          new MiniCssExtractPlugin({
            // Options similar to the same options in webpackOptions.output
            // both options are optional
