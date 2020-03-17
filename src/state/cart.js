@@ -24,7 +24,7 @@ export default (store) => {
       // const orderEntity = new schema.Entity('order', {}, { idAttribute: 'event' });
       const cartEntity = new schema.Entity('cart', {}, { idAttribute: 'key' });
 
-      const ticketCategoryEntity = new schema.Entity('ticketCategory', {}, { idAttribute: '_id' });
+      const ticketCategoryEntity = new schema.Entity('ticketCategory', {}, { idAttribute: 'name' });
       const ticketEntity = new schema.Entity(
         'ticket',
         { category: ticketCategoryEntity },
