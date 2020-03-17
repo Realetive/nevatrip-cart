@@ -262,7 +262,7 @@ export const Cart = ({session, lang}) => {
                     label: t( 'Телефон' ),
                     pattern: '(\\+?\\d[- .()]*){10,22}',
                     maxlength: '22',
-                    placeholder: '+79ХХХХХХХХХ'
+                    placeholder: '+XXХХХХХХХХХ'
                   }
                 ].map( field => (
                       <div key={field.name} className='cart__field'>

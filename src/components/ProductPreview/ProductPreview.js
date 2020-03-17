@@ -33,7 +33,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
     // } else if ( hours < 4  || hours === '0:') {
     //   return `${ t( 'В ночь с' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate ).format( "D MMMM" ) }`;
     // } else {
-      return moment( selectedDate ).format( "D MMMM" )
+      return moment( selectedDate ).format( 'LL' )
     //}
   };
 

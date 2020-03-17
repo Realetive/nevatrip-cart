@@ -73,6 +73,10 @@
     align-items: flex-start;
     align-content: space-between;
   }
+  .cart>div.aside{
+    position: static;
+    width: 380px;
+  }
 
   .list > .cart__item {
     padding: 7px 25px 16px;
