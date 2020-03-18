@@ -13,7 +13,7 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
   const [statusTickets, setStatusTickets] = useState({});
   const currentLang = process.env.REACT_APP_DEFAULT_LANG;
-  const categoryKeys = Object.keys(ticketCategory).length > 1 ? Object.keys(ticketCategory) : [];
+  const categoryKeys = Object.keys(ticketCategory);
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -46,7 +46,7 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
   const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
     const {
       _key,
-      // category,
+      category,
       count,
       price,
     } = ticket[ ticketId ];
@@ -56,11 +56,12 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
             { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
-            <div className='ticketCategory'>
-              { categoryKeys.map(item => (
-                item !== 'standart' && (( ticketCategory[item] || {} ).title || {})[currentLang]
+            {category !== 'standart' && <div className='ticketCategory'>
+              {categoryKeys.map(item => (
+                  item !== category && ((ticketCategory[category] || {}).title || {})[currentLang]
               ))}
-            </div>
+              </div>
+            }
         </dt>
         <dd className='ticketsItemControls' >
           <Counter
