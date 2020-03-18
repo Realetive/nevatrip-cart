@@ -8,11 +8,12 @@ import './Tickets.css';
 
 export const Tickets = ({ cartKey, productId, getStatus }) => {
   const { t } = useTranslation();
-  const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
+  const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
   const [statusTickets, setStatusTickets] = useState({});
   const currentLang = process.env.REACT_APP_DEFAULT_LANG;
+  const categoryKeys = Object.keys(ticketCategory).length > 1 ? Object.keys(ticketCategory) : [];
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -55,6 +56,11 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
             { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
+            <div className='ticketCategory'>
+              { categoryKeys.map(item => (
+                item !== 'standart' && (( ticketCategory[item] || {} ).title || {})[currentLang]
+              ))}
+            </div>
         </dt>
         <dd className='ticketsItemControls' >
           <Counter

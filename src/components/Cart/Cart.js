@@ -140,7 +140,6 @@ export const Cart = ({session, lang}) => {
     e.preventDefault();
 
     const currentTicketStatus = Object.values(ticketStatus).every(item => item);
-    console.log(currentTicketStatus)
 
     if (currentTicketStatus) {
       setInProcess(true);
