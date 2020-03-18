@@ -55,7 +55,7 @@ export const Tickets = ({ cartKey, productId, getStatus }) => {
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
             { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
-            { (ticketCategory[category] && {}).name !== 'standart' &&
+            { (ticketCategory[category] || {}).name !== 'standart' &&
               <div className='ticketCategory'>
                 { ((ticketCategory[category] || {}).title || {} )[currentLang] }
               </div>
