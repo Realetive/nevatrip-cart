@@ -9,7 +9,6 @@ import { ProductPreview } from '../ProductPreview/ProductPreview';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Cart.css';
 import '../Calendar/Calendar.css';
-import logger from 'storeon/devtools/logger';
 
 // Returns a function, that, when invoked, will only be triggered at most once
 // during a given window of time. Normally, the throttled function will run
@@ -51,7 +50,6 @@ function throttle(func, wait, options) {
 export const Cart = ({session, lang}) => {
   const { t } = useTranslation();
   const { dispatch, cart, user, order, ticket = {}, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
-  console.log(ticket)
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);

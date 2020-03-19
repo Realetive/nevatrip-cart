@@ -117,12 +117,12 @@ export const Time = ( { cartKey, productId } ) => {
 
     return (
         <div>
-            {
-                userTimeOffset !== tripTimeZoneOffset &&
-                <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
-                    { checkLanguage( formatOffset(userTimeOffset) ) }
-                </div>
-            }
+            {/*{*/}
+            {/*    userTimeOffset !== tripTimeZoneOffset &&*/}
+            {/*    <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>*/}
+            {/*        { checkLanguage( formatOffset(userTimeOffset) ) }*/}
+            {/*    </div>*/}
+            {/*}*/}
             <div className='caption'>{ t( 'Выберите время отправления' ) }</div>
             {
                 <ul className='grid-list'>
