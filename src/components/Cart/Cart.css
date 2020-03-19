@@ -112,3 +112,15 @@
   line-height: 1.4;
   color: #6FA2C6;
 }
+
+.submitBtn:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #544b4b;
+}
+
+.submitBtn:disabled:hover {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #544b4b;
+}

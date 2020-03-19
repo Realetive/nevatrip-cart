@@ -6,13 +6,15 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus }) => {
+export const Tickets = ({ cartKey, productId, getStatus, getDisabled }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
   const [statusTickets, setStatusTickets] = useState({});
   const currentLang = process.env.REACT_APP_DEFAULT_LANG;
+
+  getDisabled(tickets.length === 0);
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];

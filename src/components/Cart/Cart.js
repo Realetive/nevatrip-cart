@@ -9,6 +9,7 @@ import { ProductPreview } from '../ProductPreview/ProductPreview';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Cart.css';
 import '../Calendar/Calendar.css';
+import logger from 'storeon/devtools/logger';
 
 // Returns a function, that, when invoked, will only be triggered at most once
 // during a given window of time. Normally, the throttled function will run
@@ -49,7 +50,8 @@ function throttle(func, wait, options) {
 
 export const Cart = ({session, lang}) => {
   const { t } = useTranslation();
-  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
+  const { dispatch, cart, user, order, ticket = {}, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
+  console.log(ticket)
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
@@ -60,6 +62,9 @@ export const Cart = ({session, lang}) => {
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
   const [ valid, setValid ] = useState(true);
+  const [ isDisabled, getDisabled ] = useState(Object.keys(ticket).length);
+  // console.log(Object.keys(ticket).length === 0)
+  console.log(isDisabled)
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -84,6 +89,7 @@ export const Cart = ({session, lang}) => {
           productId={productId}
           lang={lang}
           getStatus={getStatus}
+          getDisabled={getDisabled}
         />
       </li>
     );
@@ -136,11 +142,13 @@ export const Cart = ({session, lang}) => {
     return sum;
   }, 0 );
 
+  // setDisabled(Object.keys(ticket).length === 0);
+  // console.log(isDisabled)
+
   const checkOut = async e => {
     e.preventDefault();
 
     const currentTicketStatus = Object.values(ticketStatus).every(item => item);
-    console.log(currentTicketStatus)
 
     if (currentTicketStatus) {
       setInProcess(true);
@@ -327,7 +335,8 @@ export const Cart = ({session, lang}) => {
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
               </label>
             </span>
-            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setValid(ticketStatus.status)}>
+            {/*<button className='btn btn_block btn_primary submitBtn' disabled={inProcess} onClick={() => setValid(ticketStatus.status)}>*/}
+            <button className='btn btn_block btn_primary submitBtn' disabled={isDisabled} onClick={() => setValid(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
              <div className='cart__error'> { !valid && t('Нет выбранных билетов') } </div>
