@@ -152,7 +152,9 @@ export const Cart = ({session, lang}) => {
 
         const pay = function () {
           const cp = window.cp;
-          const widget = new cp.CloudPayments();
+          const widget = new cp.CloudPayments({
+            language: t( 'widgetLang' ),
+          });
           widget.charge({
             publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
             description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
