@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, getDisabled }) => {
+export const Tickets = ({ cartKey, productId, getStatus, getDisabled, isDisabled }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
@@ -74,9 +74,11 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabled }) => {
 
   return (
     <div className='ticketsWrapper'>
-      <span className='caption'>
-        { t( 'Выберите категории билетов' ) }
-      </span>
+      {
+        (!isDisabled &&
+        <span className='caption'>{ t('Выберите категории билетов') }</span>) ||
+        <span className='caption caption_l'>{ t('Пока нет билетов') }</span>
+      }
       <dl className='ticketsDl'>
         { _renderTickets }
       </dl>

@@ -63,8 +63,6 @@ export const Cart = ({session, lang}) => {
   const [ ticketStatus, setTicketStatus ] = useState({});
   const [ valid, setValid ] = useState(true);
   const [ isDisabled, getDisabled ] = useState(Object.keys(ticket).length === 0);
-  // console.log(Object.keys(ticket).length === 0)
-  console.log(inProcess, isDisabled)
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -90,6 +88,7 @@ export const Cart = ({session, lang}) => {
           lang={lang}
           getStatus={getStatus}
           getDisabled={getDisabled}
+          isDisabled={isDisabled}
         />
       </li>
     );
