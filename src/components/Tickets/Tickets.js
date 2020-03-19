@@ -8,7 +8,7 @@ import './Tickets.css';
 
 export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisabledBtn }) => {
   const { t } = useTranslation();
-  const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
+  const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
   const [statusTickets, setStatusTickets] = useState({});
@@ -47,7 +47,7 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisab
   const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
     const {
       _key,
-      // category,
+      category,
       count,
       price,
     } = ticket[ ticketId ];
@@ -57,6 +57,11 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisab
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
             { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
+            { (ticketCategory[category] || {}).name !== 'standart' &&
+              <div className='ticketCategory'>
+                { ((ticketCategory[category] || {}).title || {} )[currentLang] }
+              </div>
+            }
         </dt>
         <dd className='ticketsItemControls' >
           <Counter

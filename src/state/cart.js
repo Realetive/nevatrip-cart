@@ -4,7 +4,7 @@ import { api } from '../api';
 
 export default (store) => {
   store.on('@init', () => ({ cart: null }));
-  
+
   store.on('cart/loading', (state, loading) => {
     let cart = { ...state['cart'], loading }
     return { ...state, cart }
@@ -13,7 +13,7 @@ export default (store) => {
   store.on('cart/get', async (state, {session, lang}) => {
     try {
       store.dispatch('cart/loading', true);
-      
+
       const { products: cart } = await api.cart.newCart(session);
       const products = await Promise.all(
         [...new Set(cart.map(item => item.productId))].map((item) => {
@@ -24,7 +24,7 @@ export default (store) => {
       // const orderEntity = new schema.Entity('order', {}, { idAttribute: 'event' });
       const cartEntity = new schema.Entity('cart', {}, { idAttribute: 'key' });
 
-      const ticketCategoryEntity = new schema.Entity('ticketCategory', {}, { idAttribute: 'name' });
+      const ticketCategoryEntity = new schema.Entity('ticketCategory', {}, { idAttribute: 'id' });
       const ticketEntity = new schema.Entity(
         'ticket',
         { category: ticketCategoryEntity },
@@ -41,7 +41,7 @@ export default (store) => {
           processStrategy: (value, parent) => ({ ...value, key: `${parent._id}.${value._key}` }),
         });
       const productEntity = new schema.Entity('product', { directions: [directionEntity],  }, { idAttribute: '_id' });
-            
+
       const data = normalize( { cart, products }, {
         cart: [cartEntity],
         products: [productEntity]
@@ -57,7 +57,7 @@ export default (store) => {
       store.dispatch('cart/error', { cart: null, error, loading: false })
     }
   });
-  
+
   store.on('cart/error', (state, cart) => ({ cart }));
 
   store.on('cart/add', (state, cart) => ({ cart }));
