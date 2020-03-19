@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, getDisabled, isDisabled }) => {
+export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisabledBtn }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket } = useStoreon('direction', 'order', 'ticket');
   const [{ direction: selectedDirection }] = order[cartKey].options;
@@ -14,7 +14,7 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabled, isDisabled
   const [statusTickets, setStatusTickets] = useState({});
   const currentLang = process.env.REACT_APP_DEFAULT_LANG;
 
-  getDisabled(tickets.length === 0);
+  getDisabledBtn(tickets.length === 0);
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -75,9 +75,9 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabled, isDisabled
   return (
     <div className='ticketsWrapper'>
       {
-        (!isDisabled &&
+        (!isDisabledBtn &&
         <span className='caption'>{ t('Выберите категории билетов') }</span>) ||
-        <span className='caption caption_l'>{ t('Пока нет билетов') }</span>
+        <span className='cart__error'>{ t('Пока нет билетов') }</span>
       }
       <dl className='ticketsDl'>
         { _renderTickets }

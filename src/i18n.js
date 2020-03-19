@@ -39,6 +39,7 @@ export default function i18n(lang) {
               'Почему используем телефон': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Choose at least one ticket',
               'Пока нет билетов': 'No tickets',
+              'На выбранную дату нет билетов': 'No tickets on the selected date',
             }
           },
           ru: {
@@ -72,6 +73,7 @@ export default function i18n(lang) {
               'Почему используем телефон': 'В случае изменений, мы оповестим вас по номеру телефона',
               'Нет выбранных билетов': 'Нет выбранных билетов',
               'Пока нет билетов': 'Пока нет билетов',
+              'На выбранную дату нет билетов': 'На выбранную дату нет билетов',
             }
           },
           de: {
@@ -103,6 +105,7 @@ export default function i18n(lang) {
               'Почему используем телефон': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Wählen Sie mindestens ein Ticket',
               'Пока нет билетов': 'No tickets',
+              'На выбранную дату нет билетов': 'No tickets on the selected date',
             }
           },
           cs: {
@@ -136,6 +139,7 @@ export default function i18n(lang) {
               'Почему используем телефон': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Vyberte alespoň jednu vstupenku',
               'Пока нет билетов': 'No tickets',
+              'На выбранную дату нет билетов': 'No tickets on the selected date',
             }
           },
         },

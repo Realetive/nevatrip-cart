@@ -21,7 +21,7 @@ function formatOffset(offset) {
     return sign + hours + ":" + minutes;
 }
 
-export const Time = ( { cartKey, productId } ) => {
+export const Time = ( { cartKey, productId, getTicketTime } ) => {
     const { t } = useTranslation();
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
@@ -31,7 +31,6 @@ export const Time = ( { cartKey, productId } ) => {
         buyTimeOffset = 0,
     } = directions[`${productId}.${direction}`];
     const userTimeOffset = new Date().getTimezoneOffset();
-    // console.log(userTimeOffset, timeOffset, time)
 
     const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
     const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
@@ -40,7 +39,8 @@ export const Time = ( { cartKey, productId } ) => {
         const timeOffset = new Date( eventItem.start );
         timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
         const isOffset = new Date() > timeOffset;
-        // console.log(new Date(), timeOffset)
+
+        getTicketTime(new Date() > timeOffset);
 
         const formatTime = moment( eventItem.start ).tz( tripTimeZone ).format( "LT" );
 

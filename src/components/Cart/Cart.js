@@ -60,7 +60,8 @@ export const Cart = ({session, lang}) => {
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
   const [ valid, setValid ] = useState(true);
-  const [ isDisabled, getDisabled ] = useState(Object.keys(ticket).length === 0);
+  const [ isDisabledBtn, getDisabledBtn ] = useState(Object.keys(ticket).length === 0);
+  const [ isTicketTime, getTicketTime ] = useState(true);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -85,8 +86,10 @@ export const Cart = ({session, lang}) => {
           productId={productId}
           lang={lang}
           getStatus={getStatus}
-          getDisabled={getDisabled}
-          isDisabled={isDisabled}
+          getDisabledBtn={getDisabledBtn}
+          isDisabledBtn={isDisabledBtn}
+          isTicketTime={isTicketTime}
+          getTicketTime={getTicketTime}
         />
       </li>
     );
@@ -138,9 +141,6 @@ export const Cart = ({session, lang}) => {
 
     return sum;
   }, 0 );
-
-  // setDisabled(Object.keys(ticket).length === 0);
-  // console.log(isDisabled)
 
   const checkOut = async e => {
     e.preventDefault();
@@ -332,7 +332,7 @@ export const Cart = ({session, lang}) => {
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
               </label>
             </span>
-            <button className='btn btn_block btn_primary submitBtn' disabled={inProcess || isDisabled} onClick={() => setValid(ticketStatus.status)}>
+            <button className='btn btn_block btn_primary submitBtn' disabled={inProcess || isDisabledBtn || isTicketTime } onClick={() => setValid(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
              <div className='cart__error'> { !valid && t('Нет выбранных билетов') } </div>
