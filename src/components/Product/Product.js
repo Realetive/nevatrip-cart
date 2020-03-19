@@ -41,7 +41,7 @@ export const Product = (props) => {
           <Directions {...props} />
           {
             ( date && <Time {...props} /> ) ||
-            ( isTicketTime && <div className='cart__error'>{ t('На выбранную дату нет билетов') }</div> )
+            ( isTicketTime && <div className='cart__error'>{ t('На выбранную дату нет прогулок') }</div> )
           }
           { direction && <Tickets {...props} /> }
         </div>

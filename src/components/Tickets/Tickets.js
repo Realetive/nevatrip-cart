@@ -82,7 +82,7 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisab
       {
         (!isDisabledBtn &&
         <span className='caption'>{ t('Выберите категории билетов') }</span>) ||
-        <span className='cart__error'>{ t('Пока нет билетов') }</span>
+        <div className='cart__error'>{ t('Пока нет билетов') }</div>
       }
       <dl className='ticketsDl'>
         { _renderTickets }
