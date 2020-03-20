@@ -21,7 +21,7 @@ function formatOffset(offset) {
     return sign + hours + ":" + minutes;
 }
 
-export const Time = ( { cartKey, productId } ) => {
+export const Time = ( { cartKey, productId, getTicketTime } ) => {
     const { t } = useTranslation();
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
@@ -39,6 +39,8 @@ export const Time = ( { cartKey, productId } ) => {
         const timeOffset = new Date( eventItem.start );
         timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
         const isOffset = new Date() > timeOffset;
+
+        getTicketTime(new Date() > timeOffset);
 
         const formatTime = moment( eventItem.start ).tz( tripTimeZone ).format( "LT" );
 
@@ -115,12 +117,12 @@ export const Time = ( { cartKey, productId } ) => {
 
     return (
         <div>
-            {
-                userTimeOffset !== tripTimeZoneOffset &&
-                <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>
-                    { checkLanguage( formatOffset(userTimeOffset) ) }
-                </div>
-            }
+            {/*{*/}
+            {/*    userTimeOffset !== tripTimeZoneOffset &&*/}
+            {/*    <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>*/}
+            {/*        { checkLanguage( formatOffset(userTimeOffset) ) }*/}
+            {/*    </div>*/}
+            {/*}*/}
             <div className='caption'>{ t( 'Выберите время отправления' ) }</div>
             {
                 <ul className='grid-list'>

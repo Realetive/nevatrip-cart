@@ -49,7 +49,7 @@ function throttle(func, wait, options) {
 
 export const Cart = ({session, lang}) => {
   const { t } = useTranslation();
-  const { dispatch, cart, user, order, ticket, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
+  const { dispatch, cart, user, order, ticket = {}, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
@@ -60,6 +60,8 @@ export const Cart = ({session, lang}) => {
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
   const [ valid, setValid ] = useState(true);
+  const [ isDisabledBtn, getDisabledBtn ] = useState(Object.keys(ticket).length === 0);
+  const [ isTicketTime, getTicketTime ] = useState(true);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -84,6 +86,10 @@ export const Cart = ({session, lang}) => {
           productId={productId}
           lang={lang}
           getStatus={getStatus}
+          getDisabledBtn={getDisabledBtn}
+          isDisabledBtn={isDisabledBtn}
+          isTicketTime={isTicketTime}
+          getTicketTime={getTicketTime}
         />
       </li>
     );
@@ -328,7 +334,7 @@ export const Cart = ({session, lang}) => {
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
               </label>
             </span>
-            <button className='btn btn_block btn_primary' disabled={inProcess} onClick={() => setValid(ticketStatus.status)}>
+            <button className='btn btn_block btn_primary submitBtn' disabled={inProcess || isDisabledBtn || isTicketTime } onClick={() => setValid(ticketStatus.status)}>
               { t( 'Оплатить' ) } { sum } { t( 'currency' ) }
             </button>
              <div className='cart__error'> { !valid && t('Нет выбранных билетов') } </div>

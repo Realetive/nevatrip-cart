@@ -7,7 +7,7 @@ const tripTimeZone = 'Europe/Prague';
 
 export const ProductPreview = ({ cartKey, productId }) => {
   const { t } = useTranslation();
-  const { product, order, direction, ticket } = useStoreon( 'product', 'order', 'direction', 'ticket' );
+  const { product, order, direction, ticket = {} } = useStoreon( 'product', 'order', 'direction', 'ticket' );
   const title = product[productId].title;
   const [{
     direction: selectedDirectionId,

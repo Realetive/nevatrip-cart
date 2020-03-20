@@ -39,6 +39,8 @@ export default function i18n(lang) {
               'Почему используем e-mail': 'We use it to send you a ticket',
               'Почему используем телефон': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Choose at least one ticket',
+              'Пока нет билетов': 'No tickets',
+              'На выбранную дату нет прогулок': 'No walks on the selected date',
             }
           },
           ru: {
@@ -72,6 +74,8 @@ export default function i18n(lang) {
               'Почему используем e-mail': 'На адрес этой почты мы пришлем вам билет на прогулку',
               'Почему используем телефон': 'В случае изменений, мы оповестим вас по номеру телефона',
               'Нет выбранных билетов': 'Нет выбранных билетов',
+              'Пока нет билетов': 'Пока нет прогулок',
+              'На выбранную дату нет прогулок': 'На выбранную дату нет прогулок',
             }
           },
           de: {
@@ -103,6 +107,8 @@ export default function i18n(lang) {
               'Почему используем e-mail': 'We use it to send you a ticket',
               'Почему используем телефон': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Wählen Sie mindestens ein Ticket',
+              'Пока нет билетов': 'No tickets',
+              'На выбранную дату нет прогулок': 'No walks on the selected date',
             }
           },
           cs: {
@@ -136,6 +142,8 @@ export default function i18n(lang) {
               'Почему используем e-mail': 'We use it to send you a ticket',
               'Почему используем телефон': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Vyberte alespoň jednu vstupenku',
+              'Пока нет прогулок': 'No tickets',
+              'На выбранную дату нет прогулок': 'No walks on the selected date',
             }
           },
         },
