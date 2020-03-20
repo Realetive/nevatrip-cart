@@ -21,7 +21,7 @@ function formatOffset(offset) {
     return sign + hours + ":" + minutes;
 }
 
-export const Time = ( { cartKey, productId, getTicketTime } ) => {
+export const Time = ( { cartKey, productId, setTicketTime } ) => {
     const { t } = useTranslation();
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
@@ -40,7 +40,7 @@ export const Time = ( { cartKey, productId, getTicketTime } ) => {
         timeOffset.setMinutes( timeOffset.getMinutes() - buyTimeOffset );
         const isOffset = new Date() > timeOffset;
 
-        getTicketTime(new Date() > timeOffset);
+        setTicketTime(new Date() > timeOffset);
 
         const formatTime = moment( eventItem.start ).tz( tripTimeZone ).format( "LT" );
 

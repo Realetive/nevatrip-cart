@@ -60,8 +60,8 @@ export const Cart = ({session, lang}) => {
   const [ inProcess, setInProcess ] = useState(false);
   const [ ticketStatus, setTicketStatus ] = useState({});
   const [ valid, setValid ] = useState(true);
-  const [ isDisabledBtn, getDisabledBtn ] = useState(Object.keys(ticket).length === 0);
-  const [ isTicketTime, getTicketTime ] = useState(true);
+  const [ isDisabledBtn, setDisabledBtn ] = useState(Object.keys(ticket).length === 0);
+  const [ isTicketTime, setTicketTime ] = useState(true);
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -86,10 +86,10 @@ export const Cart = ({session, lang}) => {
           productId={productId}
           lang={lang}
           getStatus={getStatus}
-          getDisabledBtn={getDisabledBtn}
+          setDisabledBtn={setDisabledBtn}
           isDisabledBtn={isDisabledBtn}
           isTicketTime={isTicketTime}
-          getTicketTime={getTicketTime}
+          setTicketTime={setTicketTime}
         />
       </li>
     );
