@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisabledBtn }) => {
+export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
   const [{ direction: selectedDirection }] = order[cartKey].options;
@@ -14,7 +14,7 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisab
   const [statusTickets, setStatusTickets] = useState({});
   const currentLang = process.env.REACT_APP_DEFAULT_LANG;
 
-  getDisabledBtn(tickets.length === 0);
+  setDisabledBtn(tickets.length === 0);
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -31,10 +31,17 @@ export const Tickets = ({ cartKey, productId, getStatus, getDisabledBtn, isDisab
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_tickets]);
 
+  useEffect(() => {
+    setStatusTickets({
+      status: Object.values(ticket).some(element => element.count >= 1)
+    });
+  }, []);
+
   const getCount = (_key, count) => {
     setStatusTickets({
       ...statusTickets,
       [_key]: count,
+      status: false,
     });
   };
 
