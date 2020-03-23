@@ -103,6 +103,7 @@ export const Cart = ({session, lang}) => {
         <ProductPreview
           cartKey={key}
           productId={productId}
+          lang={lang}
         />
       </li>
     );

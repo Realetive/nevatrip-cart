@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 const moment = require( 'moment-timezone' );
 const tripTimeZone = 'Europe/Prague';
 
-export const ProductPreview = ({ cartKey, productId }) => {
+export const ProductPreview = ({ cartKey, productId, lang }) => {
   const { t } = useTranslation();
   const { product, order, direction, ticket = {} } = useStoreon( 'product', 'order', 'direction', 'ticket' );
   const title = product[productId].title;
@@ -15,7 +15,6 @@ export const ProductPreview = ({ cartKey, productId }) => {
     event: selectedEvent,
     tickets
   }] = order[cartKey].options || [{}];
-  const currentLang = process.env.REACT_APP_DEFAULT_LANG;
 
   const theEvent = selectedEvent && selectedEvent.start;
 
@@ -50,7 +49,7 @@ export const ProductPreview = ({ cartKey, productId }) => {
         _key,
         price
       } = ticket[ticketItemKey];
-      const name = (ticket[ ticketItemKey ].name || {})[currentLang] || ticket[ ticketItemKey ].ticket[0].title[currentLang];
+      const name = (ticket[ ticketItemKey ].name || {})[lang] || ticket[ ticketItemKey ].ticket[0].title[lang];
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>

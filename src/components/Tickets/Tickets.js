@@ -6,13 +6,12 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn }) => {
+export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn, lang }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
   const [{ direction: selectedDirection }] = order[cartKey].options;
   const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
   const [statusTickets, setStatusTickets] = useState({});
-  const currentLang = process.env.REACT_APP_DEFAULT_LANG;
 
   setDisabledBtn(tickets.length === 0);
 
@@ -58,7 +57,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
       count,
       price,
     } = ticket[ ticketId ];
-    const name = (ticket[ ticketId ].name || {})[currentLang] || ticket[ ticketId ].ticket[0].title[currentLang];
+    const name = (ticket[ ticketId ].name || {})[lang] || ticket[ ticketId ].ticket[0].title[lang];
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
@@ -66,7 +65,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
             { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
             { (ticketCategory[category] || {}).name !== 'standart' &&
               <div className='ticketCategory'>
-                { ((ticketCategory[category] || {}).title || {} )[currentLang] }
+                { ((ticketCategory[category] || {}).title || {} )[lang] }
               </div>
             }
         </dt>
