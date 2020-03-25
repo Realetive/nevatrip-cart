@@ -21,7 +21,7 @@ function formatOffset(offset) {
     return sign + hours + ":" + minutes;
 }
 
-export const Time = ( { cartKey, productId, setTicketTime } ) => {
+export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) => {
     const { t } = useTranslation();
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
@@ -123,7 +123,7 @@ export const Time = ( { cartKey, productId, setTicketTime } ) => {
             {/*        { checkLanguage( formatOffset(userTimeOffset) ) }*/}
             {/*    </div>*/}
             {/*}*/}
-            <div className='caption translate'>{ t( 'Выберите время отправления' ) }</div>
+            <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
             {
                 <ul className='grid-list'>
                     { renderTimes }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 const moment = require( 'moment-timezone' );
 const tripTimeZone = 'Europe/Prague';
 
-export const ProductPreview = ({ cartKey, productId, lang }) => {
+export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) => {
   const { t } = useTranslation();
   const { product, order, direction, ticket = {} } = useStoreon( 'product', 'order', 'direction', 'ticket' );
   const title = product[productId].title;
@@ -61,17 +61,17 @@ export const ProductPreview = ({ cartKey, productId, lang }) => {
 
   return (
     <fieldset className='listPreviewFieldset'>
-      <legend className='listPreviewLegend translate'>{title}</legend>
+      <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ (title[lang] || {} ).name }</legend>
       <ul className='listPreviewData'>
         { date && <li className='listPreviewDataLi'>
-          <div className="listPreviewDataLi__h translate">
+          <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
             <b>{ t( 'дата' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">{ renderDate() }</div>
         </li> }
 
         { selectedEvent && <li className='listPreviewDataLi'>
-          <div className="listPreviewDataLi__h translate">
+          <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
             <b>{ t( 'время' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">
@@ -80,7 +80,7 @@ export const ProductPreview = ({ cartKey, productId, lang }) => {
         </li> }
 
         { product[productId].directions.length > 1 && selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
-          <div className="listPreviewDataLi__h">
+          <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
             <b>направление</b>&nbsp;/&nbsp;<span className="text_en">direction</span>
           </div>
           <div className="listPreviewDataLi__p">
@@ -90,7 +90,7 @@ export const ProductPreview = ({ cartKey, productId, lang }) => {
       </ul>
       { tickets &&
       <div className='listPreviewTickets'>
-        <div className="listPreviewDataLi__h translate">
+        <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
           <b>{ t( 'билеты' ) }</b>
         </div>
         <div className="listPreviewDataLi__p">

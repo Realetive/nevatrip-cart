@@ -6,10 +6,10 @@ import { store } from "../../state";
 
 import './App.css';
 
-export default function App({session, lang}) {
+export default function App( { session, lang, isRightTranslate } ) {
   return (
     <StoreContext.Provider value={ store }>
-      <Cart session={session} lang={lang} />
+      <Cart session={session} lang={lang} isRightTranslate={isRightTranslate} />
     </StoreContext.Provider>
   );
 }

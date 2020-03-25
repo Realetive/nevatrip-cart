@@ -11,7 +11,7 @@ import {useTranslation} from 'react-i18next';
 
 export const Product = (props) => {
   const { t } = useTranslation();
-  const { cartKey, productId, isTicketTime } = props;
+  const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
   const { product, order } = useStoreon( 'product', 'order' );
   const title = product[productId].title;
   let direction, date;
@@ -24,13 +24,13 @@ export const Product = (props) => {
 
   return (
     <fieldset className='product product_view_form'>
-      <legend className='product__legend translate'>
+      <legend className={ 'product__legend' + ( isRightTranslate ? '' : ' translate' ) }>
         {
           urlToProduct
             ? <a href={urlToProduct} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {title}
+                { ( title[lang] || {} ).name }
               </a>
-            : title
+            : ( title[lang] || {} ).name
         }
       </legend>
       <div className='product__inner'>
@@ -41,7 +41,7 @@ export const Product = (props) => {
           <Directions {...props} />
           {
             ( date && <Time {...props} /> ) ||
-            ( isTicketTime && <div className='cart__error'>{ t('На выбранную дату нет прогулок') }</div> )
+            ( isTicketTime && <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('На выбранную дату нет прогулок') }</div> )
           }
           { direction && <Tickets {...props} /> }
         </div>

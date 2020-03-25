@@ -11,16 +11,16 @@ const session = new URL(window.location.href).searchParams.get('session')
                 || 'test-test-test';
 
 const html = document.querySelector('html');
-const currentLang = i18n(lang);
+const [ currentLang, isRightTranslate ] = i18n(lang);
 
 const observer = new MutationObserver(function(mutationsList) {
     for (const mutation of mutationsList) {
         const attr = mutation.attributeName;
         const lang = mutation.target.getAttribute(attr);
-        const currentLang = i18n(lang);
+        const [ currentLang, isRightTranslate ] = i18n(lang);
 
         render(
-            <App session={session} lang={currentLang}/>,
+            <App session={session} lang={currentLang} isRightTranslate={isRightTranslate} />,
             root
         );
     }
@@ -28,7 +28,7 @@ const observer = new MutationObserver(function(mutationsList) {
 observer.observe(html, { attributeFilter: ['lang'] });
 
 render(
-  <App session={session} lang={currentLang} />,
+  <App session={session} lang={currentLang} isRightTranslate={isRightTranslate} />,
   root
 );
 

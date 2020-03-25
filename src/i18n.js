@@ -170,9 +170,15 @@ export default function i18n(lang) {
     'cs': 'cs',
   };
 
-  calendarLocaleObject.hasOwnProperty(lang) && momentLocaleObject.hasOwnProperty(lang)
-    ? _i18n.language = lang
-    : _i18n.language = 'en';
+  let isRightTranslate;
+
+  if (calendarLocaleObject.hasOwnProperty(lang) && momentLocaleObject.hasOwnProperty(lang)) {
+      _i18n.language = lang;
+      isRightTranslate = true;
+  } else {
+      _i18n.language = 'en';
+      isRightTranslate = false;
+  }
 
   let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
   let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
@@ -184,5 +190,5 @@ export default function i18n(lang) {
   }
   moment.locale( momentLocaleKey );
 
-  return _i18n.language;
+  return [_i18n.language, isRightTranslate ];
 }

@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn, lang }) => {
+export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn, lang, isRightTranslate }) => {
   const { t } = useTranslation();
   const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
   const [{ direction: selectedDirection }] = order[cartKey].options;
@@ -62,10 +62,10 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
-            <span className='translate'>{ t( name ) }</span>,
+            <span className={ isRightTranslate ? '' : 'translate' }>{ t( name ) }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
             { (ticketCategory[category] || {}).name !== 'standart' &&
-              <div className='ticketCategory' class='translate'>
+              <div className={ 'ticketCategory ' + ( isRightTranslate ? '' : 'translate' ) }>
                 { ((ticketCategory[category] || {}).title || {} )[lang] }
               </div>
             }
@@ -78,6 +78,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
             setTickets={_setTickets}
             price={price}
             getCount={getCount}
+            isRightTranslate={isRightTranslate}
           />
         </dd>
       </div>
@@ -88,8 +89,8 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     <div className='ticketsWrapper'>
       {
         (!isDisabledBtn &&
-        <span className='caption translate'>{ t('Выберите категории билетов') }</span>) ||
-        <div className='cart__error'>{ t('Пока нет билетов') }</div>
+        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Выберите категории билетов') }</span>) ||
+        <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Пока нет билетов') }</div>
       }
       <dl className='ticketsDl'>
         { _renderTickets }
