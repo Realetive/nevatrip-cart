@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import App from './components/App/App';
 import * as serviceWorker from './serviceWorker';
 import i18n from "./i18n";
+import logger from 'storeon/devtools/logger';
 
 const root = document.getElementById('root');
 const lang = root.getAttribute('lang');
@@ -10,7 +11,8 @@ const session = new URL(window.location.href).searchParams.get('session')
                 || root.dataset.session
                 || 'test-test-test';
 
-i18n(lang);
+const currentLang = i18n(lang);
+console.log(currentLang)ж
 
 render(
   <App session={session} lang={lang} />,

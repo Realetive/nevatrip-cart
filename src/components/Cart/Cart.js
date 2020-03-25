@@ -220,6 +220,8 @@ export const Cart = ({session, lang}) => {
   }, [session]);
 
   useEffect(() => {
+    if (!paid.hash) return;
+
     setTimeout(async () => {
       const _emailContent = await api.order.getMail( paid.id, paid.hash );
       setEmailContent( _emailContent );

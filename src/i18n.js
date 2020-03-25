@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import moment from "moment-timezone";
 
-export default function i18n(lang) {
+export default function i18n(lang, calendarLang) {
   _i18n
       .use( initReactI18next ) // passes i18n down to react-i18next
       .init({
@@ -161,8 +161,8 @@ export default function i18n(lang) {
     'de': 'de',
     'cs': 'cs',
   };
-  const calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
-  const calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
+  let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
+  let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
   registerLocale('calendarLocale', calendarLocale.default );
 
   const momentLocaleObject = {
@@ -175,6 +175,39 @@ export default function i18n(lang) {
   if (_i18n.language !== 'en') {
     require( `moment/locale/${ momentLocaleKey }` )
   }
-  console.log( 'momentLocaleKey', momentLocaleKey );
   moment.locale( momentLocaleKey );
+
+  const html = document.querySelector('html');
+  const callback = function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      const attr = mutation.attributeName;
+      const lang = mutation.target.getAttribute(attr);
+
+      for (const item in calendarLocaleObject) {
+        if (lang === item) {
+          console.log( 'momentLocaleKey', lang, _i18n.language );
+          _i18n.language = lang;
+          console.log( 'momentLocaleKey', lang, _i18n.language );
+
+          let calendarLocaleKey = calendarLocaleObject[ lang ];
+          let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
+          registerLocale('calendarLocale', calendarLocale.default );
+
+          return;
+        }
+      }
+
+      console.log( 'momentLocaleKey', lang, _i18n.language );
+      _i18n.language = 'en-US';
+      console.log( 'momentLocaleKey', lang, _i18n.language );
+      let calendarLocaleKey = calendarLocaleObject[ 'en' ];
+      let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
+      registerLocale('calendarLocale', calendarLocale.default );
+    }
+  };
+
+  const observer = new MutationObserver(callback);
+  observer.observe(html, { attributeFilter: ['lang'] });
+
+  return _i18n.language;
 }
