@@ -62,9 +62,10 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
-            { t( name ) },<span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
+            <span className='translate'>{ t( name ) }</span>,
+            <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
             { (ticketCategory[category] || {}).name !== 'standart' &&
-              <div className='ticketCategory'>
+              <div className='ticketCategory' class='translate'>
                 { ((ticketCategory[category] || {}).title || {} )[lang] }
               </div>
             }
@@ -87,7 +88,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     <div className='ticketsWrapper'>
       {
         (!isDisabledBtn &&
-        <span className='caption'>{ t('Выберите категории билетов') }</span>) ||
+        <span className='caption translate'>{ t('Выберите категории билетов') }</span>) ||
         <div className='cart__error'>{ t('Пока нет билетов') }</div>
       }
       <dl className='ticketsDl'>

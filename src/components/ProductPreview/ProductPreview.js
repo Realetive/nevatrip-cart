@@ -61,17 +61,17 @@ export const ProductPreview = ({ cartKey, productId, lang }) => {
 
   return (
     <fieldset className='listPreviewFieldset'>
-      <legend className='listPreviewLegend'>{title}</legend>
+      <legend className='listPreviewLegend translate'>{title}</legend>
       <ul className='listPreviewData'>
         { date && <li className='listPreviewDataLi'>
-          <div className="listPreviewDataLi__h">
+          <div className="listPreviewDataLi__h translate">
             <b>{ t( 'дата' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">{ renderDate() }</div>
         </li> }
 
         { selectedEvent && <li className='listPreviewDataLi'>
-          <div className="listPreviewDataLi__h">
+          <div className="listPreviewDataLi__h translate">
             <b>{ t( 'время' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">
@@ -90,7 +90,7 @@ export const ProductPreview = ({ cartKey, productId, lang }) => {
       </ul>
       { tickets &&
       <div className='listPreviewTickets'>
-        <div className="listPreviewDataLi__h">
+        <div className="listPreviewDataLi__h translate">
           <b>{ t( 'билеты' ) }</b>
         </div>
         <div className="listPreviewDataLi__p">

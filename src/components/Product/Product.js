@@ -24,7 +24,7 @@ export const Product = (props) => {
 
   return (
     <fieldset className='product product_view_form'>
-      <legend className='product__legend'>
+      <legend className='product__legend translate'>
         {
           urlToProduct
             ? <a href={urlToProduct} style={{ color: 'inherit', textDecoration: 'none' }}>

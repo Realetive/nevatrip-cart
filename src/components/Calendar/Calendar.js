@@ -47,7 +47,7 @@ export const Calendar = ( { cartKey, productId } ) => {
   return (
     <>
       <label>
-        <span className='caption'>{ t( 'Дата поездки' ) }</span>
+        <span className='caption translate'>{ t( 'Дата поездки' ) }</span>
         <input
           readOnly
           type='text'

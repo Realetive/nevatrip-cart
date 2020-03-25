@@ -123,7 +123,7 @@ export const Time = ( { cartKey, productId, setTicketTime } ) => {
             {/*        { checkLanguage( formatOffset(userTimeOffset) ) }*/}
             {/*    </div>*/}
             {/*}*/}
-            <div className='caption'>{ t( 'Выберите время отправления' ) }</div>
+            <div className='caption translate'>{ t( 'Выберите время отправления' ) }</div>
             {
                 <ul className='grid-list'>
                     { renderTimes }
