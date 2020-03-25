@@ -156,8 +156,6 @@ export default function i18n(lang) {
         }
       });
 
-  console.log(_i18n.language)
-
   const calendarLocaleObject = {
     'ru': 'ru',
     'en': 'en-US',

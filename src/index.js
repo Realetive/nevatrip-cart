@@ -3,7 +3,6 @@ import { render } from 'react-dom';
 import App from './components/App/App';
 import * as serviceWorker from './serviceWorker';
 import i18n from "./i18n";
-import logger from 'storeon/devtools/logger';
 
 const root = document.getElementById('root');
 const lang = root.getAttribute('lang');
@@ -11,11 +10,25 @@ const session = new URL(window.location.href).searchParams.get('session')
                 || root.dataset.session
                 || 'test-test-test';
 
+const html = document.querySelector('html');
 const currentLang = i18n(lang);
-console.log(currentLang);
+
+const observer = new MutationObserver(function(mutationsList) {
+    for (const mutation of mutationsList) {
+        const attr = mutation.attributeName;
+        const lang = mutation.target.getAttribute(attr);
+        const currentLang = i18n(lang);
+
+        render(
+            <App session={session} lang={currentLang}/>,
+            root
+        );
+    }
+});
+observer.observe(html, { attributeFilter: ['lang'] });
 
 render(
-  <App session={session} lang={lang} />,
+  <App session={session} lang={currentLang} />,
   root
 );
 
