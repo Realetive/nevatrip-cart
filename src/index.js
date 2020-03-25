@@ -12,7 +12,7 @@ const session = new URL(window.location.href).searchParams.get('session')
                 || 'test-test-test';
 
 const currentLang = i18n(lang);
-console.log(currentLang)ж
+console.log(currentLang);
 
 render(
   <App session={session} lang={lang} />,
