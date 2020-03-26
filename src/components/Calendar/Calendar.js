@@ -12,7 +12,7 @@ const tripTimeZone = 'Europe/Prague';
 
 const getNearestDate = ( date = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" )).toDate(), dates = [] ) => dates.includes( date ) ? date : dates[ 0 ];
 
-export const Calendar = ( { cartKey, productId } ) => {
+export const Calendar = ( { cartKey, productId, isRightTranslate } ) => {
   const { t } = useTranslation();
   const { dispatch, direction, order } = useStoreon('direction', 'order');
   const [ {
@@ -47,7 +47,7 @@ export const Calendar = ( { cartKey, productId } ) => {
   return (
     <>
       <label>
-        <span className='caption'>{ t( 'Дата поездки' ) }</span>
+        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Дата поездки' ) }</span>
         <input
           readOnly
           type='text'

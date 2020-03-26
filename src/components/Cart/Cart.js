@@ -47,7 +47,7 @@ function throttle(func, wait, options) {
   };
 }
 
-export const Cart = ({session, lang}) => {
+export const Cart = ({session, lang, isRightTranslate }) => {
   const { t } = useTranslation();
   const { dispatch, cart, user, order, ticket = {}, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
   const { fullName, email, phone } = user;
@@ -90,7 +90,8 @@ export const Cart = ({session, lang}) => {
           isDisabledBtn={isDisabledBtn}
           isTicketTime={isTicketTime}
           setTicketTime={setTicketTime}
-        />
+          isRightTranslate={isRightTranslate}
+      />
       </li>
     );
   });
@@ -104,6 +105,7 @@ export const Cart = ({session, lang}) => {
           cartKey={key}
           productId={productId}
           lang={lang}
+          isRightTranslate={isRightTranslate}
         />
       </li>
     );
@@ -134,7 +136,7 @@ export const Cart = ({session, lang}) => {
 
       if ( ticket.hasOwnProperty( ticketKey ) ) {
         const { price } = ticket[ ticketKey ];
-        const priceSale = Math.ceil( price - ( price * ( sale / 100 ) ) )
+        const priceSale = Math.ceil( price - ( price * ( sale / 100 ) ) );
 
         sum += count * priceSale;
       }
@@ -221,6 +223,8 @@ export const Cart = ({session, lang}) => {
   }, [session]);
 
   useEffect(() => {
+    if (!paid.hash) return;
+
     setTimeout(async () => {
       const _emailContent = await api.order.getMail( paid.id, paid.hash );
       setEmailContent( _emailContent );
@@ -239,11 +243,11 @@ export const Cart = ({session, lang}) => {
         <ul className='list'>{ products() }</ul>
         <div className='aside'>
           <div className="aside__blank">
-            <span className = 'caption caption_l'>{ t( 'Ваш заказ' ) }</span>
+            <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
             <ul className='listPreview'>{ productsPreview() }</ul>
           </div>
 
-          <div className = 'asideSeparator' ><div className="asideSeparator__line"></div></div>
+          <div className = 'asideSeparator'><div className="asideSeparator__line"></div></div>
 
           <div className="aside__blank">
             <div className='cart__user'>
@@ -276,7 +280,7 @@ export const Cart = ({session, lang}) => {
                 ].map( field => (
                       <div key={field.name} className='cart__field'>
                         <label className='form-label' htmlFor={`id-${field.name}`}>
-                          <span className='caption'>
+                          <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>
                             { field.label }
                           </span>
                         </label>
@@ -295,7 +299,7 @@ export const Cart = ({session, lang}) => {
                           />
                           <svg className='form-icon' fill='green' viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 0 1-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"></path></svg>
                         </div>
-                        <div className='cart__tooltip'>
+                        <div className={ 'cart__tooltip' + ( isRightTranslate ? '' : ' translate' ) }>
                             { (field.name === 'fullName' && t('Почему используем имя'))
                               || (field.name === 'email' && t('Почему используем e-mail'))
                               || (field.name === 'phone' && t('Почему используем телефон'))
@@ -311,7 +315,7 @@ export const Cart = ({session, lang}) => {
                 isShowPromocode
                   ? <label className='form-label'>
                   <span className='caption'>
-                    { t( 'Промокод' ) }&nbsp;
+                    <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Промокод' ) } </span>
                     {
                       sale > 0 ? `«${ promocode.toUpperCase() }» на ${ sale }% 👍` : null
                     }
@@ -326,22 +330,22 @@ export const Cart = ({session, lang}) => {
                       onBlur={()=> !promocode && setShowPromocode(false)}
                     />
                   </label>
-                  : <button className="btn-radio__label" onClick={ () => setShowPromocode(true) }>{ t('У меня есть промокод') }</button>
+                  : <button className={ 'btn-radio__label' + (isRightTranslate ? '' : ' translate' ) } onClick={ () => setShowPromocode(true) }>{ t('У меня есть промокод') }</button>
               }
             </div>
             <span className='checkbox'>
               <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
-              <label className='caption checkboxCaption' htmlFor='ofertaCheck'>
+              <label className={ 'caption checkboxCaption' + (isRightTranslate ? '' : ' translate' ) } htmlFor='ofertaCheck'>
                 { t( 'Я согласен' ) }&nbsp;
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
               </label>
             </span>
             <button className='btn btn_block btn_primary submitBtn' disabled={inProcess || isDisabledBtn || isTicketTime } onClick={() => setValid(ticketStatus.status)}>
-              { t( 'Оплатить' ) }
-              <div className='notranslate'> { sum } </div>
-              { t( 'currency' ) }
+              <span className={ isRightTranslate ? '' : ' translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
             </button>
-             <div className='cart__error'> { !valid && t('Нет выбранных билетов') } </div>
+             <div className='cart__error' >
+               { !valid && <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span> }
+             </div>
           </div>
         </div>
       </form>

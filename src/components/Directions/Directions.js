@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useStoreon from 'storeon/react';
 
-export const Directions = ({ cartKey, productId }) => {
+export const Directions = ({ cartKey, productId, isRightTranslate }) => {
   const { dispatch, product, direction, order } = useStoreon('product', 'direction', 'order');
   const { directions } = product[productId];
   const defaultDirectionKey = ((order[cartKey] || {}).options || [{}])[0].direction || direction[directions[0]]._key;
@@ -32,7 +32,7 @@ export const Directions = ({ cartKey, productId }) => {
   return (
     renderDirections.length > 1
       ? <label>
-          <span className='caption'>Выберите направление</span>
+          <span className={ 'caption'  + ( isRightTranslate ? '' : ' translate' ) }>Выберите направление</span>
           <select
             value={selectedDirection}
             onChange={ event => _setDirection(event.target.value) }

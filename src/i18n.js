@@ -102,6 +102,7 @@ export default function i18n(lang) {
               'currency': '€',
               'widgetLang': 'en-US',
               'currencyTag': 'EUR',
+              'currencyTag': 'EUR',
               'Это время уже не доступно': 'Diese Zeit ist nicht mehr verfügbar',
               'Почему используем имя': 'We use it to identify you',
               'Почему используем e-mail': 'We use it to send you a ticket',
@@ -161,9 +162,6 @@ export default function i18n(lang) {
     'de': 'de',
     'cs': 'cs',
   };
-  const calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
-  const calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
-  registerLocale('calendarLocale', calendarLocale.default );
 
   const momentLocaleObject = {
     'ru': 'ru',
@@ -171,10 +169,26 @@ export default function i18n(lang) {
     'de': 'de',
     'cs': 'cs',
   };
+
+  let isRightTranslate;
+
+  if (calendarLocaleObject.hasOwnProperty(lang) && momentLocaleObject.hasOwnProperty(lang)) {
+      _i18n.language = lang;
+      isRightTranslate = true;
+  } else {
+      _i18n.language = 'en';
+      isRightTranslate = false;
+  }
+
+  let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
+  let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
+  registerLocale('calendarLocale', calendarLocale.default );
+
   const momentLocaleKey = momentLocaleObject[_i18n.language];
   if (_i18n.language !== 'en') {
     require( `moment/locale/${ momentLocaleKey }` )
   }
-  console.log( 'momentLocaleKey', momentLocaleKey );
   moment.locale( momentLocaleKey );
+
+  return [ _i18n.language, isRightTranslate ];
 }
