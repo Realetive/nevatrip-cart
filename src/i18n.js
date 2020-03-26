@@ -190,5 +190,5 @@ export default function i18n(lang) {
   }
   moment.locale( momentLocaleKey );
 
-  return [_i18n.language, isRightTranslate ];
+  return [ _i18n.language, isRightTranslate ];
 }

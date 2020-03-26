@@ -13,7 +13,7 @@ export const Product = (props) => {
   const { t } = useTranslation();
   const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
   const { product, order } = useStoreon( 'product', 'order' );
-  const title = product[productId].title;
+  const title = ( product[productId].title[lang] || {} ).name;
   let direction, date;
   if (order[cartKey].options && order[cartKey].options.length) {
     direction = order[cartKey].options[0].direction;
@@ -28,9 +28,9 @@ export const Product = (props) => {
         {
           urlToProduct
             ? <a href={urlToProduct} style={{ color: 'inherit', textDecoration: 'none' }}>
-                { ( title[lang] || {} ).name }
+                { title }
               </a>
-            : ( title[lang] || {} ).name
+            : title
         }
       </legend>
       <div className='product__inner'>

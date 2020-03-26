@@ -53,7 +53,8 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
-          <div dangerouslySetInnerHTML={{__html: `${name}: ${price}&nbsp;${t( 'currency' )} × ${count} = ${count * price}&nbsp;${t( 'currency' )}`}} />
+          <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ name }: </span>
+          <span dangerouslySetInnerHTML={{__html: `${price}&nbsp;${t( 'currency' )} × ${count} = ${count * price}&nbsp;${t( 'currency' )}`}} />
         </li>
       );
     } )

@@ -62,10 +62,10 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
         <dt className='ticketsItemText' >
-            <span className={ isRightTranslate ? '' : 'translate' }>{ t( name ) }</span>,
+            <span className={ isRightTranslate ? '' : ' translate' }>{ t( name ) }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
             { (ticketCategory[category] || {}).name !== 'standart' &&
-              <div className={ 'ticketCategory ' + ( isRightTranslate ? '' : 'translate' ) }>
+              <div className={ 'ticketCategory ' + ( isRightTranslate ? '' : ' translate' ) }>
                 { ((ticketCategory[category] || {}).title || {} )[lang] }
               </div>
             }
