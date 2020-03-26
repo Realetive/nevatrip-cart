@@ -163,6 +163,7 @@ export const Cart = ({session, lang, isRightTranslate }) => {
           const cp = window.cp;
           const widget = new cp.CloudPayments({
             language: t( 'widgetLang' ),
+            googlePaySupport: false,
           });
           widget.charge({
             publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
