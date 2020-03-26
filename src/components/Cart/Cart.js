@@ -314,7 +314,7 @@ export const Cart = ({session, lang, isRightTranslate }) => {
                 isShowPromocode
                   ? <label className='form-label'>
                   <span className='caption'>
-                    { t( 'Промокод' ) }&nbsp;
+                    <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Промокод' ) } </span>
                     {
                       sale > 0 ? `«${ promocode.toUpperCase() }» на ${ sale }% 👍` : null
                     }
@@ -340,9 +340,11 @@ export const Cart = ({session, lang, isRightTranslate }) => {
               </label>
             </span>
             <button className='btn btn_block btn_primary submitBtn' disabled={inProcess || isDisabledBtn || isTicketTime } onClick={() => setValid(ticketStatus.status)}>
-              <span className={ isRightTranslate ? '' : 'translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
+              <span className={ isRightTranslate ? '' : ' translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
             </button>
-             <div className='cart__error'> { !valid && t('Нет выбранных билетов') } </div>
+             <div className='cart__error' >
+               { !valid && <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span> }
+             </div>
           </div>
         </div>
       </form>
