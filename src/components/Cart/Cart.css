@@ -2,7 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 375px;
+  max-width: 375px;
   margin: 0 auto;
   align-content: center;
 }
@@ -64,7 +64,7 @@
 
 @media (min-width: 1200px){
   .cart {
-    width: 1180px;
+    max-width: 1180px;
     padding-top: 30px;
     display: flex;
     flex-direction: row;
