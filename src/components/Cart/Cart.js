@@ -239,7 +239,7 @@ export const Cart = ({session, lang, isRightTranslate }) => {
   if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>);
 
   return cart && !cart.loading && !cart.error
-    ? <form className='cart' method='post' onSubmit={ checkOut }>
+    ? <form className='form' method='post' onSubmit={ checkOut }>
         <ul className='list'>{ products() }</ul>
         <div className='aside'>
           <div className="aside__blank">
