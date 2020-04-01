@@ -27,7 +27,7 @@ export const api = {
       );
     },
 
-    async updateCart (session, products, promocode) {
+    async updateCart (session, products, promocode, lang) {
       return await fetch(
         `${MAIN_URL}/shoppingCarts/${session}`,
         {
@@ -36,7 +36,8 @@ export const api = {
           body: JSON.stringify({
             sessionId: session,
             products,
-            promocode
+            promocode,
+            lang
           }),
         }
       );
@@ -75,7 +76,7 @@ export const api = {
           headers,
         }
       );
-      
+
       return response.json()
     },
   },
@@ -99,10 +100,10 @@ export const api = {
         url.searchParams.append('id', productId);
         url.searchParams.append('code', code);
         const response = await fetch(url);
-  
+
         return response.text();
       }
-      
+
       return 0;
     },
 
