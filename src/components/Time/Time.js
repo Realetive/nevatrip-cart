@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import useStoreon from 'storeon/react';
 import { format } from 'date-fns';
 import { api } from "../../api";
-import moment from "moment-timezone";
+// import moment from "moment-timezone";
 
 // const tripTimeZone = 'Europe/Prague';
 // const tripTimeZoneOffset = - moment.tz(tripTimeZone).utcOffset();
@@ -42,7 +42,7 @@ export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) 
 
         setTicketTime(new Date() > timeOffset);
 
-        const formatTime = moment( timeOffset ).format( "LT" );
+        const formatTime = format( timeOffset, "h:mm aa" );
 
         return (
             <li key={ eventItem._key }
