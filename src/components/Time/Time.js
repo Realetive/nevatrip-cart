@@ -35,11 +35,15 @@ export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) 
     const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
     const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
     const events = event[ eventGroup ];
+
+    ( events || [] ).sort(( a, b ) => new Date(a.start) - new Date(b.start) );
+
     const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
         const timeOffset = new Date( eventItem.start );
-        timeOffset.setMinutes(timeOffset.getMinutes() + timeOffset.getTimezoneOffset());
-        timeOffset.setMinutes(timeOffset.getMinutes() - eventItem.timeOffset);
         const isOffset = eventItem.expired;
+        const userTimeOffset = timeOffset.getTimezoneOffset();
+
+        timeOffset.setMinutes(timeOffset.getMinutes() + userTimeOffset - eventItem.timeOffset);
 
         setTicketTime(new Date() > timeOffset);
 
