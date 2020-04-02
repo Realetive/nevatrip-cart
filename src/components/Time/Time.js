@@ -7,11 +7,11 @@ import moment from "moment-timezone";
 
 // const tripTimeZone = 'Europe/Prague';
 // const tripTimeZoneOffset = - moment.tz(tripTimeZone).utcOffset();
-
+//
 // function pad (value) {
 //     return value < 10 ? '0' + value : value;
 // }
-
+//
 // function formatOffset(offset) {
 //     const sign = (offset > 0) ? "-" : "+";
 //     const _offset = Math.abs(offset);
@@ -26,17 +26,12 @@ export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) 
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
     const [ time, setTime ] = useState( selectedEvent );
-    // const {
-    //     timeOffset = tripTimeZoneOffset,
-    //     buyTimeOffset = 0,
-    // } = directions[`${productId}.${direction}`];
-    // const userTimeOffset = new Date().getTimezoneOffset();
-
     const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
     const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
     const events = event[ eventGroup ];
+    // const userTimeOffset = new Date().getTimezoneOffset();
 
-    ( events || [] ).sort(( a, b ) => new Date(a.start) - new Date(b.start) );
+    ( events || [] ).sort(( a, b ) => new Date( a.start ) - new Date( b.start ) );
 
     const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
         const timeOffset = new Date( eventItem.start );
