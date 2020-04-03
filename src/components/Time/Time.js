@@ -21,7 +21,7 @@ import { api } from "../../api";
 //     return sign + hours + ":" + minutes;
 // }
 
-export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) => {
+export const Time = ( { cartKey, productId, isRightTranslate, lang } ) => {
     const { t } = useTranslation();
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
@@ -29,7 +29,6 @@ export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) 
     const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
     const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
     const events = event[ eventGroup ];
-    // const userTimeOffset = new Date().getTimezoneOffset();
 
     ( events || [] ).sort(( a, b ) => new Date( a.start ) - new Date( b.start ) );
 
@@ -40,9 +39,7 @@ export const Time = ( { cartKey, productId, setTicketTime, isRightTranslate } ) 
 
         timeOffset.setMinutes(timeOffset.getMinutes() + userTimeOffset - eventItem.timeOffset);
 
-        setTicketTime(new Date() > timeOffset);
-
-        const formatTime = format( timeOffset, "h:mm aa" );
+        const formatTime = timeOffset.toLocaleTimeString( lang, { timeStyle: 'short' } );
 
         return (
             <li key={ eventItem._key }

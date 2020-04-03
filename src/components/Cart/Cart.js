@@ -61,7 +61,9 @@ export const Cart = ({session, lang, isRightTranslate }) => {
   const [ ticketStatus, setTicketStatus ] = useState({});
   const [ valid, setValid ] = useState(true);
   const [ isDisabledBtn, setDisabledBtn ] = useState(Object.keys(ticket).length === 0);
-  const [ isTicketTime, setTicketTime ] = useState(true);
+  const isTicketTime = order && Object.values(order).every(item => {
+    return (((item || {}).options || {}).event || {}).expired;
+  });
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -89,7 +91,7 @@ export const Cart = ({session, lang, isRightTranslate }) => {
           setDisabledBtn={setDisabledBtn}
           isDisabledBtn={isDisabledBtn}
           isTicketTime={isTicketTime}
-          setTicketTime={setTicketTime}
+          // setTicketTime={setTicketTime}
           isRightTranslate={isRightTranslate}
       />
       </li>

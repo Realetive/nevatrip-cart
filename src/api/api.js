@@ -55,18 +55,6 @@ export const api = {
       return response.json();
     },
 
-    async productDates(productId) {
-      const response = await fetch(
-        `${MAIN_URL}/product/${productId}/dates`,
-        {
-          method: 'GET',
-          headers,
-        }
-      );
-
-      return response.json();
-    },
-
     async getProductTime(productId, directionId, date) {
       const response = await fetch(
         `${MAIN_URL}/product/${productId}/schedule/${directionId}/${date}`,
@@ -75,7 +63,7 @@ export const api = {
           headers,
         }
       );
-      
+
       return response.json()
     },
   },
@@ -99,10 +87,10 @@ export const api = {
         url.searchParams.append('id', productId);
         url.searchParams.append('code', code);
         const response = await fetch(url);
-  
+
         return response.text();
       }
-      
+
       return 0;
     },
 

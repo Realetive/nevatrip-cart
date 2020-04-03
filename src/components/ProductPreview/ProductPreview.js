@@ -22,7 +22,7 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
   timeInUTC.setMinutes(timeInUTC.getMinutes() + userTimeOffset - ( selectedEvent || {} ).timeOffset);
 
   const renderTime = () => {
-    return theEvent ? moment( timeInUTC ).format( "LT" ) : '';
+    return theEvent ? timeInUTC.toLocaleTimeString(lang, { timeStyle: 'short' }) : '';
   };
 
   const renderDate = () => {

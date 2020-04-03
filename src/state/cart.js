@@ -6,8 +6,9 @@ export default (store) => {
   store.on('@init', () => ({ cart: null }));
 
   store.on('cart/loading', (state, loading) => {
-    let cart = { ...state['cart'], loading }
-    return { ...state, cart }
+    let cart = { ...state['cart'], loading };
+
+    return { ...state, cart };
   });
 
   store.on('cart/get', async (state, {session, lang}) => {
