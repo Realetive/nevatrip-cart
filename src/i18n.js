@@ -102,7 +102,6 @@ export default function i18n(lang) {
               'currency': '€',
               'widgetLang': 'en-US',
               'currencyTag': 'EUR',
-              'currencyTag': 'EUR',
               'Это время уже не доступно': 'Diese Zeit ist nicht mehr verfügbar',
               'Почему используем имя': 'We use it to identify you',
               'Почему используем e-mail': 'We use it to send you a ticket',

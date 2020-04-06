@@ -3,7 +3,6 @@ import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
 const moment = require( 'moment-timezone' );
-const tripTimeZone = 'Europe/Prague';
 
 export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) => {
   const { t } = useTranslation();
@@ -16,23 +15,27 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
     tickets
   }] = order[cartKey].options || [{}];
 
-  const theEvent = selectedEvent && selectedEvent.start;
+  const theEvent = ( selectedEvent || {} ).start;
+  const timeInUTC = new Date( ( selectedEvent || {} ).start );
+  const userTimeOffset = timeInUTC.getTimezoneOffset();
+
+  timeInUTC.setMinutes(timeInUTC.getMinutes() + userTimeOffset - ( selectedEvent || {} ).timeOffset);
 
   const renderTime = () => {
-    return theEvent ? moment( theEvent ).tz( tripTimeZone ).format( "LT" ) : '';
+    return theEvent ? timeInUTC.toLocaleTimeString(lang, { timeStyle: 'short' }) : '';
   };
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
-    const selectedDate = moment( selectedEvent.start ).tz( tripTimeZone );
+
     //const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
 
     // if ( hours > 21) {
-    //   return `${ t( 'В ночь с' ) } ${ moment( selectedDate ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
+    //   return `${ t( 'В ночь с' ) } ${ moment( timeInUTC ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( timeInUTC.setDate( timeInUTC.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
     // } else if ( hours < 4  || hours === '0:') {
-    //   return `${ t( 'В ночь с' ) } ${ moment( selectedDate.setDate( selectedDate.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( selectedDate ).format( "D MMMM" ) }`;
+    //   return `${ t( 'В ночь с' ) } ${ moment( timeInUTC.setDate( timeInUTC.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( timeInUTC ).format( "D MMMM" ) }`;
     // } else {
-      return moment( selectedDate ).format( 'LL' )
+      return moment( timeInUTC ).format( 'LL' )
     //}
   };
 

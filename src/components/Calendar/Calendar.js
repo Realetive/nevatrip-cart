@@ -3,18 +3,16 @@ import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 import useStoreon from 'storeon/react';
 
-
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
-const moment = require( 'moment-timezone' );
-const tripTimeZone = 'Europe/Prague';
+const getNearestDate = ( date, dates = [] ) => {
+  return dates.includes( date ) ? date : dates[ 0 ];
+};
 
-const getNearestDate = ( date = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" )).toDate(), dates = [] ) => dates.includes( date ) ? date : dates[ 0 ];
-
-export const Calendar = ( { cartKey, productId, isRightTranslate } ) => {
+export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
   const { t } = useTranslation();
-  const { dispatch, direction, order } = useStoreon('direction', 'order');
+  const { dispatch, direction, order } = useStoreon('direction', 'order' );
   const [ {
     direction: selectedDirection,
     date: selectedDate,
@@ -22,17 +20,29 @@ export const Calendar = ( { cartKey, productId, isRightTranslate } ) => {
 
   const {
     dates,
-    buyTimeOffset = 0,
   } = direction[ `${ productId }.${ selectedDirection }` ];
-  const timeOffset = moment( moment().utc().tz( tripTimeZone ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate();
 
-  timeOffset.setMinutes( timeOffset.getMinutes() + buyTimeOffset );
+  const availableDates = dates.map( date => {
+    const availableDate = new Date( date );
+    const userTimeOffset = availableDate.getTimezoneOffset();
+    availableDate.setMinutes(availableDate.getMinutes() + userTimeOffset);
 
-  const availableDates = dates
-    .filter( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() )
-    .sort()
-    .map( date => moment( moment.tz( date, 0 ).format( "YYYY-MM-DD HH:mm:ss" ) ).toDate() );
+    return availableDate;
+  } );
+
   const [ date, setDate ] = useState( getNearestDate( selectedDate, availableDates ) );
+
+  const createDateValue = ( date, lang = 'en' ) => {
+    const languages = {
+      'en': 'en-US',
+      'de': 'de-DE',
+      'cs': 'cs-CS',
+      'ru': 'ru-RU'
+    };
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+    return new Intl.DateTimeFormat( languages[ lang ], options ).format( date );
+  };
 
   useEffect(() => {
     order[ cartKey ].options[ 0 ].date = date;
@@ -44,6 +54,7 @@ export const Calendar = ( { cartKey, productId, isRightTranslate } ) => {
     setDate( getNearestDate( date, availableDates ) );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ selectedDirection ] );
+
   return (
     <>
       <label>
@@ -51,7 +62,7 @@ export const Calendar = ( { cartKey, productId, isRightTranslate } ) => {
         <input
           readOnly
           type='text'
-          value={ moment( date ).format( 'LL' ) }
+          value={ createDateValue( date, lang) }
           className='input input_calendar'
         />
       </label>
