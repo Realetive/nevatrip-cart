@@ -2,8 +2,6 @@ import React from 'react';
 import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
-const moment = require( 'moment-timezone' );
-
 export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) => {
   const { t } = useTranslation();
   const { product, order, direction, ticket = {} } = useStoreon( 'product', 'order', 'direction', 'ticket' );
@@ -16,27 +14,42 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
   }] = order[cartKey].options || [{}];
 
   const theEvent = ( selectedEvent || {} ).start;
-  const timeInUTC = new Date( ( selectedEvent || {} ).start );
-  const userTimeOffset = timeInUTC.getTimezoneOffset();
+  const currentDate = new Date( ( selectedEvent || {} ).start );
+  const userTimeOffset = currentDate.getTimezoneOffset();
 
-  timeInUTC.setMinutes(timeInUTC.getMinutes() + userTimeOffset - ( selectedEvent || {} ).timeOffset);
+  currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - ( selectedEvent || {} ).timeOffset);
 
   const renderTime = () => {
-    return theEvent ? timeInUTC.toLocaleTimeString(lang, { timeStyle: 'short' }) : '';
+    return theEvent ? currentDate.toLocaleTimeString(lang, { timeStyle: 'short' }) : '';
   };
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
 
-    //const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
+    const hours = currentDate.getHours();
+    const local = {
+      'en': 'en-US',
+      'de': 'de-DE',
+      'cs': 'cs-CS',
+      'ru': 'ru-RU'
+    };
+    let options = { day: 'numeric', month: 'long' };
 
-    // if ( hours > 21) {
-    //   return `${ t( 'В ночь с' ) } ${ moment( timeInUTC ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( timeInUTC.setDate( timeInUTC.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
-    // } else if ( hours < 4  || hours === '0:') {
-    //   return `${ t( 'В ночь с' ) } ${ moment( timeInUTC.setDate( timeInUTC.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( timeInUTC ).format( "D MMMM" ) }`;
-    // } else {
-      return moment( timeInUTC ).format( 'LL' )
-    //}
+    if ( hours > 21) {
+      return `${ t( 'В ночь с' ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate ) } 
+        ${ t( 'на' ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate.setDate( currentDate.getDate() ) + 86400000 ) }`;
+    } else if ( hours < 4  || hours === '0') {
+      return `${ t( 'В ночь с' ) }
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate.setDate( currentDate.getDate() ) - 86400000 ) } 
+        ${ t( 'на' ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate ) }`;
+    } else {
+      options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+      return new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate );
+    }
   };
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;

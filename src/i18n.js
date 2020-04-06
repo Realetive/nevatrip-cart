@@ -1,7 +1,6 @@
 import _i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
-import moment from "moment-timezone";
 
 export default function i18n(lang) {
   _i18n
@@ -162,16 +161,9 @@ export default function i18n(lang) {
     'cs': 'cs',
   };
 
-  const momentLocaleObject = {
-    'ru': 'ru',
-    'en': 'en',
-    'de': 'de',
-    'cs': 'cs',
-  };
-
   let isRightTranslate;
 
-  if (calendarLocaleObject.hasOwnProperty(lang) && momentLocaleObject.hasOwnProperty(lang)) {
+  if (calendarLocaleObject.hasOwnProperty(lang)) {
       _i18n.language = lang;
       isRightTranslate = true;
   } else {
@@ -182,12 +174,6 @@ export default function i18n(lang) {
   let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
   let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
   registerLocale('calendarLocale', calendarLocale.default );
-
-  const momentLocaleKey = momentLocaleObject[_i18n.language];
-  if (_i18n.language !== 'en') {
-    require( `moment/locale/${ momentLocaleKey }` )
-  }
-  moment.locale( momentLocaleKey );
 
   return [ _i18n.language, isRightTranslate ];
 }
