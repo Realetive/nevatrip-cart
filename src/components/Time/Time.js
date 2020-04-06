@@ -34,8 +34,8 @@ export const Time = ( { cartKey, productId, isRightTranslate, lang } ) => {
 
     const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
         const timeOffset = new Date( eventItem.start );
-        const isOffset = eventItem.expired;
         const userTimeOffset = timeOffset.getTimezoneOffset();
+        const isOffset = eventItem.expired;
 
         timeOffset.setMinutes(timeOffset.getMinutes() + userTimeOffset - eventItem.timeOffset);
 
