@@ -6,8 +6,7 @@ import useStoreon from 'storeon/react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
-// TODO Заменить Europe/Prague на переменную окружения
-const getNearestDate = ( date = new Intl.DateTimeFormat( { timeZone: 'Europe/Prague' } ).format( new Date() ), dates = [] ) => {
+const getNearestDate = ( date = new Intl.DateTimeFormat( { timeZone: process.env.REACT_APP_TIMEZONE } ).format( new Date() ), dates = [] ) => {
   return dates.includes( date ) ? date : dates[ 0 ];
 };
 
