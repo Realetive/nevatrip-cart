@@ -14,35 +14,41 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
   }] = order[cartKey].options || [{}];
 
   const theEvent = ( selectedEvent || {} ).start;
-  const timeInUTC = new Date( ( selectedEvent || {} ).start );
-  const userTimeOffset = timeInUTC.getTimezoneOffset();
+  const currentDate = new Date( ( selectedEvent || {} ).start );
+  const userTimeOffset = currentDate.getTimezoneOffset();
 
-  timeInUTC.setMinutes(timeInUTC.getMinutes() + userTimeOffset - ( selectedEvent || {} ).timeOffset);
+  currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - ( selectedEvent || {} ).timeOffset);
 
   const renderTime = () => {
-    return theEvent ? timeInUTC.toLocaleTimeString(lang, { timeStyle: 'short' }) : '';
+    return theEvent ? currentDate.toLocaleTimeString(lang, { timeStyle: 'short' }) : '';
   };
 
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
 
-    const hours = timeInUTC.getHours();
+    const hours = currentDate.getHours();
+    const local = {
+      'en': 'en-US',
+      'de': 'de-DE',
+      'cs': 'cs-CS',
+      'ru': 'ru-RU'
+    };
     let options = { day: 'numeric', month: 'long' };
 
     if ( hours > 21) {
       return `${ t( 'В ночь с' ) } 
-        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate ) } 
         ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC.setDate( timeInUTC.getDate() ) + 86400000 ) }`;
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate.setDate( currentDate.getDate() ) + 86400000 ) }`;
     } else if ( hours < 4  || hours === '0') {
       return `${ t( 'В ночь с' ) }
-        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC.setDate( timeInUTC.getDate() ) - 86400000 ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate.setDate( currentDate.getDate() ) - 86400000 ) } 
         ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC ) }`;
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate ) }`;
     } else {
       options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-      return new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC );
+      return new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate );
     }
   };
 
