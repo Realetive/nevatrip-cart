@@ -154,8 +154,10 @@ export const Cart = ({session, lang, isRightTranslate }) => {
     if (currentTicketStatus) {
       setInProcess(true);
 
-      await api.cart.updateCart(session, Object.values(order), promocode);
+      await api.cart.updateCart(session, Object.values(order), promocode, lang);
       const createOrder = await api.order.newOrder({ sessionId: session, user });
+
+      console.log(createOrder)
 
       if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
         const invoiceId = createOrder.payment.Model.Number;
