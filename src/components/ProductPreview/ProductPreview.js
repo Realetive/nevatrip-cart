@@ -2,8 +2,6 @@ import React from 'react';
 import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
-const moment = require( 'moment-timezone' );
-
 export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) => {
   const { t } = useTranslation();
   const { product, order, direction, ticket = {} } = useStoreon( 'product', 'order', 'direction', 'ticket' );
@@ -28,15 +26,24 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
   const renderDate = () => {
     if ( !selectedEvent || !selectedEvent.start ) return;
 
-    //const hours = moment( selectedDate ).format( "LT" ).substr(0, 2);
+    const hours = timeInUTC.getHours();
+    let options = { day: 'numeric', month: 'long' };
 
-    // if ( hours > 21) {
-    //   return `${ t( 'В ночь с' ) } ${ moment( timeInUTC ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( timeInUTC.setDate( timeInUTC.getDate() ) + 86400000 ).format( "D MMMM" ) }`;
-    // } else if ( hours < 4  || hours === '0:') {
-    //   return `${ t( 'В ночь с' ) } ${ moment( timeInUTC.setDate( timeInUTC.getDate() ) - 86400000 ).format( "D MMMM" ) } ${ t( 'на' ) } ${ moment( timeInUTC ).format( "D MMMM" ) }`;
-    // } else {
-      return moment( timeInUTC ).format( 'LL' )
-    //}
+    if ( hours > 21) {
+      return `${ t( 'В ночь с' ) } 
+        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC ) } 
+        ${ t( 'на' ) } 
+        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC.setDate( timeInUTC.getDate() ) + 86400000 ) }`;
+    } else if ( hours < 4  || hours === '0') {
+      return `${ t( 'В ночь с' ) }
+        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC.setDate( timeInUTC.getDate() ) - 86400000 ) } 
+        ${ t( 'на' ) } 
+        ${ new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC ) }`;
+    } else {
+      options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+      return new Intl.DateTimeFormat( 'ru-RU', options ).format( timeInUTC );
+    }
   };
 
   const selectedDirection = `${productId}.${selectedDirectionId}`;
