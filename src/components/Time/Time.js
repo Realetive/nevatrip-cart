@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useStoreon from 'storeon/react';
-import { format } from 'date-fns';
 import { api } from "../../api";
 // import moment from "moment-timezone";
 
@@ -26,20 +25,29 @@ export const Time = ( { cartKey, productId, isRightTranslate, lang } ) => {
     const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
     const [ time, setTime ] = useState( selectedEvent );
-    const formatDate = format( new Date( date ), 'yyyy-MM-dd' );
+
+    const createFormateDate = date => {
+        const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format( date );
+        const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format( date );
+        const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format( date );
+
+        return `${year}-${month}-${day}`;
+    };
+
+    const formatDate = createFormateDate( new Date( date ) );
     const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
     const events = event[ eventGroup ];
 
     ( events || [] ).sort(( a, b ) => new Date( a.start ) - new Date( b.start ) );
 
     const renderTimes = events ? ( events || [] ).map( ( eventItem, index ) => {
-        const timeOffset = new Date( eventItem.start );
-        const userTimeOffset = timeOffset.getTimezoneOffset();
+        const currentDate = new Date( eventItem.start );
+        const userTimeOffset = currentDate.getTimezoneOffset();
         const isOffset = eventItem.expired;
 
-        timeOffset.setMinutes(timeOffset.getMinutes() + userTimeOffset - eventItem.timeOffset);
+        currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - eventItem.timeOffset);
 
-        const formatTime = timeOffset.toLocaleTimeString( lang, { timeStyle: 'short' } );
+        const formatTime = currentDate.toLocaleTimeString( lang, { timeStyle: 'short' } );
 
         return (
             <li key={ eventItem._key }
@@ -86,7 +94,7 @@ export const Time = ( { cartKey, productId, isRightTranslate, lang } ) => {
     useEffect(() => {
         const getTimes = async ( direction, date ) => {
             const scheduleDate = new Date( date );
-            const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+            const formatDate = createFormateDate( scheduleDate );
             const times = await api.product.getProductTime( productId, direction, formatDate );
 
             if ( !times.length ) return;
@@ -102,7 +110,7 @@ export const Time = ( { cartKey, productId, isRightTranslate, lang } ) => {
     useEffect(() => {
         if ( !event ) return;
         const scheduleDate = new Date( date );
-        const formatDate = format( scheduleDate, 'yyyy-MM-dd' );
+        const formatDate = createFormateDate( scheduleDate );
         const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
         const action = events.find(eventItem => eventItem._key === time );
 
