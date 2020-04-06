@@ -6,7 +6,7 @@ import useStoreon from 'storeon/react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
-const getNearestDate = ( date, dates = [] ) => {
+const getNearestDate = ( date = new Intl.DateTimeFormat( { timeZone: 'Europe/Prague' } ).format( new Date() ), dates = [] ) => {
   return dates.includes( date ) ? date : dates[ 0 ];
 };
 
@@ -33,7 +33,7 @@ export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
   const [ date, setDate ] = useState( getNearestDate( selectedDate, availableDates ) );
 
   const createDateValue = ( date, lang = 'en' ) => {
-    const languages = {
+    const local = {
       'en': 'en-US',
       'de': 'de-DE',
       'cs': 'cs-CS',
@@ -41,7 +41,7 @@ export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
     };
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-    return new Intl.DateTimeFormat( languages[ lang ], options ).format( date );
+    return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
   };
 
   useEffect(() => {
