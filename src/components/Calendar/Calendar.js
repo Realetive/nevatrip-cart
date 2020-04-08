@@ -10,17 +10,12 @@ const getNearestDate = ( date = new Intl.DateTimeFormat( { timeZone: process.env
   return dates.includes( date ) ? date : dates[ 0 ];
 };
 
-export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
+export const Calendar = ( { dispatch, order, isRightTranslate, lang, orderOptions, dates } ) => {
   const { t } = useTranslation();
-  const { dispatch, direction, order } = useStoreon('direction', 'order' );
   const [ {
     direction: selectedDirection,
     date: selectedDate,
-  } ] = order[ cartKey ].options;
-
-  const {
-    dates,
-  } = direction[ `${ productId }.${ selectedDirection }` ];
+  } ] = orderOptions;
 
   const availableDates = dates.map( date => {
     const availableDate = new Date( date );
@@ -45,7 +40,7 @@ export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
   };
 
   useEffect(() => {
-    order[ cartKey ].options[ 0 ].date = date;
+    orderOptions[ 0 ].date = date;
     dispatch('order/update', order );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ date ] );

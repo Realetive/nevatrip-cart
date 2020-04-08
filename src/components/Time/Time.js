@@ -22,7 +22,7 @@ import { api } from "../../api";
 
 export const Time = ( { cartKey, productId, isRightTranslate, lang } ) => {
     const { t } = useTranslation();
-    const { dispatch, event, order, direction: directions } = useStoreon( 'product', 'event', 'order', 'direction' );
+    const { dispatch, event, order } = useStoreon( 'product', 'event', 'order', 'direction' );
     const [ { direction, date, event: selectedEvent } ] = order[ cartKey ].options;
     const [ time, setTime ] = useState( selectedEvent );
 

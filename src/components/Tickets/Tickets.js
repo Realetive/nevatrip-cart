@@ -34,6 +34,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     setStatusTickets({
       status: Object.values(ticket).some(element => element.count >= 1)
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getCount = (_key, count) => {

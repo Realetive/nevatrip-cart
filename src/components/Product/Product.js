@@ -12,13 +12,19 @@ import {useTranslation} from 'react-i18next';
 export const Product = (props) => {
   const { t } = useTranslation();
   const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
-  const { product, order } = useStoreon( 'product', 'order' );
+  const { dispatch, product, order, direction: directions } = useStoreon( 'product', 'order', 'direction' );
   const title = ( product[productId].title[lang] || {} ).name;
   let direction, date;
   if (order[cartKey].options && order[cartKey].options.length) {
     direction = order[cartKey].options[0].direction;
     date = order[cartKey].options[0].date;
   }
+
+
+  const orderOptions = order[cartKey].options || [{}];
+  const { dates } = directions[ `${ productId }.${ orderOptions[0].direction }` ];
+
+
 
   const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
 
@@ -35,7 +41,14 @@ export const Product = (props) => {
       </legend>
       <div className='product__inner'>
         <div className='colDesktop'>
-          { direction && <Calendar {...props} /> }
+          { direction && <Calendar
+              dispatch={dispatch}
+              order={order}
+              lang={lang}
+              isRightTranslate={isRightTranslate}
+              orderOptions={orderOptions}
+              dates={dates}
+          /> }
         </div>
         <div className='colDesktop'>
           <Directions {...props} />
