@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import useStoreon from 'storeon/react';
 
 import { Calendar } from '../Calendar/Calendar';
@@ -8,6 +8,10 @@ import { Tickets } from '../Tickets/Tickets';
 
 import './Product.css';
 import {useTranslation} from 'react-i18next';
+
+const getNearestDate = ( date, dates = [] ) => {
+  return dates.includes( date ) ? date : dates[ 0 ];
+};
 
 export const Product = (props) => {
   const { t } = useTranslation();
@@ -23,6 +27,26 @@ export const Product = (props) => {
 
   const orderOptions = order[cartKey].options || [{}];
   const { dates } = directions[ `${ productId }.${ orderOptions[0].direction }` ];
+  const onDateChange = ( date ) => {
+    orderOptions[ 0 ].date = date;
+    dispatch('order/update', order );
+  };
+
+  const [ selectedDate, setSelectedDate ] = useState( getNearestDate(date, dates) );
+
+  const availableDates = dates.map( date => {
+    const availableDate = new Date( date );
+    const userTimeOffset = availableDate.getTimezoneOffset();
+    availableDate.setMinutes(availableDate.getMinutes() + userTimeOffset);
+
+    return availableDate;
+  } );
+
+
+  useEffect(() => {
+    setSelectedDate( getNearestDate( date, availableDates ) );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ direction ] );
 
 
 
@@ -42,12 +66,12 @@ export const Product = (props) => {
       <div className='product__inner'>
         <div className='colDesktop'>
           { direction && <Calendar
-              dispatch={dispatch}
-              order={order}
               lang={lang}
               isRightTranslate={isRightTranslate}
               orderOptions={orderOptions}
-              dates={dates}
+              dates={availableDates}
+              onDateChange={onDateChange}
+              selectedDate={selectedDate}
           /> }
         </div>
         <div className='colDesktop'>
