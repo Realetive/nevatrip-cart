@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import useStoreon from 'storeon/react';
 
 import { Calendar } from '../Calendar/Calendar';
@@ -16,22 +16,19 @@ const getNearestDate = ( date, dates = [] ) => {
 export const Product = (props) => {
   const { t } = useTranslation();
   const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
-  const { dispatch, product, order, direction: directions } = useStoreon( 'product', 'order', 'direction' );
+  const { dispatch, product, order, direction: directions, ticket, ticketCategory } = useStoreon( 'product', 'order', 'direction', 'ticket', 'ticketCategory' );
   const title = ( product[productId].title[lang] || {} ).name;
   let direction, date;
   if (order[cartKey].options && order[cartKey].options.length) {
     direction = order[cartKey].options[0].direction;
     date = order[cartKey].options[0].date;
   }
-
-
   const orderOptions = order[cartKey].options || [{}];
   const { dates } = directions[ `${ productId }.${ orderOptions[0].direction }` ];
   const onDateChange = ( date ) => {
     orderOptions[ 0 ].date = date;
     dispatch('order/update', order );
   };
-
   const [ selectedDate, setSelectedDate ] = useState( getNearestDate(date, dates) );
 
   const availableDates = dates.map( date => {
@@ -41,14 +38,29 @@ export const Product = (props) => {
 
     return availableDate;
   } );
+  console.log('∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞');
+  const tickets = directions[ `${ productId }.${ direction }` ].tickets;
 
+  const initialTickets = tickets.reduce( ( obj, ticketId ) => {
+    const { _key, count } = ticket[ ticketId ];
+    obj[ _key ] = count;
+
+    return obj;
+  }, {} );
+
+  const [ _tickets, _setTickets ] = useState(initialTickets);
+
+  useEffect(() => {
+    order[cartKey].options[0].tickets = _tickets;
+    dispatch('order/update', order);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_tickets]);
+  console.log('ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ');
 
   useEffect(() => {
     setSelectedDate( getNearestDate( date, availableDates ) );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ direction ] );
-
-
 
   const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
 
@@ -80,7 +92,18 @@ export const Product = (props) => {
             ( date && <Time {...props} /> ) ||
             ( isTicketTime && <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('На выбранную дату нет прогулок') }</div> )
           }
-          { direction && <Tickets {...props} /> }
+          { direction && <Tickets
+              getStatus={props.getStatus}
+              setDisabledBtn={props.setDisabledBtn}
+              isDisabledBtn={props.isDisabledBtn}
+              lang={lang}
+              isRightTranslate={isRightTranslate}
+              tickets={tickets}
+              _tickets={_tickets}
+              _setTickets={_setTickets}
+              ticket={ticket}
+              ticketCategory={ticketCategory}
+          /> }
         </div>
       </div>
     </fieldset>
