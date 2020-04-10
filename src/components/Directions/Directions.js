@@ -1,7 +1,8 @@
 import React from 'react';
 
-export const Directions = ({ isRightTranslate, directionsId, selectedDirection, _setDirection, directions }) => {
-  const renderDirections = directionsId.map((directionId) => {
+export const Directions = ( props ) => {
+    const { isRightTranslate, directionsId, selectedDirection, _setDirection, directions } = props;
+    const renderDirections = directionsId.map((directionId) => {
     const {
       _key,
       title,
@@ -14,20 +15,20 @@ export const Directions = ({ isRightTranslate, directionsId, selectedDirection, 
         { title }
       </option>
     );
-  });
+    });
 
-  return (
-    renderDirections.length > 1
-      ? <label>
-          <span className={ 'caption'  + ( isRightTranslate ? '' : ' translate' ) }>Выберите направление</span>
-          <select
-            value={selectedDirection}
-            onChange={ event => _setDirection(event.target.value) }
-            className = 'input'
-          >
-            {renderDirections}
-          </select>
-        </label>
-      : null
-  );
+    return (
+        renderDirections.length > 1
+          ? <label>
+              <span className={ 'caption'  + ( isRightTranslate ? '' : ' translate' ) }>Выберите направление</span>
+              <select
+                value={selectedDirection}
+                onChange={ event => _setDirection(event.target.value) }
+                className = 'input'
+              >
+                {renderDirections}
+              </select>
+            </label>
+          : null
+    );
 };

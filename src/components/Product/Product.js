@@ -11,6 +11,7 @@ import { api } from '../../api';
 import './Product.css';
 
 const getNearestDate = ( date, dates = [] ) => {
+  console.log(dates.includes( date ) ? date : dates[ 0 ])
   return dates.includes( date ) ? date : dates[ 0 ];
 };
 
@@ -18,29 +19,24 @@ export const Product = (props) => {
   const { t } = useTranslation();
   const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
   const { dispatch, product, order, direction: directions, ticket, ticketCategory, event } = useStoreon( 'product', 'order', 'direction', 'ticket', 'ticketCategory', 'event' );
-  const { directions: directionsId } = product[productId];
-  const title = ( product[productId].title[lang] || {} ).name;
-  let direction, date;
-  if (order[cartKey].options && order[cartKey].options.length) {
-    direction = order[cartKey].options[0].direction;
-    date = order[cartKey].options[0].date;
-  }
   const orderOptions = order[cartKey].options || [{}];
-  const { dates } = directions[ `${ productId }.${ orderOptions[0].direction }` ];
+  const [{
+    direction,
+    date,
+    event: selectedEvent
+  }] = orderOptions;
+  const { directions: directionsId } = product[productId];
+  const defaultDirectionKey = direction || directions[directionsId[0]]._key;
+  const title = ( product[productId].title[lang] || {} ).name;
+  const { dates } = directions[ `${ productId }.${ direction }` ];
+  const { tickets } = directions[ `${ productId }.${ direction }` ];
+  const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
+
   const onDateChange = ( date ) => {
     orderOptions[ 0 ].date = date;
     dispatch('order/update', order );
+
   };
-  const [ selectedDate, setSelectedDate ] = useState( getNearestDate(date, dates) );
-
-  const availableDates = dates.map( date => {
-    const availableDate = new Date( date );
-    const userTimeOffset = availableDate.getTimezoneOffset();
-    availableDate.setMinutes(availableDate.getMinutes() + userTimeOffset);
-
-    return availableDate;
-  } );
-  const tickets = directions[ `${ productId }.${ direction }` ].tickets;
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
     const { _key, count } = ticket[ ticketId ];
@@ -49,8 +45,13 @@ export const Product = (props) => {
     return obj;
   }, {} );
 
-  const [ _tickets, _setTickets ] = useState(initialTickets);
-  const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
+  const availableDates = dates.map( date => {
+    const availableDate = new Date( date );
+    const userTimeOffset = availableDate.getTimezoneOffset();
+    availableDate.setMinutes(availableDate.getMinutes() + userTimeOffset);
+
+    return availableDate;
+  } );
 
   const createFormateDate = date => {
     const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format( date );
@@ -62,9 +63,10 @@ export const Product = (props) => {
   const formatDate = createFormateDate( new Date( date ) );
   const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
   const events = event[ eventGroup ];
-  const [ { event: selectedEvent } ] = orderOptions;
+
+  const [ selectedDate, setSelectedDate ] = useState( getNearestDate(date, dates) );
+  const [ _tickets, _setTickets ] = useState(initialTickets);
   const [ time, setTime ] = useState( selectedEvent );
-  const defaultDirectionKey = (orderOptions || [{}])[0].direction || direction[directionsId[0]]._key;
   const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
 
   useEffect(() => {
