@@ -5,8 +5,20 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ getStatus, setDisabledBtn, isDisabledBtn, lang, isRightTranslate, tickets, _tickets, _setTickets, ticket, ticketCategory }) => {
+export const Tickets = ( props ) => {
   const { t } = useTranslation();
+  const {
+      getStatus,
+      setDisabledBtn,
+      isDisabledBtn,
+      lang,
+      isRightTranslate,
+      tickets,
+      _tickets,
+      _setTickets,
+      ticket,
+      ticketCategory
+  } = props;
   const [statusTickets, setStatusTickets] = useState({});
 
   setDisabledBtn(tickets.length === 0);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const Counter = ({ _key, tickets, setTickets, defaultValue, price, getCount }) => {
+const Counter = ( props ) => {
+  const { _key, tickets, setTickets, defaultValue, price, getCount } = props;
   const [count, _setValue] = useState(defaultValue || 0);
 
   useEffect(() => {

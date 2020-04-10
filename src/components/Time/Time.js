@@ -18,8 +18,9 @@ import { useTranslation } from 'react-i18next';
 //     return sign + hours + ":" + minutes;
 // }
 
-export const Time = ( { isRightTranslate, lang, time, setTime, events, formatDate, eventGroup } ) => {
+export const Time = ( props ) => {
     const { t } = useTranslation();
+    const { isRightTranslate, lang, time, setTime, events, formatDate, eventGroup } = props;
 
     ( events || [] ).sort(( a, b ) => new Date( a.start ) - new Date( b.start ) );
 

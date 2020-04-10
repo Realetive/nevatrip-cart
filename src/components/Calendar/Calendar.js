@@ -5,8 +5,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
-export const Calendar = ( { isRightTranslate, lang, dates, onDateChange, selectedDate } ) => {
+export const Calendar = ( props ) => {
   const { t } = useTranslation();
+  const { isRightTranslate, lang, dates, onDateChange, selectedDate } = props;
   const [ date, setDate ] = useState( selectedDate );
   const createDateValue = ( date, lang = 'en' ) => {
     const local = {

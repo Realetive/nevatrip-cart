@@ -30,7 +30,7 @@ export const Product = (props) => {
     event: selectedEvent
   }] = orderOptions;
   const { directions: directionsId } = product[productId];
-  const defaultDirectionKey = direction || directions[directionsId[0]]._key;
+  const defaultDirectionKey = direction || directions[ directionsId[0] ]._key;
   const title = ( product[productId].title[lang] || {} ).name;
   const { dates } = directions[ `${ productId }.${ direction }` ];
   const { tickets } = directions[ `${ productId }.${ direction }` ];
@@ -68,10 +68,10 @@ export const Product = (props) => {
   const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
   const events = event[ eventGroup ];
 
-  const [ selectedDate, setSelectedDate ] = useState( getNearestDate(date, dates) );
-  const [ _tickets, _setTickets ] = useState(initialTickets);
+  const [ selectedDate, setSelectedDate ] = useState( getNearestDate( date, dates) );
+  const [ _tickets, _setTickets ] = useState( initialTickets );
   const [ time, setTime ] = useState( selectedEvent );
-  const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
+  const [selectedDirection, _setDirection] = useState( defaultDirectionKey );
 
   useEffect(() => {
     order[cartKey].options[0].tickets = _tickets;
