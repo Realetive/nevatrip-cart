@@ -11,8 +11,12 @@ import { api } from '../../api';
 import './Product.css';
 
 const getNearestDate = ( date, dates = [] ) => {
-  console.log(dates.includes( date ) ? date : dates[ 0 ])
-  return dates.includes( date ) ? date : dates[ 0 ];
+  const nearestDate = new Date(dates.includes( date ) ? date : dates[ 0 ]);
+  const userTimeOffset = nearestDate.getTimezoneOffset();
+
+  nearestDate.setMinutes(nearestDate.getMinutes() + userTimeOffset);
+
+  return nearestDate;
 };
 
 export const Product = (props) => {
