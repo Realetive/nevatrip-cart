@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStoreon from 'storeon/react';
 
 import Counter from '../Counter/Counter';
 

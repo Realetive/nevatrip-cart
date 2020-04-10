@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import useStoreon from 'storeon/react';
+import { useTranslation } from 'react-i18next';
 
 import { Calendar } from '../Calendar/Calendar';
 import { Directions } from '../Directions/Directions';
 import { Time } from '../Time/Time';
 import { Tickets } from '../Tickets/Tickets';
 
+import { api } from '../../api';
 import './Product.css';
-import {useTranslation} from 'react-i18next';
 
 const getNearestDate = ( date, dates = [] ) => {
   return dates.includes( date ) ? date : dates[ 0 ];
@@ -16,7 +17,7 @@ const getNearestDate = ( date, dates = [] ) => {
 export const Product = (props) => {
   const { t } = useTranslation();
   const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
-  const { dispatch, product, order, direction: directions, ticket, ticketCategory } = useStoreon( 'product', 'order', 'direction', 'ticket', 'ticketCategory' );
+  const { dispatch, product, order, direction: directions, ticket, ticketCategory, event } = useStoreon( 'product', 'order', 'direction', 'ticket', 'ticketCategory', 'event' );
   const title = ( product[productId].title[lang] || {} ).name;
   let direction, date;
   if (order[cartKey].options && order[cartKey].options.length) {
@@ -38,7 +39,6 @@ export const Product = (props) => {
 
     return availableDate;
   } );
-  console.log('∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞');
   const tickets = directions[ `${ productId }.${ direction }` ].tickets;
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
@@ -55,7 +55,6 @@ export const Product = (props) => {
     dispatch('order/update', order);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_tickets]);
-  console.log('ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ');
 
   useEffect(() => {
     setSelectedDate( getNearestDate( date, availableDates ) );
@@ -63,6 +62,49 @@ export const Product = (props) => {
   }, [ direction ] );
 
   const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
+
+  const createFormateDate = date => {
+    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format( date );
+    const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format( date );
+    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format( date );
+
+    return `${year}-${month}-${day}`;
+  };
+  const formatDate = createFormateDate( new Date( date ) );
+  const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
+  const events = event[ eventGroup ];
+  const [ { event: selectedEvent } ] = orderOptions;
+
+  const [ time, setTime ] = useState( selectedEvent );
+
+  useEffect(() => {
+    if ( !event ) return;
+    const scheduleDate = new Date( date );
+    const formatDate = createFormateDate( scheduleDate );
+    const events = event[ `${productId}.${direction}.${formatDate}` ] || [];
+    const action = events.find(eventItem => eventItem._key === time );
+
+    orderOptions[ 0 ].event = action;
+
+    dispatch('order/update', order);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time, event]);
+
+  useEffect(() => {
+    const getTimes = async ( direction, date ) => {
+      const scheduleDate = new Date( date );
+      const formatDate = createFormateDate( scheduleDate );
+      const times = await api.product.getProductTime( productId, direction, formatDate );
+
+      if ( !times.length ) return;
+
+      setTime( times[ 0 ]._key );
+      dispatch('event/add', { [ `${ productId }.${ direction }.${ formatDate }` ]: times });
+    };
+
+    getTimes( direction, date );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ direction, date ]);
 
   return (
     <fieldset className='product product_view_form'>
@@ -89,7 +131,15 @@ export const Product = (props) => {
         <div className='colDesktop'>
           <Directions {...props} />
           {
-            ( date && <Time {...props} /> ) ||
+            ( date && <Time
+                isRightTranslate={isRightTranslate}
+                orderOptions={orderOptions}
+                time={time}
+                setTime={setTime}
+                events={events}
+                formatDate={formatDate}
+                eventGroup={eventGroup}
+            /> ) ||
             ( isTicketTime && <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('На выбранную дату нет прогулок') }</div> )
           }
           { direction && <Tickets
