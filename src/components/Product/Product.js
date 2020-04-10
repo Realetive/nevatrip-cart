@@ -29,8 +29,7 @@ export const Product = (props) => {
     date,
     event: selectedEvent
   }] = orderOptions;
-  const { directions: directionsId } = product[productId];
-  const defaultDirectionKey = direction || directions[ directionsId[0] ]._key;
+  const defaultDirectionKey = direction || directions[ product[productId].directions[0] ]._key;
   const title = ( product[productId].title[lang] || {} ).name;
   const { dates } = directions[ `${ productId }.${ direction }` ];
   const { tickets } = directions[ `${ productId }.${ direction }` ];
@@ -39,7 +38,6 @@ export const Product = (props) => {
   const onDateChange = ( date ) => {
     orderOptions[ 0 ].date = date;
     dispatch('order/update', order );
-
   };
 
   const initialTickets = tickets.reduce( ( obj, ticketId ) => {
@@ -145,7 +143,7 @@ export const Product = (props) => {
         <div className='colDesktop'>
           <Directions
               isRightTranslate={isRightTranslate}
-              directionsId={directionsId}
+              directionsId={ product[productId].directions }
               orderOptions={orderOptions}
               selectedDirection={selectedDirection}
               _setDirection={_setDirection}
