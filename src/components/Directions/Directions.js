@@ -17,6 +17,8 @@ export const Directions = (props) => {
     );
   });
 
+  console.log(renderDirections)
+
   return (
     renderDirections.length > 1
       ? <label>

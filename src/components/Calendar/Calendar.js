@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 
@@ -8,7 +8,6 @@ import './Calendar.css';
 export const Calendar = ( props ) => {
   const { t } = useTranslation();
   const { isRightTranslate, lang, dates, onDateChange, selectedDate } = props;
-  const [ date, setDate ] = useState( selectedDate );
   const createDateValue = ( date, lang = 'en' ) => {
     const local = {
       'en': 'en-US',
@@ -21,11 +20,6 @@ export const Calendar = ( props ) => {
     return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
   };
 
-  useEffect( () => {
-    onDateChange( date );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ date ] );
-
   return (
     <>
       <label>
@@ -33,7 +27,7 @@ export const Calendar = ( props ) => {
         <input
           readOnly
           type='text'
-          value={ createDateValue( date, lang) }
+          value={ createDateValue( selectedDate, lang) }
           className='input input_calendar'
         />
       </label>
@@ -44,8 +38,8 @@ export const Calendar = ( props ) => {
           dateFormat='dd MMMM yyyy'
           includeDates={ dates }
           locale='calendarLocale'
-          selected={ date }
-          onChange={ date => setDate( date ) }
+          selected={ selectedDate }
+          onChange={ date => onDateChange( date ) }
         />
       </div>
     </>

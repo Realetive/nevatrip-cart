@@ -10,6 +10,24 @@ import { Tickets } from '../Tickets/Tickets';
 import { api } from '../../api';
 import './Product.css';
 
+// import moment from "moment-timezone";
+
+// const tripTimeZone = 'Europe/Prague';
+// const tripTimeZoneOffset = - moment.tz(tripTimeZone).utcOffset();
+//
+// function pad (value) {
+//     return value < 10 ? '0' + value : value;
+// }
+//
+// function formatOffset(offset) {
+//     const sign = (offset > 0) ? "-" : "+";
+//     const _offset = Math.abs(offset);
+//     const hours = pad(Math.floor(_offset / 60));
+//     const minutes = pad(_offset % 60);
+//
+//     return sign + hours + ":" + minutes;
+// }
+
 const getNearestDate = ( date, dates = [] ) => {
   const nearestDate = new Date(dates.includes( date ) ? date : dates[ 0 ]);
   const userTimeOffset = nearestDate.getTimezoneOffset();
@@ -37,6 +55,7 @@ export const Product = (props) => {
 
   const onDateChange = ( date ) => {
     orderOptions[ 0 ].date = date;
+    setSelectedDate( date );
     dispatch('order/update', order );
   };
 
@@ -70,6 +89,8 @@ export const Product = (props) => {
   const [ _tickets, _setTickets ] = useState( initialTickets );
   const [ time, setTime ] = useState( selectedEvent );
   const [selectedDirection, _setDirection] = useState( defaultDirectionKey );
+
+  ( events || [] ).sort(( a, b ) => new Date( a.start ) - new Date( b.start ) );
 
   useEffect(() => {
     order[cartKey].options[0].tickets = _tickets;
@@ -149,18 +170,48 @@ export const Product = (props) => {
               _setDirection={_setDirection}
               directions={directions}
           />
-          {
-            ( date && <Time
-                isRightTranslate={isRightTranslate}
-                orderOptions={orderOptions}
-                time={time}
-                setTime={setTime}
-                events={events}
-                formatDate={formatDate}
-                eventGroup={eventGroup}
-            /> ) ||
-            ( isTicketTime && <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('На выбранную дату нет прогулок') }</div> )
-          }
+          <div>
+            {/*{*/}
+            {/*    userTimeOffset !== tripTimeZoneOffset &&*/}
+            {/*    <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>*/}
+            {/*        { checkLanguage( formatOffset(userTimeOffset) ) }*/}
+            {/*    </div>*/}
+            {/*}*/}
+            <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
+            {
+              <ul className='grid-list'>
+                {
+                  events ? ( events || [] ).map( ( eventItem, index ) => {
+                    const currentDate = new Date( eventItem.start );
+                    const userTimeOffset = currentDate.getTimezoneOffset();
+                    const isOffset = eventItem.expired;
+
+                    currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - eventItem.timeOffset);
+
+                    const date = {
+                      currentDate: currentDate,
+                      isOffset: isOffset,
+                      key: eventItem._key,
+                      inputName: eventGroup
+                    };
+
+                    return ( date && <Time
+                      key={index}
+                        orderOptions={orderOptions}
+                        time={time}
+                        setTime={setTime}
+                        formatDate={formatDate}
+                        eventGroup={eventGroup}
+                        eventItem={eventItem}
+                        index={index}
+                      date={date}
+                    />)
+                  } ) : []
+                }
+              </ul> ||
+              ( isTicketTime && <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('На выбранную дату нет прогулок') }</div> )
+            }
+          </div>
           { direction && <Tickets
               getStatus={props.getStatus}
               setDisabledBtn={props.setDisabledBtn}
