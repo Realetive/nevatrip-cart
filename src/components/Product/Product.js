@@ -18,6 +18,7 @@ export const Product = (props) => {
   const { t } = useTranslation();
   const { cartKey, productId, isTicketTime, isRightTranslate, lang } = props;
   const { dispatch, product, order, direction: directions, ticket, ticketCategory, event } = useStoreon( 'product', 'order', 'direction', 'ticket', 'ticketCategory', 'event' );
+  const { directions: directionsId } = product[productId];
   const title = ( product[productId].title[lang] || {} ).name;
   let direction, date;
   if (order[cartKey].options && order[cartKey].options.length) {
@@ -49,18 +50,6 @@ export const Product = (props) => {
   }, {} );
 
   const [ _tickets, _setTickets ] = useState(initialTickets);
-
-  useEffect(() => {
-    order[cartKey].options[0].tickets = _tickets;
-    dispatch('order/update', order);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_tickets]);
-
-  useEffect(() => {
-    setSelectedDate( getNearestDate( date, availableDates ) );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ direction ] );
-
   const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${ product[productId].oldId }` : '';
 
   const createFormateDate = date => {
@@ -74,8 +63,20 @@ export const Product = (props) => {
   const eventGroup = `${ productId }.${ direction }.${ formatDate }`;
   const events = event[ eventGroup ];
   const [ { event: selectedEvent } ] = orderOptions;
-
   const [ time, setTime ] = useState( selectedEvent );
+  const defaultDirectionKey = (orderOptions || [{}])[0].direction || direction[directionsId[0]]._key;
+  const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
+
+  useEffect(() => {
+    order[cartKey].options[0].tickets = _tickets;
+    dispatch('order/update', order);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_tickets]);
+
+  useEffect(() => {
+    setSelectedDate( getNearestDate( date, availableDates ) );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ direction ] );
 
   useEffect(() => {
     if ( !event ) return;
@@ -106,6 +107,13 @@ export const Product = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ direction, date ]);
 
+  useEffect(() => {
+    order[cartKey].options = order[cartKey].options || [{}];
+    order[cartKey].options[0].direction = selectedDirection;
+    dispatch('order/update', order);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDirection])
+
   return (
     <fieldset className='product product_view_form'>
       <legend className={ 'product__legend' + ( isRightTranslate ? '' : ' translate' ) }>
@@ -129,7 +137,14 @@ export const Product = (props) => {
           /> }
         </div>
         <div className='colDesktop'>
-          <Directions {...props} />
+          <Directions
+              isRightTranslate={isRightTranslate}
+              directionsId={directionsId}
+              orderOptions={orderOptions}
+              selectedDirection={selectedDirection}
+              _setDirection={_setDirection}
+              directions={directions}
+          />
           {
             ( date && <Time
                 isRightTranslate={isRightTranslate}

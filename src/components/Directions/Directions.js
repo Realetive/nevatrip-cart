@@ -1,24 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import useStoreon from 'storeon/react';
+import React from 'react';
 
-export const Directions = ({ cartKey, productId, isRightTranslate }) => {
-  const { dispatch, product, direction, order } = useStoreon('product', 'direction', 'order');
-  const { directions } = product[productId];
-  const defaultDirectionKey = ((order[cartKey] || {}).options || [{}])[0].direction || direction[directions[0]]._key;
-  const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
-
-  useEffect(() => {
-    order[cartKey].options = order[cartKey].options || [{}];
-    order[cartKey].options[0].direction = selectedDirection;
-    dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDirection])
-
-  const renderDirections = directions.map((directionId) => {
+export const Directions = ({ isRightTranslate, directionsId, selectedDirection, _setDirection, directions }) => {
+  const renderDirections = directionsId.map((directionId) => {
     const {
       _key,
       title,
-    } = direction[directionId];
+    } = directions[directionId];
 
     return (
       <option
