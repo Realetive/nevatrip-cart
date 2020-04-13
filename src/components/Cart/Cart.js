@@ -58,7 +58,7 @@ function throttle( func, wait, options ) {
 
 export const Cart = ( { session, lang, isRightTranslate } ) => {
   const { t } = useTranslation();
-  const { dispatch, cart, user, order, ticket = {}, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
+  const { dispatch, cart, user, order, ticket = {}, product, direction } = useStoreon('cart', 'user', 'order', 'ticket', 'product', 'direction');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
@@ -108,14 +108,20 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
   const productsPreview = () => cart.map(key => {
     const { productId } = order[key];
+    const orderOptions = order[key].options || [{}];
+    const selectedDirection = direction[`${productId}.${orderOptions[0].direction}`];
+    console.log(selectedDirection)
 
     return (
       <li className='cart__item cart__item_view_product' key={ key }>
         <ProductPreview
-          cartKey={key}
           productId={productId}
           lang={lang}
           isRightTranslate={isRightTranslate}
+          title={ ( product[productId].title[lang] || {} ).name }
+          directions={ product[productId].directions }
+          orderOptions={ orderOptions }
+          selectedDirection={selectedDirection}
         />
       </li>
     );

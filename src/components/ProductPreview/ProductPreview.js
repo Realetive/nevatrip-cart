@@ -2,16 +2,15 @@ import React from 'react';
 import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
-export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) => {
+export const ProductPreview = ({ productId, lang, isRightTranslate, title, directions, orderOptions, selectedDirection }) => {
   const { t } = useTranslation();
-  const { product, order, direction, ticket = {} } = useStoreon( 'product', 'order', 'direction', 'ticket' );
-  const title = product[productId].title;
+  const { ticket = {} } = useStoreon(  'ticket' );
   const [{
     direction: selectedDirectionId,
     date,
     event: selectedEvent,
     tickets
-  }] = order[cartKey].options || [{}];
+  }] = orderOptions;
 
   const theEvent = ( selectedEvent || {} ).start;
   const currentDate = new Date( ( selectedEvent || {} ).start );
@@ -51,9 +50,7 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
       return new Intl.DateTimeFormat( local[ lang ], options ).format( currentDate );
     }
   };
-
-  const selectedDirection = `${productId}.${selectedDirectionId}`;
-
+  console.log(tickets)
   const renderTicket = () => {
     return Object.keys(tickets).map(ticketKey => {
       const count = tickets[ticketKey];
@@ -78,7 +75,7 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
 
   return (
     <fieldset className='listPreviewFieldset'>
-      <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ (title[lang] || {} ).name }</legend>
+      <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
       <ul className='listPreviewData'>
         { date && <li className='listPreviewDataLi'>
           <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
@@ -96,12 +93,12 @@ export const ProductPreview = ({ cartKey, productId, lang, isRightTranslate }) =
           </div>
         </li> }
 
-        { product[productId].directions.length > 1 && selectedDirectionId && direction[selectedDirection] && <li className='listPreviewDataLi'>
+        { directions.length > 1 && selectedDirectionId && selectedDirection && <li className='listPreviewDataLi'>
           <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
             <b>направление</b>&nbsp;/&nbsp;<span className="text_en">direction</span>
           </div>
           <div className="listPreviewDataLi__p">
-            { direction[selectedDirection].title }
+            { ( selectedDirection || {}).title[lang] || '' }
           </div>
         </li> }
       </ul>
