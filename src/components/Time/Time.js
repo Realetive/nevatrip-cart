@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 
 export const Time = ( props ) => {
   const { t } = useTranslation();
-  const { times, isRightTranslate, lang, onTimeChange, formatDate } = props;
+  const { times, isRightTranslate, lang, onTimeChange } = props;
 
   return (
     <div>
@@ -34,6 +34,8 @@ export const Time = ( props ) => {
       <ul className='grid-list'>
         { times.map( date => {
           const formatTime = date.currentDate.toLocaleTimeString( lang, { timeStyle: 'short' } );
+          const formatDate = date.currentDate.toLocaleDateString( lang, {year: 'numeric', month: '2-digit', day: '2-digit'} );
+
           return (
             <li key={ date.key }
               title={ date.isOffset ? t( 'Это время уже не доступно' ) : `${ formatDate } ${ formatTime }`}
