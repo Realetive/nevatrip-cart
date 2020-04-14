@@ -58,7 +58,7 @@ function throttle( func, wait, options ) {
 
 export const Cart = ( { session, lang, isRightTranslate } ) => {
   const { t } = useTranslation();
-  const { dispatch, cart, user, order, ticket = {}, product, direction } = useStoreon('cart', 'user', 'order', 'ticket', 'product', 'direction');
+  const { dispatch, cart, user, order, ticket = {}, product, direction, event } = useStoreon('cart', 'user', 'order', 'ticket', 'product', 'direction', 'event');
   const { fullName, email, phone } = user;
   const [ isShowPromocode, setShowPromocode ] = useState(false);
   const [ sale, setSale ] = useState(0);
@@ -73,6 +73,10 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const isTicketTime = order && Object.values(order).every(item => {
     return (((item || {}).options || {}).event || {}).expired;
   });
+
+  //
+  const [ newOrder, setNewOrder ] = useState({});
+  //
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
     if (newValue) {
@@ -99,8 +103,8 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
           getStatus={getStatus}
           setDisabledBtn={setDisabledBtn}
           isDisabledBtn={isDisabledBtn}
-          isTicketTime={isTicketTime}
           isRightTranslate={isRightTranslate}
+          onChange={setNewOrder}
       />
       </li>
     );
@@ -108,23 +112,17 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
   const productsPreview = () => cart.map(key => {
     const { productId } = order[key];
-    const orderOptions = order[key].options || [{}];
-    const selectedDirection = direction[`${productId}.${orderOptions[0].direction}`];
-    console.log(selectedDirection)
+    const product = newOrder[ productId ];
 
-    return (
+    return product ? (
       <li className='cart__item cart__item_view_product' key={ key }>
         <ProductPreview
-          productId={productId}
+          product={product}
           lang={lang}
           isRightTranslate={isRightTranslate}
-          title={ ( product[productId].title[lang] || {} ).name }
-          directions={ product[productId].directions }
-          orderOptions={ orderOptions }
-          selectedDirection={selectedDirection}
         />
       </li>
-    );
+    ) : null;
   });
 
   const setUserData = event => {
@@ -171,8 +169,6 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
       await api.cart.updateCart(session, Object.values(order), promocode, lang);
       const createOrder = await api.order.newOrder({ sessionId: session, user });
-
-      console.log(createOrder)
 
       if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
         const invoiceId = createOrder.payment.Model.Number;

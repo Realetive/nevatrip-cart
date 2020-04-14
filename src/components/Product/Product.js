@@ -13,15 +13,22 @@ import './Product.css';
 const getNearestDate = (date, dates = []) => {
   const nearestDate = new Date(dates.includes(date) ? date : dates[0]);
   const userTimeOffset = nearestDate.getTimezoneOffset();
+  // console.log(nearestDate)
 
   nearestDate.setMinutes(nearestDate.getMinutes() + userTimeOffset);
 
   return nearestDate;
 };
 
+const getSelectedTime = ( times = [] ) => {
+  if ( !times.length ) return;
+
+  return times.find(item => !item.isOffset);
+};
+
 export const Product = (props) => {
   const {t} = useTranslation();
-  const {cartKey, productId, isTicketTime, isRightTranslate, lang} = props;
+  const {cartKey, productId, isRightTranslate, lang, onChange} = props;
   const {dispatch, product, order, direction: directions, ticket, ticketCategory, event} = useStoreon('product', 'order', 'direction', 'ticket', 'ticketCategory', 'event');
   const orderOptions = order[cartKey].options || [{}];
   const [{
@@ -33,12 +40,33 @@ export const Product = (props) => {
   const title = (product[productId].title[lang] || {}).name;
   const {dates} = directions[`${productId}.${direction}`];
   const {tickets} = directions[`${productId}.${direction}`];
-  const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${product[productId].oldId}` : '';
+  const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${product[productId].oldId}` : ''; //TODO поправить
+  const [ avalibleTimes, setAvalibleTimes ] = useState([]);
 
-  const onDateChange = (date) => {
-    orderOptions[0].date = date;
+  const onDateChange = async (date) => {
     setSelectedDate(date);
-    dispatch('order/update', order);
+    const scheduleDate = new Date( date );
+    const formatDate = createFormateDate(scheduleDate);
+    const times = await api.product.getProductTime(productId, direction, formatDate) || [];
+
+    const _times = times.map((eventItem, index) => {
+      const currentDate = new Date(eventItem.start);
+      const userTimeOffset = currentDate.getTimezoneOffset();
+      const isOffset = eventItem.expired;
+
+      currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - eventItem.timeOffset);
+
+      return {
+        currentDate: currentDate,
+        isOffset: isOffset,
+        key: eventItem._key,
+        inputName: eventGroup,
+        // checked: isOffset ? false : time ? time === eventItem._key : index
+      };
+    })
+
+    setSelectedTime(getSelectedTime( _times ));
+    setAvalibleTimes( _times );
   };
 
   const initialTickets = tickets.reduce((obj, ticketId) => {
@@ -63,14 +91,23 @@ export const Product = (props) => {
 
     return `${year}-${month}-${day}`;
   };
-  const formatDate = createFormateDate(new Date(date));
+  const formatDate = createFormateDate( new Date( date ) );
   const eventGroup = `${productId}.${direction}.${formatDate}`;
   const events = event[eventGroup];
 
   const [selectedDate, setSelectedDate] = useState(getNearestDate(date, dates));
+  const [selectedTime, setSelectedTime] = useState( getSelectedTime( avalibleTimes ) );
   const [_tickets, _setTickets] = useState(initialTickets);
-  const [time, onTimeChange] = useState(selectedEvent);
+  // const [time, onTimeChange] = useState(selectedEvent);
   const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
+
+  useEffect(() => {
+    onChange({
+      [productId]: {
+        selectedTime
+      }
+    })
+  }, [selectedTime]);
 
   (events || []).sort((a, b) => new Date(a.start) - new Date(b.start));
 
@@ -86,61 +123,11 @@ export const Product = (props) => {
   }, [direction]);
 
   useEffect(() => {
-    if (!event) return;
-    const scheduleDate = new Date(date);
-    const formatDate = createFormateDate(scheduleDate);
-    const events = event[`${productId}.${direction}.${formatDate}`] || [];
-    const action = events.find(eventItem => eventItem._key === time);
-
-    orderOptions[0].event = action;
-
-    dispatch('order/update', order);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [time, event]);
-
-  useEffect(() => {
-    const getTimes = async (direction, date) => {
-      const scheduleDate = new Date(date);
-      const formatDate = createFormateDate(scheduleDate);
-      const times = await api.product.getProductTime(productId, direction, formatDate);
-
-      if (!times.length) return;
-
-      onTimeChange(times[0]._key);
-      dispatch('event/add', {[`${productId}.${direction}.${formatDate}`]: times});
-    };
-
-    getTimes(direction, date);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [direction, date]);
-
-  useEffect(() => {
     order[cartKey].options = order[cartKey].options || [{}];
     order[cartKey].options[0].direction = selectedDirection;
     dispatch('order/update', order);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDirection])
-
-  const times = [];
-  // eslint-disable-next-line array-callback-return
-  (events || []).map((eventItem, index) => {
-    const currentDate = new Date(eventItem.start);
-    const userTimeOffset = currentDate.getTimezoneOffset();
-    const isOffset = eventItem.expired;
-
-    currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - eventItem.timeOffset);
-
-    const date = {
-      currentDate: currentDate,
-      isOffset: isOffset,
-      key: eventItem._key,
-      inputName: eventGroup,
-      checked: isOffset ? false : time ? time === eventItem._key : index
-    };
-
-    times.push(date);
-  })
-
 
   return (
     <fieldset className='product product_view_form'>
@@ -175,12 +162,13 @@ export const Product = (props) => {
           />
           {
             ( date && <Time
-              times={times}
+              times={avalibleTimes}
+              lang={lang}
               isRightTranslate={isRightTranslate}
               orderOptions={orderOptions}
-              onTimeChange={onTimeChange}
-              formatDate={formatDate}
-            /> ) || ( isTicketTime && <div className={'cart__error' + (isRightTranslate ? '' : ' translate')}>{t('На выбранную дату нет прогулок')}</div> )
+              onTimeChange={setSelectedTime}
+              selectedTime={selectedTime}
+            /> )
           }
           {direction && <Tickets
             getStatus={props.getStatus}

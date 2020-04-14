@@ -20,7 +20,11 @@ import { useTranslation } from 'react-i18next';
 
 export const Time = ( props ) => {
   const { t } = useTranslation();
-  const { times, isRightTranslate, lang, onTimeChange } = props;
+  const { times = [], isRightTranslate, lang, onTimeChange, selectedTime } = props;
+
+  if (!times.length) {
+    return (<div className={'cart__error' + (isRightTranslate ? '' : ' translate')}>{t('На выбранную дату нет прогулок')}</div>);
+  }
 
   return (
     <div>
@@ -34,7 +38,7 @@ export const Time = ( props ) => {
       <ul className='grid-list'>
         { times.map( date => {
           const formatTime = date.currentDate.toLocaleTimeString( lang, { timeStyle: 'short' } );
-          const formatDate = date.currentDate.toLocaleDateString( lang, {year: 'numeric', month: '2-digit', day: '2-digit'} );
+          const formatDate = date.currentDate.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit' } );
 
           return (
             <li key={ date.key }
@@ -45,8 +49,8 @@ export const Time = ( props ) => {
               className='btn-radio'
               name={ date.inputName }
               value={ date.key }
-              checked={ date.checked }
-              onChange={ e => onTimeChange( e.target.value ) }
+              checked={ date.key === selectedTime.key }
+              onChange={ () => onTimeChange( date ) }
               id={ date.key }
               disabled={ date.isOffset }
               />

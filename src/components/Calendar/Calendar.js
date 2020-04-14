@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 
@@ -19,6 +19,10 @@ export const Calendar = ( props ) => {
 
     return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
   };
+
+  useEffect(() => {
+    onDateChange(selectedDate);
+  }, []);
 
   return (
     <>
