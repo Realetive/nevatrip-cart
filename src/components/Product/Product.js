@@ -31,12 +31,11 @@ export const Product = (props) => {
   const {dispatch, product, order, direction: directions, ticket, ticketCategory, event} = useStoreon('product', 'order', 'direction', 'ticket', 'ticketCategory', 'event');
   const orderOptions = order[cartKey].options || [{}];
   const [{
-    direction,
-    date
+    direction = Object.values(directions)[0]._key,
+    date = Object.values(directions)[0].dates[0]
   }] = orderOptions;
   const defaultDirectionKey = direction || directions[product[productId].directions[0]]._key;
   const title = (product[productId].title[lang] || {}).name;
-  // debugger;
   const {
     dates,
     tickets
@@ -125,7 +124,7 @@ export const Product = (props) => {
   console.log('-------', initialTickets)
 
   useEffect(() => {
-    order[cartKey].options[0].tickets = initialTickets;
+    orderOptions[0].tickets = initialTickets;
     dispatch('order/update', order);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newOrder]);
@@ -137,7 +136,7 @@ export const Product = (props) => {
 
   useEffect(() => {
     order[cartKey].options = order[cartKey].options || [{}];
-    order[cartKey].options[0].direction = selectedDirection;
+    orderOptions[0].direction = selectedDirection;
     dispatch('order/update', order);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDirection])
