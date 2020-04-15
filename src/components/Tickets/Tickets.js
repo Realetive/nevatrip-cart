@@ -8,16 +8,14 @@ import './Tickets.css';
 export const Tickets = ( props ) => {
   const { t } = useTranslation();
   const {
-      getStatus,
-      setDisabledBtn,
-      isDisabledBtn,
-      lang,
-      isRightTranslate,
-      tickets,
-      _tickets,
-      _setTickets,
-      ticket,
-      ticketCategory
+    getStatus,
+    setDisabledBtn,
+    isDisabledBtn,
+    lang,
+    isRightTranslate,
+    ticketCategory,
+    onTicketChange,
+    tickets = {}
   } = props;
   const [statusTickets, setStatusTickets] = useState({});
 
@@ -37,17 +35,19 @@ export const Tickets = ( props ) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusTickets] );
 
-  const _renderTickets = tickets.map( (ticketId) => {
+  const ticketKeys = Object.keys(tickets);
+  const _renderTickets = ticketKeys.map( (ticketId) => {
     const {
       _key,
       category,
       count,
       price,
-    } = ticket[ ticketId ];
-    const name = (ticket[ ticketId ].name || {})[lang] || ticket[ ticketId ].ticket[0].title[lang];
+    } = tickets[ ticketId ];
+    const name = (tickets[ ticketId ].name || {})[lang] || tickets[ ticketId ].ticket[0].title[lang]; // TODO Почему tickets - это массив с объектом? Почему не объект? Могу ли я вынести его без массива как объъект при создании tickets?
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
+      {/*<div key={ _key } className='ticketsItem'>*/}
         <dt className='ticketsItemText' >
             <span className={ isRightTranslate ? '' : ' translate' }>{ t( name ) }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
@@ -61,11 +61,11 @@ export const Tickets = ( props ) => {
           <Counter
             _key={_key}
             defaultValue={count}
-            tickets={_tickets}
-            setTickets={_setTickets}
             price={price}
             getCount={getCount}
             isRightTranslate={isRightTranslate}
+            onTicketChange={onTicketChange}
+            tickets={tickets}
           />
         </dd>
       </div>

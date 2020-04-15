@@ -13,7 +13,6 @@ import './Product.css';
 const getNearestDate = (date, dates = []) => {
   const nearestDate = new Date(dates.includes(date) ? date : dates[0]);
   const userTimeOffset = nearestDate.getTimezoneOffset();
-  // console.log(nearestDate)
 
   nearestDate.setMinutes(nearestDate.getMinutes() + userTimeOffset);
 
@@ -28,18 +27,20 @@ const getSelectedTime = ( times = [] ) => {
 
 export const Product = (props) => {
   const {t} = useTranslation();
-  const {cartKey, productId, isRightTranslate, lang, onChange} = props;
+  const {cartKey, productId, isRightTranslate, lang, onChange, newOrder} = props;
   const {dispatch, product, order, direction: directions, ticket, ticketCategory, event} = useStoreon('product', 'order', 'direction', 'ticket', 'ticketCategory', 'event');
   const orderOptions = order[cartKey].options || [{}];
   const [{
     direction,
-    date,
-    event: selectedEvent
+    date
   }] = orderOptions;
   const defaultDirectionKey = direction || directions[product[productId].directions[0]]._key;
   const title = (product[productId].title[lang] || {}).name;
-  const {dates} = directions[`${productId}.${direction}`];
-  const {tickets} = directions[`${productId}.${direction}`];
+  // debugger;
+  const {
+    dates,
+    tickets
+  } = directions[`${productId}.${direction}`] || {};
   const urlToProduct = product[productId].oldId ? `//nevatrip.ru/index.php?id=${product[productId].oldId}` : ''; //TODO поправить
   const [ avalibleTimes, setAvalibleTimes ] = useState([]);
 
@@ -61,7 +62,6 @@ export const Product = (props) => {
         isOffset: isOffset,
         key: eventItem._key,
         inputName: eventGroup,
-        // checked: isOffset ? false : time ? time === eventItem._key : index
       };
     })
 
@@ -97,25 +97,38 @@ export const Product = (props) => {
 
   const [selectedDate, setSelectedDate] = useState(getNearestDate(date, dates));
   const [selectedTime, setSelectedTime] = useState( getSelectedTime( avalibleTimes ) );
+  const [selectedTicket, setSelectedTicket] = useState( ticket );
   const [_tickets, _setTickets] = useState(initialTickets);
-  // const [time, onTimeChange] = useState(selectedEvent);
+  // console.log(_tickets, initialTickets)
   const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
+
+  const crateTicketsData = tickets.reduce((obj, ticketId) => {
+    const currentTicket = ticket[ticketId];
+    currentTicket.count = initialTickets[currentTicket._key]
+    currentTicket.categoryNew = ticketCategory[currentTicket.category];
+    obj[currentTicket._key] = currentTicket;
+
+    return obj;
+  }, {});
 
   useEffect(() => {
     onChange({
       [productId]: {
-        selectedTime
+        selectedTime,
+        tickets: crateTicketsData
       }
-    })
-  }, [selectedTime]);
+    });
+  }, [selectedTime, selectedTicket]);
 
   (events || []).sort((a, b) => new Date(a.start) - new Date(b.start));
 
+  console.log('-------', initialTickets)
+
   useEffect(() => {
-    order[cartKey].options[0].tickets = _tickets;
+    order[cartKey].options[0].tickets = initialTickets;
     dispatch('order/update', order);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_tickets]);
+  }, [newOrder]);
 
   useEffect(() => {
     setSelectedDate(getNearestDate(date, availableDates));
@@ -176,11 +189,9 @@ export const Product = (props) => {
             isDisabledBtn={props.isDisabledBtn}
             lang={lang}
             isRightTranslate={isRightTranslate}
-            tickets={tickets}
-            _tickets={_tickets}
-            _setTickets={_setTickets}
-            ticket={ticket}
             ticketCategory={ticketCategory}
+            onTicketChange={setSelectedTicket}
+            tickets={(newOrder[productId] || {}).tickets}
           />}
         </div>
       </div>

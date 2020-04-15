@@ -76,6 +76,10 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
   //
   const [ newOrder, setNewOrder ] = useState({});
+  console.log('∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞');
+  console.log('newOrder: ', newOrder);
+
+  console.log('ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ');
   //
 
   const throttled = useRef(throttle(async (oldId, newValue) => {
@@ -105,6 +109,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
           isDisabledBtn={isDisabledBtn}
           isRightTranslate={isRightTranslate}
           onChange={setNewOrder}
+          newOrder={newOrder}
       />
       </li>
     );
@@ -169,6 +174,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
       await api.cart.updateCart(session, Object.values(order), promocode, lang);
       const createOrder = await api.order.newOrder({ sessionId: session, user });
+      console.log(order)
 
       if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
         const invoiceId = createOrder.payment.Model.Number;
