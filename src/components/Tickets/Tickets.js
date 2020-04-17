@@ -15,8 +15,11 @@ export const Tickets = ( props ) => {
     isRightTranslate,
     ticketCategory,
     onTicketChange,
-    tickets = {}
+    newOrder,
+    onChange
   } = props;
+  console.log(newOrder)
+  const tickets = newOrder.tickets || {};
   const [statusTickets, setStatusTickets] = useState({});
 
   setDisabledBtn(tickets.length === 0);
@@ -65,7 +68,8 @@ export const Tickets = ( props ) => {
             getCount={getCount}
             isRightTranslate={isRightTranslate}
             onTicketChange={onTicketChange}
-            tickets={tickets}
+            newOrder={newOrder}
+            onChange={onChange}
           />
         </dd>
       </div>

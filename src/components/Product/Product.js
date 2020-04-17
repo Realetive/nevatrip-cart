@@ -30,6 +30,7 @@ export const Product = (props) => {
   const {cartKey, productId, isRightTranslate, lang, onChange, newOrder} = props;
   const {dispatch, product, order, direction: directions, ticket, ticketCategory, event} = useStoreon('product', 'order', 'direction', 'ticket', 'ticketCategory', 'event');
   const orderOptions = order[cartKey].options || [{}];
+  console.log('ODREROPT', orderOptions)
   const [{
     direction = Object.values(directions)[0]._key,
     date = Object.values(directions)[0].dates[0]
@@ -75,6 +76,19 @@ export const Product = (props) => {
     return obj;
   }, {});
 
+  const onCounterChange = tickets.reduce((obj, ticketId) => {
+    const currentTicket = ticket[ticketId];
+    currentTicket.count = initialTickets[currentTicket._key]
+    currentTicket.categoryNew = ticketCategory[currentTicket.category];
+    obj[currentTicket._key] = currentTicket;
+
+    return obj;
+  }, {});
+
+  // const onCounterChange = () => {
+  //
+  // };
+
   const availableDates = dates.map(date => {
     const availableDate = new Date(date);
     const userTimeOffset = availableDate.getTimezoneOffset();
@@ -96,12 +110,13 @@ export const Product = (props) => {
 
   const [selectedDate, setSelectedDate] = useState(getNearestDate(date, dates));
   const [selectedTime, setSelectedTime] = useState( getSelectedTime( avalibleTimes ) );
-  const [selectedTicket, setSelectedTicket] = useState( ticket );
-  const [_tickets, _setTickets] = useState(initialTickets);
+  const [selectedTickets, setSelectedTickets] = useState( ticket );
+  console.log('selectedTickets', selectedTickets)
+  // const [_tickets, _setTickets] = useState(initialTickets);
   // console.log(_tickets, initialTickets)
   const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
 
-  const crateTicketsData = tickets.reduce((obj, ticketId) => {
+  const onTicketChange = tickets.reduce((obj, ticketId) => {
     const currentTicket = ticket[ticketId];
     currentTicket.count = initialTickets[currentTicket._key]
     currentTicket.categoryNew = ticketCategory[currentTicket.category];
@@ -109,19 +124,22 @@ export const Product = (props) => {
 
     return obj;
   }, {});
+  // console.log('crateTicketsData', crateTicketsData)
+  console.log('selectedTickets', selectedTickets)
 
   useEffect(() => {
     onChange({
       [productId]: {
         selectedTime,
-        tickets: crateTicketsData
+        tickets: onTicketChange
       }
     });
-  }, [selectedTime, selectedTicket]);
+  }, [selectedTime, selectedTickets]);
 
   (events || []).sort((a, b) => new Date(a.start) - new Date(b.start));
 
   console.log('-------', initialTickets)
+  console.log('-------', orderOptions[0])
 
   useEffect(() => {
     orderOptions[0].tickets = initialTickets;
@@ -177,20 +195,20 @@ export const Product = (props) => {
               times={avalibleTimes}
               lang={lang}
               isRightTranslate={isRightTranslate}
-              orderOptions={orderOptions}
               onTimeChange={setSelectedTime}
               selectedTime={selectedTime}
             /> )
           }
-          {direction && <Tickets
+          {direction &&  <Tickets
             getStatus={props.getStatus}
             setDisabledBtn={props.setDisabledBtn}
             isDisabledBtn={props.isDisabledBtn}
             lang={lang}
             isRightTranslate={isRightTranslate}
             ticketCategory={ticketCategory}
-            onTicketChange={setSelectedTicket}
-            tickets={(newOrder[productId] || {}).tickets}
+            onTicketChange={setSelectedTickets}
+            newOrder={ newOrder[productId] || {} }
+            onChange={onChange}
           />}
         </div>
       </div>
