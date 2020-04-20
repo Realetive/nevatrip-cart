@@ -18,7 +18,6 @@ export const Tickets = ( props ) => {
     newOrder,
     onChange
   } = props;
-  console.log(newOrder)
   const tickets = newOrder.tickets || {};
   const [statusTickets, setStatusTickets] = useState({});
 

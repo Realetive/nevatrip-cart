@@ -5,7 +5,7 @@ export const ListOfProducts = ( { lang, isRightTranslate, products } ) => {
   return (
     <ul className="list">
       {
-        products.map( ( { product, options }, index ) => {
+        products.map( ( { product, options = {} }, index ) => {
           const onChange = _options => {
             options = _options;
           }

@@ -7,18 +7,13 @@ const Counter = ( props ) => {
 
   useEffect(() => {
     tickets[ _key ].count = count;
-    console.log('COUNTER tickets',tickets)
-    console.log('COUNTER newOrder',newOrder)
     // onChange({...newOrder});
     getCount(_key, count);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count]);
 
   const changeOrder = () => {
-    console.log('∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞');
-    console.log('NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW: ');
     // onChange({...newOrder});
-    console.log('ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ');
   }
 
   return (
