@@ -30,7 +30,7 @@ export const ProductViewSelect = ({ lang, isRightTranslate, product, options, on
   const {
     name,
     key: { current: alias },
-  } = product.title[ lang ] || {
+  } = product.title[ lang ] || product.title[ 'en' ] || {
     name: 'Unnamed direction',
     key: ''
   };
