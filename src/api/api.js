@@ -1,7 +1,68 @@
-// Instruments
+import { useState, useEffect } from 'react';
 import { MAIN_URL } from './config';
 
 const headers = { 'Content-Type': 'application/json' };
+
+export const useGetOrder = ( session, lang = 'en' ) => {
+  const [result, setResult] = useState({
+    status: 'loading'
+  });
+
+  useEffect(() => {
+    if (session) {
+      setResult({ status: 'loading' });
+      fetch(`${MAIN_URL}/shoppingCarts/${session}`)
+        .then( response => response.json() )
+        .then( cart => {
+          if ( !cart.products ) setResult({ status: 'loaded', payload: cart });
+
+          const ids = cart.products.map( ( { productId } ) => productId );
+          const uniqueIds = [ ...new Set( ids ) ];
+          
+          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }`).then( resp => resp.json() ) )
+          
+          Promise.allSettled( getProducts ).then( products => {
+            const _products = {};
+
+            products.forEach( (product) => {
+              if ( product.status === "fulfilled" ) {
+                _products[ product.value._id ] = product.value
+              }
+            });
+
+            cart.products.forEach( product => {
+              product.product = _products[ product.productId ]
+            } );
+
+            setResult({ status: 'loaded', payload: cart })
+          } )
+        })
+        .catch(error => setResult({ status: 'error', error }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+
+  return result;
+};
+
+export const useGetProduct = (id, lang = process.env.REACT_APP_DEFAULT_LANG) => {
+  const [result, setResult] = useState({
+    status: 'loading'
+  });
+
+  useEffect(() => {
+    if (id) {
+      setResult({ status: 'loading' });
+      fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }`)
+        .then(response => response.json())
+        .then(response => setResult({ status: 'loaded', payload: response }))
+        .catch(error => setResult({ status: 'error', error }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  return result;
+};
 
 export const api = {
   cart: {

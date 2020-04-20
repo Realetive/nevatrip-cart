@@ -1,5 +1,4 @@
 import React from 'react';
-import useStoreon from 'storeon/react';
 import { useTranslation } from 'react-i18next';
 
 export const ProductPreview = ({ lang, isRightTranslate, product }) => {

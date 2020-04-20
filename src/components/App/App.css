@@ -924,3 +924,10 @@ button:not(:disabled) {
   -moz-appearance: number-input;
 }
 /*counter*/
+
+
+.Link_view_inherit {
+  font: inherit;
+  color: inherit;
+  text-decoration: inherit;
+}

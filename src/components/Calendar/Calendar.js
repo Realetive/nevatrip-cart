@@ -5,9 +5,24 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
-export const Calendar = ( props ) => {
+const getAvailableDates = ( dates = [] ) => {
+  return dates.map( date => {
+    const availableDate = new Date( date );
+    const userTimeOffset = availableDate.getTimezoneOffset();
+    availableDate.setMinutes( availableDate.getMinutes() + userTimeOffset );
+
+    return availableDate;
+  });
+}
+
+const getNearestDate = (date, dates = []) => {
+  const nearestDate = dates.includes( date ) ? date : dates[ 0 ];
+
+  return nearestDate;
+};
+
+export const Calendar = ( { isRightTranslate, lang, dates, onChange, selectedDate } ) => {
   const { t } = useTranslation();
-  const { isRightTranslate, lang, dates, onDateChange, selectedDate } = props;
   const createDateValue = ( date, lang = 'en' ) => {
     const local = {
       'en': 'en-US',
@@ -19,10 +34,9 @@ export const Calendar = ( props ) => {
 
     return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
   };
-
-  useEffect(() => {
-    onDateChange(selectedDate);
-  }, []);
+  
+  const includeDates = getAvailableDates( dates );
+  const selected = getNearestDate( selectedDate, includeDates );
 
   return (
     <>
@@ -31,7 +45,7 @@ export const Calendar = ( props ) => {
         <input
           readOnly
           type='text'
-          value={ createDateValue( selectedDate, lang) }
+          value={ createDateValue( selectedDate, lang ) }
           className='input input_calendar'
         />
       </label>
@@ -40,10 +54,10 @@ export const Calendar = ( props ) => {
           inline
           calendarClassName='calendar'
           dateFormat='dd MMMM yyyy'
-          includeDates={ dates }
+          includeDates={ includeDates }
           locale='calendarLocale'
-          selected={ selectedDate }
-          onChange={ date => onDateChange( date ) }
+          selected={ selected }
+          onChange={ date => onChange( date ) }
         />
       </div>
     </>
