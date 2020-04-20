@@ -27,7 +27,6 @@ export const ProductViewSelect = ({ lang, isRightTranslate, product, options, on
   const { directions = [] } = product;
   const data = destructDirections( directions );
   const dates = Object.keys( data.dates );
-  console.log(product.title)
   const {
     name,
     key: { current: alias },
