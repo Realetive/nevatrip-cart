@@ -75,15 +75,6 @@ export const Product = (props) => {
     return obj;
   }, {});
 
-  const onCounterChange = tickets.reduce((obj, ticketId) => {
-    const currentTicket = ticket[ticketId];
-    currentTicket.count = initialTickets[currentTicket._key]
-    currentTicket.categoryNew = ticketCategory[currentTicket.category];
-    obj[currentTicket._key] = currentTicket;
-
-    return obj;
-  }, {});
-
 
   const availableDates = dates.map(date => {
     const availableDate = new Date(date);
