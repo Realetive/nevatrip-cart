@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useGetOrder } from "../../api";
@@ -60,8 +60,16 @@ import '../Calendar/Calendar.css';
 export const Cart = ( { session, lang, isRightTranslate } ) => {
   const { t } = useTranslation();
   const cart = useGetOrder( session );
+  const [ products, setProducts ] = useState([]);
   const [ order, setOrder ] = useState({});
   const [ sum, setSum ] = useState(0);
+
+  useEffect( () => {
+    if ( cart.status === 'loaded' ) {
+      setProducts( cart.payload.products )
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ cart.status ] );
 
   // const productsPreview = () => cart.map(key => {
   //   const { productId } = order[key];
@@ -79,8 +87,12 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   // });
   
   const updateOrder = ( index, options ) => {
-    cart.payload.products[ index ].options = options;
-    console.log( `options`, options );
+    const newProducts = [ ...products ];
+    newProducts[ index ].options = options;
+    
+    console.log( `newProducts`, newProducts );
+    
+    setProducts( newProducts );
   }
 
   const {
@@ -92,7 +104,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   return (
     <form className='form' method='post' onSubmit={ e => { console.log( `onSubmit`, e ); } }>
       { cart.status === 'loading' && 'Loading…' }
-      { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } updateOrder={ updateOrder } /> }
+      { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ products } onChange={ updateOrder } /> }
       { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
       {/* <ul className='list'>
       </ul> */}

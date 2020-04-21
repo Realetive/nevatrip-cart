@@ -1,14 +1,13 @@
 import React from 'react';
 import { ProductViewSelect } from "../../Product/_view/Product_view_select";
 
-export const ListOfProducts = ( { lang, isRightTranslate, products, updateOrder } ) => {
+export const ListOfProducts = ( { lang, isRightTranslate, products, onChange } ) => {
   return (
     <ul className="list">
       {
-        products.map( ( { product, options = {}, key }, index ) => {
-          
-          const onChange = _options => {
-            updateOrder( index, _options );
+        products.map( ( { product, options = {}, key }, index ) => { // TODO: обновить бэкенд — key должен быть уникальным
+          const onOptionsChange = _options => {
+            onChange( index, _options );
           }
           
           return (
@@ -18,7 +17,7 @@ export const ListOfProducts = ( { lang, isRightTranslate, products, updateOrder 
                 isRightTranslate={ isRightTranslate }
                 product={ product }
                 options={ options }
-                onChange={ onChange }
+                onChange={ onOptionsChange }
               />
             </li>
           )

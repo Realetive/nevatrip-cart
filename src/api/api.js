@@ -45,21 +45,29 @@ export const useGetOrder = ( session, lang = 'en' ) => {
   return result;
 };
 
-export const useGetProduct = (id, lang = process.env.REACT_APP_DEFAULT_LANG) => {
+export const useGetTimes = (id, direction, date) => {
   const [result, setResult] = useState({
     status: 'loading'
   });
 
+  const createFormateDate = date => {
+    const year = new Intl.DateTimeFormat('en', {year: 'numeric'}).format(date);
+    const month = new Intl.DateTimeFormat('en', {month: '2-digit'}).format(date);
+    const day = new Intl.DateTimeFormat('en', {day: '2-digit'}).format(date);
+  
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
-    if (id) {
+    if ( id && direction && date ) {
       setResult({ status: 'loading' });
-      fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }`)
+      fetch( `${ MAIN_URL }/product/${ id }/schedule/${ direction }/${ createFormateDate( date ) }`)
         .then(response => response.json())
         .then(response => setResult({ status: 'loaded', payload: response }))
         .catch(error => setResult({ status: 'error', error }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [ id, direction, date ] );
 
   return result;
 };
@@ -118,8 +126,15 @@ export const api = {
     },
 
     async getProductTime(productId, directionId, date) {
+      const createFormateDate = date => {
+        const year = new Intl.DateTimeFormat('en', {year: 'numeric'}).format(date);
+        const month = new Intl.DateTimeFormat('en', {month: '2-digit'}).format(date);
+        const day = new Intl.DateTimeFormat('en', {day: '2-digit'}).format(date);
+      
+        return `${year}-${month}-${day}`;
+      };
       const response = await fetch(
-        `${MAIN_URL}/product/${productId}/schedule/${directionId}/${date}`,
+        `${MAIN_URL}/product/${productId}/schedule/${directionId}/${createFormateDate( date )}`,
         {
           method: 'GET',
           headers,

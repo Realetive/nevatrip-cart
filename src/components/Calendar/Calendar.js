@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 
@@ -15,28 +15,29 @@ const getAvailableDates = ( dates = [] ) => {
   });
 }
 
-const getNearestDate = (date, dates = []) => {
+const getNearestDate = ( dates = [], date ) => {
   const nearestDate = dates.includes( date ) ? date : dates[ 0 ];
 
   return nearestDate;
 };
 
-export const Calendar = ( { isRightTranslate, lang, dates, onChange, selectedDate } ) => {
-  const { t } = useTranslation();
-  const createDateValue = ( date, lang = 'en' ) => {
-    const local = {
-      'en': 'en-US',
-      'de': 'de-DE',
-      'cs': 'cs-CS',
-      'ru': 'ru-RU'
-    };
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-
-    return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
+const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
+  const local = {
+    'en': 'en-US',
+    'de': 'de-DE',
+    'cs': 'cs-CS',
+    'ru': 'ru-RU'
   };
-  
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+  return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
+};
+
+export const Calendar = ( { isRightTranslate, lang, dates, selectedDate, onChange } ) => {
+  const { t } = useTranslation();
+  console.log( `dates, selectedDate`, dates, selectedDate );
   const includeDates = getAvailableDates( dates );
-  const selected = getNearestDate( selectedDate, includeDates );
+  const selected = getNearestDate( includeDates, selectedDate );
 
   return (
     <>

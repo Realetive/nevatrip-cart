@@ -1,33 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// import moment from "moment-timezone";
 
-// const tripTimeZone = 'Europe/Prague';
-// const tripTimeZoneOffset = - moment.tz(tripTimeZone).utcOffset();
-//
-// function pad (value) {
-//     return value < 10 ? '0' + value : value;
-// }
-//
-// function formatOffset(offset) {
-//     const sign = (offset > 0) ? "-" : "+";
-//     const _offset = Math.abs(offset);
-//     const hours = pad(Math.floor(_offset / 60));
-//     const minutes = pad(_offset % 60);
-//
-//     return sign + hours + ":" + minutes;
-// }
-
-export const Time = ( props ) => {
+export const Time = ( { isRightTranslate, lang, times, selectedTime, onChange } ) => {
   const { t } = useTranslation();
-  const { times = [], isRightTranslate, lang, onTimeChange, selectedTime } = props;
-
+  
   if (!times.length) {
     return (<div className={'cart__error' + (isRightTranslate ? '' : ' translate')}>{t('На выбранную дату нет прогулок')}</div>);
   }
-
+  
+  const name = times.map( ({ _key }) => _key ).join('-');
+  
   return (
-    <div>
+    <>
       {/*{*/}
       {/*    userTimeOffset !== tripTimeZoneOffset &&*/}
       {/*    <div className='caption' style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#e8b0c5' }}>*/}
@@ -36,33 +20,36 @@ export const Time = ( props ) => {
       {/*}*/}
       <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
       <ul className='grid-list'>
-        { times.map( date => {
-          const formatTime = date.currentDate.toLocaleTimeString( lang, { timeStyle: 'short' } );
-          const formatDate = date.currentDate.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit' } );
+          { times.map( time => {
+            console.log( `time`, time );
+            const date = new Date( time.start );
+            const formatTime = date.toLocaleTimeString( lang, { timeStyle: 'short' } );
+            const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
+            const checked = time._key === selectedTime._key;
 
-          return (
-            <li key={ date.key }
-              title={ date.isOffset ? t( 'Это время уже не доступно' ) : `${ formatDate } ${ formatTime }`}
-              className='grid-list__item'>
-              <input
-              type="radio"
-              className='btn-radio'
-              name={ date.inputName }
-              value={ date.key }
-              checked={ date.key === selectedTime.key }
-              onChange={ () => onTimeChange( date ) }
-              id={ date.key }
-              disabled={ date.isOffset }
-              />
+            return (
+              <li key={ time._key }
+                title={ time.expired ? t( 'Это время уже не доступно' ) : `${ formatDate }`}
+                className='grid-list__item'>
 
-              <label
-              className={ date.isOffset ? 'btn-radio__label btn-radio__label_disabled' : 'btn-radio__label' }
-              htmlFor={ date.key }>
-              { formatTime }
-              </label>
-            </li>
-        ) } ) }
-      </ul>
-    </div>
-  );
+                <label
+                  className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' } ${ time.expired ? 'btn-radio__label_disabled' : '' }` }
+                  >
+                  { formatTime }
+                  <input
+                    type="radio"
+                    className='btn-radio'
+                    name={ name }
+                    value={ time._key }
+                    checked={ checked }
+                    onChange={ () => onChange( time ) }
+                    id={ time._key }
+                    disabled={ time.expired }
+                  />
+                </label>
+              </li>
+          ) } ) }
+        </ul>
+    </>
+  )
 };

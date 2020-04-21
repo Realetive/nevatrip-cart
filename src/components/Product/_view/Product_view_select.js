@@ -1,28 +1,17 @@
-import React  from 'react';
+import React, { useState, useEffect }  from 'react';
 import { Calendar } from "../../Calendar/Calendar";
 import { Directions } from "../../Directions/Directions";
-import { api } from "../../../api";
+import { useGetTimes, api } from "../../../api";
+import { Time } from '../../Time/Time';
 
-const destructDirections = ( directions = [] ) => {
-  return directions.reduce( (acc, direction) => {
-    acc.dates = acc.dates || {};
-    direction.dates.forEach( date => {
-      acc.dates[ date ] = date;
-    } )
-    acc.directions = acc.directions || {};
-    acc.directions[ direction._key ] = direction;
-    
+const normaliseDirections = ( directions = [] ) => {
+  return directions.reduce( ( acc, direction ) => {
+    acc = acc || {};
+    acc[ direction._key ] = direction;
+
     return acc;
   }, {} );
 }
-
-const createFormateDate = date => {
-  const year = new Intl.DateTimeFormat('en', {year: 'numeric'}).format(date);
-  const month = new Intl.DateTimeFormat('en', {month: '2-digit'}).format(date);
-  const day = new Intl.DateTimeFormat('en', {day: '2-digit'}).format(date);
-
-  return `${year}-${month}-${day}`;
-};
 
 export const ProductViewSelect = ({ lang, isRightTranslate, product, options, onChange }) => {
   const {
@@ -31,41 +20,43 @@ export const ProductViewSelect = ({ lang, isRightTranslate, product, options, on
   } = product.title[ lang ] || product.title[ process.env.REACT_APP_DEFAULT_LANG ] || {};
   const urlToProduct = alias;
   const { directions = [] } = product;
-  const data = destructDirections( directions );
-  const dates = Object.keys( data.dates );
-
-  const onDirectionChange = direction => {
-    onChange( {
-      ...options,
-      direction,
-    } )
-  }
+  const data = normaliseDirections( directions );
+  const dates = options.direction ? data[ options.direction ].dates : [];
+  const [ times, setTimes ] = useState({ status: 'loading' });
+  const [ date, setDate ] = useState( options.time );
   
-  const onDateChange = async (date) => {
-    console.log( `date`, date );
-    const scheduleDate = new Date( date );
-    const formatDate = createFormateDate(scheduleDate);
-    const times = await api.product.getProductTime(product._id, options.direction, formatDate) || [];
-    console.log( `times`, times );
+  const onDateChange = async (newDate, directionId = options.direction ) => {
+    setDate( newDate );
 
-    // const _times = times.map( eventItem => {
-    //   const currentDate = new Date( eventItem.start );
-    //   const userTimeOffset = currentDate.getTimezoneOffset();
+    if ( !newDate || !directionId ) return;
 
-    //   currentDate.setMinutes(currentDate.getMinutes() + userTimeOffset - eventItem.timeOffset);
-
-    //   return {
-    //     currentDate,
-    //     isOffset: eventItem.expired,
-    //     key: eventItem._key,
-    //     // inputName: eventGroup,
-    //   };
-    // })
-
-    // setSelectedTime( getSelectedTime( _times ) );
-    // setAvalibleTimes( _times );
+    try {
+      const _times = await api.product.getProductTime( product._id, directionId, newDate );
+      setTimes( { status: 'loaded', payload: _times } );
+    } catch ( error ) {
+      setTimes( { status: 'error', error } );
+    }
   };
   
+  
+  const onDirectionChange = directionId => {
+    const _date = new Date( data[ directionId ].dates[ 0 ] );
+    onDateChange( _date, directionId );
+    onChange( {
+      ...options,
+      direction: directionId,
+    } )
+  }
+
+  useEffect( () => {
+    onDirectionChange( directions[ 0 ]._key );
+  }, [] )
+  
+  
+  const onTimeChange = ( event ) => {
+    console.log( `event`, event );
+  }
+
   return (
     <fieldset className='product product_view_form'>
       <legend className={'product__legend' + (isRightTranslate ? '' : ' translate')}>
@@ -76,25 +67,38 @@ export const ProductViewSelect = ({ lang, isRightTranslate, product, options, on
       <div className='product__inner'>
         <div className='colDesktop'>
           {
-            dates && <Calendar
+            directions && <Directions
+              lang={ lang }
+              isRightTranslate={ isRightTranslate }
+              directions={ directions.filter( direction => direction.dates ) }
+              selectedDirection={ options.direction }
+              onChange={ onDirectionChange }
+            />
+          }
+          {
+            dates && date && <Calendar
               lang={lang}
               isRightTranslate={isRightTranslate}
-              dates={dates}
-              selectedDate={ options.time }
+              dates={ dates }
+              selectedDate={ date }
               onChange={ onDateChange }
             />
           }
         </div>
         <div className='colDesktop'>
-          {
-            directions && <Directions
-              lang={ lang }
-              isRightTranslate={ isRightTranslate }
-              directions={ directions }
-              selectedDirection={ options.direction }
-              onChange={ onDirectionChange }
-            />
-          }
+          <pre>
+            <code>
+              {
+                times.status === 'loaded' && <Time
+                  lang={ lang }
+                  isRightTranslate={ isRightTranslate }
+                  times={ times.payload }
+                  selectedTime={ options.event || times.payload[ 0 ] }
+                  onChange={ onTimeChange }
+                />
+              }
+            </code>
+          </pre>
         </div>
       </div>
     </fieldset>
