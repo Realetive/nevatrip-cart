@@ -1,13 +1,14 @@
 import React from 'react';
 import { ProductViewSelect } from "../../Product/_view/Product_view_select";
 
-export const ListOfProducts = ( { lang, isRightTranslate, products } ) => {
+export const ListOfProducts = ( { lang, isRightTranslate, products, updateOrder } ) => {
   return (
     <ul className="list">
       {
-        products.map( ( { product, options = {} }, index ) => {
+        products.map( ( { product, options = {}, key }, index ) => {
+          
           const onChange = _options => {
-            options = _options;
+            updateOrder( index, _options );
           }
           
           return (

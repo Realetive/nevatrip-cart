@@ -59,42 +59,47 @@ import '../Calendar/Calendar.css';
 
 export const Cart = ( { session, lang, isRightTranslate } ) => {
   const { t } = useTranslation();
-  const order = useGetOrder( session );
-  const [ cart, setCart ] = useState([]);
+  const cart = useGetOrder( session );
+  const [ order, setOrder ] = useState({});
   const [ sum, setSum ] = useState(0);
 
-  const productsPreview = () => cart.map(key => {
-    const { productId } = order[key];
-    const product = order[ productId ];
+  // const productsPreview = () => cart.map(key => {
+  //   const { productId } = order[key];
+  //   const product = order[ productId ];
 
-    return product ? (
-      <li className='cart__item cart__item_view_product' key={ key }>
-        <ProductPreview
-          product={product}
-          lang={lang}
-          isRightTranslate={isRightTranslate}
-        />
-      </li>
-    ) : null;
-  });
+  //   return product ? (
+  //     <li className='cart__item cart__item_view_product' key={ key }>
+  //       <ProductPreview
+  //         product={product}
+  //         lang={lang}
+  //         isRightTranslate={isRightTranslate}
+  //       />
+  //     </li>
+  //   ) : null;
+  // });
+  
+  const updateOrder = ( index, options ) => {
+    cart.payload.products[ index ].options = options;
+    console.log( `options`, options );
+  }
 
   const {
     fullName = '',
     phone = '',
     email = '',
-  } = order.user || {};
+  } = cart.user || {};
   
   return (
     <form className='form' method='post' onSubmit={ e => { console.log( `onSubmit`, e ); } }>
-      { order.status === 'loading' && 'Loading…' }
-      { order.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ order.payload.products } /> }
-      { order.status === 'error' && 'Что-то пошло не так…' }
+      { cart.status === 'loading' && 'Loading…' }
+      { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } updateOrder={ updateOrder } /> }
+      { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
       {/* <ul className='list'>
       </ul> */}
       <div className='aside'>
         <div className="aside__blank">
           <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
-          <ul className='listPreview'>{ productsPreview() }</ul>
+          <ul className='listPreview'>{ /* productsPreview() */ }</ul>
         </div>
 
         <div className = 'asideSeparator'><div className="asideSeparator__line"></div></div>
