@@ -4,17 +4,14 @@ import { MAIN_URL } from './config';
 const headers = { 'Content-Type': 'application/json' };
 
 export const useGetOrder = ( session, lang = 'en' ) => {
-  const [result, setResult] = useState({
-    status: 'loading'
-  });
+  const [ cart, setCart ] = useState({ status: 'loading' });
 
   useEffect(() => {
     if (session) {
-      setResult({ status: 'loading' });
       fetch(`${MAIN_URL}/shoppingCarts/${session}`)
         .then( response => response.json() )
         .then( cart => {
-          if ( !cart.products ) setResult({ status: 'loaded', payload: cart });
+          if ( !cart.products ) setCart({ status: 'loaded', payload: cart });
 
           const ids = cart.products.map( ( { productId } ) => productId );
           const uniqueIds = [ ...new Set( ids ) ];
@@ -34,15 +31,15 @@ export const useGetOrder = ( session, lang = 'en' ) => {
               product.product = _products[ product.productId ]
             } );
 
-            setResult({ status: 'loaded', payload: cart })
+            setCart({ status: 'loaded', payload: cart })
           } )
         })
-        .catch(error => setResult({ status: 'error', error }));
+        .catch(error => setCart({ status: 'error', error }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  return result;
+  return [ cart, setCart ];
 };
 
 export const useGetTimes = (id, direction, date) => {

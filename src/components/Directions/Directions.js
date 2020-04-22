@@ -1,29 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const Directions = ( { lang, isRightTranslate, directions, selectedDirection, onChange } ) => {
+let count = 0;
+
+export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate = true, directions = [], selectedDirection, onChange = () => {} } ) => {
+  count += 1;
+  console.log( `${ Directions.name } rerender: ${ count }` );
   const { t } = useTranslation();
   const name = directions.map( ( { _key } ) => _key ).join('-');
 
-  const getSelectedDirection = _directions => {
-    if ( _directions.map( ( { _key } ) => _key ).includes( selectedDirection ) ) {
-      return selectedDirection;
-    } else {
-      const firstDirection = _directions[ 0 ]._key;
-      onChange( firstDirection );
-      return firstDirection;      
-    }
-  }
-
-  const selected = getSelectedDirection( directions );
-  
   const renderDirections = directions.map( direction => {
     const {
       _key,
       title,
     } = direction;
     
-    const checked = _key === selected;
+    const checked = _key === selectedDirection;
     
     return (
       <li key={ _key }
