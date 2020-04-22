@@ -32,6 +32,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   const { name, alias } = getTitle( product.title, lang );
   const { directions = [] } = product;
   const [ normalisedDirections, setNormalisedDirections ] = useState();
+  const [ times, setTimes ] = useState({ status: 'loading' });
 
   useEffect( () => {
     if ( !options.direction || !directions.includes( options.direction ) ) {
@@ -51,8 +52,24 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     })
   }
   
-  const onDateChange = ( date ) => {
-    
+  const onDateChange = async date => {
+    if ( !options.direction ) return;
+
+    setTimes( { status: 'loading' } );
+    try {
+      const payload = await api.product.getProductTime( product._id, options.direction, date );
+      setTimes( { status: 'loaded', payload } );
+      // onChange( {
+      //   ...options,
+      //   event: payload[ 0 ],
+      // } )
+    } catch ( error ) {
+      setTimes( { status: 'error', error } );
+    }
+  }
+  
+  const onTimeChange = time => {
+    console.log( `time`, time );
   }
   
   return (
@@ -87,16 +104,36 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           }
         </div>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
-          <pre style={{ overflow: 'auto' }}>
-            <code>
-              {
-                options.direction
-                && normalisedDirections[ options.direction ]
-                  ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )
-                  : ''
-              }
-            </code>
-          </pre>
+          <div>
+            <pre style={{ overflow: 'auto' }}>
+              <code>
+                {
+                  JSON.stringify( times, null, 2 )
+                }
+              </code>
+            </pre>
+          </div>
+          {
+            times.status === 'loaded' && options.event && <Time
+              lang={ lang }
+              isRightTranslate={ isRightTranslate }
+              times={ times.payload }
+              selectedTime={ options.event }
+              onChange={ onTimeChange }
+            />
+          }
+          <div>
+            <pre style={{ overflow: 'auto' }}>
+              <code>
+                {
+                  options.direction
+                  && normalisedDirections[ options.direction ]
+                    ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )
+                    : ''
+                }
+              </code>
+            </pre>
+          </div>
         </div>
       </div>
     </fieldset>
@@ -105,7 +142,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   /*
   
   const dates = options.direction ? data[ options.direction ].dates : [];
-  const [ times, setTimes ] = useState({ status: 'loading' });
+  
   const [ date, setDate ] = useState( options.time );
 
   useEffect( () => {
@@ -125,19 +162,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   const onDateChange = async (newDate, directionId = options.direction ) => {
     setDate( newDate );
 
-    if ( !newDate || !directionId ) return;
-
-    setTimes( { status: 'loading' } );
-    try {
-      const payload = await api.product.getProductTime( product._id, directionId, newDate );
-      setTimes( { status: 'loaded', payload } );
-      // onChange( {
-      //   ...options,
-      //   event: payload[ 0 ],
-      // } )
-    } catch ( error ) {
-      setTimes( { status: 'error', error } );
-    }
+    
   };
 
   const onTimeChange = event => {
@@ -176,15 +201,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           }
         </div>
         <div className='colDesktop'>
-          {
-            times.status === 'loaded' && options.event && <Time
-              lang={ lang }
-              isRightTranslate={ isRightTranslate }
-              times={ times.payload }
-              selectedTime={ options.event }
-              onChange={ onTimeChange }
-            />
-          }
+          
         </div>
       </div>
     </fieldset>
