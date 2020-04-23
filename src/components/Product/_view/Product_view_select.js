@@ -3,7 +3,7 @@ import { Calendar } from "../../Calendar/Calendar";
 import { Directions } from "../../Directions/Directions";
 import { api } from "../../../api";
 import { Time } from '../../Time/Time';
-import { setDate } from 'date-fns';
+import { Tickets } from '../../Tickets/Tickets';
 
 const normaliseDirections = ( directions = [] ) => {
   console.log( `normaliseDirections` );
@@ -104,15 +104,15 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           }
         </div>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
-          <div>
-            <pre style={{ overflow: 'auto' }}>
-              <code>
-                {
-                  JSON.stringify( times, null, 2 )
-                }
-              </code>
-            </pre>
-          </div>
+          {/*<div>*/}
+          {/*  <pre style={{ overflow: 'auto' }}>*/}
+          {/*    <code>*/}
+          {/*      {*/}
+          {/*        JSON.stringify( times, null, 2 )*/}
+          {/*      }*/}
+          {/*    </code>*/}
+          {/*  </pre>*/}
+          {/*</div>*/}
           {
             times.status === 'loaded' && options.event && <Time
               lang={ lang }
@@ -123,17 +123,30 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
             />
           }
           <div>
-            <pre style={{ overflow: 'auto' }}>
-              <code>
-                {
-                  options.direction
-                  && normalisedDirections[ options.direction ]
-                    ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )
-                    : ''
-                }
-              </code>
-            </pre>
+            {/*<pre style={{ overflow: 'auto' }}>*/}
+            {/*  <code>*/}
+            {/*    {*/}
+            {/*      options.direction*/}
+            {/*      && normalisedDirections[ options.direction ]*/}
+            {/*        ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )*/}
+            {/*        : ''*/}
+            {/*    }*/}
+            {/*  </code>*/}
+            {/*</pre>*/}
           </div>
+          {options.direction
+          && normalisedDirections[ options.direction ]
+          && <Tickets
+            // getStatus={props.getStatus}
+            // setDisabledBtn={setDisabledBtn}
+            // isDisabledBtn={isDisabledBtn}
+            lang={lang}
+            isRightTranslate={isRightTranslate}
+            // ticketCategory={ticketCategory}
+            // onTicketChange={setSelectedTickets}
+            tickets={ normalisedDirections[ options.direction ].tickets }
+            onChange={onChange}
+          />}
         </div>
       </div>
     </fieldset>
