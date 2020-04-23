@@ -45,12 +45,14 @@ export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_AP
   
   useEffect( () => {
     setDate( initialDate );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ dates ] );
 
   useEffect( () => {
     if ( date ) {
       onChange( date );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ date ] );
 
   return (
