@@ -5,40 +5,41 @@ import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
+let count = 0;
+
 export const Tickets = ( props ) => {
+  count += 1;
+  console.log( `${ Tickets.name } rerender: ${ count }` );
   const { t } = useTranslation();
   const {
+    lang,
+    isRightTranslate,
+    tickets,
+    onChange,
     getStatus,
     setDisabledBtn,
     isDisabledBtn,
-    lang,
-    isRightTranslate,
-    ticketCategory,
-    onTicketChange,
-    newOrder,
-    onChange,
-    tickets
+    onTicketChange
   } = props;
-  const [statusTickets, setStatusTickets] = useState({});
+  // const [statusTickets, setStatusTickets] = useState({});
   console.log('tickets', tickets);
 
   // setDisabledBtn(tickets.length === 0);
 
-  const getCount = (_key, count) => {
-    setStatusTickets({
-      ...statusTickets,
-      [_key]: count,
-      status: false,
-    });
-  };
+  // const getCount = (_key, count) => {
+  //   setStatusTickets({
+  //     ...statusTickets,
+  //     [_key]: count,
+  //     status: false,
+  //   });
+  // };
 
-  useEffect(() => {
-    const status = Object.values(statusTickets).some(item => item > 0);
-    // getStatus( status );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusTickets] );
+  // useEffect(() => {
+  //   const status = Object.values(statusTickets).some(item => item > 0);
+  //   // getStatus( status );
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [statusTickets] );
 
-  // const ticketKeys = Object.keys(tickets);
   const renderTickets = tickets.map( ticket => {
     const {
       _key,
@@ -47,6 +48,11 @@ export const Tickets = ( props ) => {
       price,
     } = ticket;
     const name = (ticket.ticket.name || {})[lang] || ticket.ticket[0].title[lang];
+
+    const onCountChange = ( count ) => {
+      console.log('count', count)
+      onChange(_key, count);
+    }
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
@@ -62,13 +68,10 @@ export const Tickets = ( props ) => {
         <dd className='ticketsItemControls' >
           <Counter
             _key={_key}
-            defaultValue={count}
+            count={count}
             price={price}
-            getCount={getCount}
-            isRightTranslate={isRightTranslate}
-            onTicketChange={onTicketChange}
-            tickets={tickets}
-            onChange={onChange}
+            onChange={onCountChange}
+            max={ count >= 3 && count * price <= 0 ? 3 : 30 }
           />
         </dd>
       </div>

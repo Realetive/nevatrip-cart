@@ -81,6 +81,8 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     }
   }
 
+  console.log('cart', cart)
+
   const {
     fullName = '',
     phone = '',

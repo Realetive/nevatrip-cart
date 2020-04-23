@@ -28,8 +28,17 @@ export const useGetOrder = ( session, lang = 'en' ) => {
             });
 
             cart.products.forEach( product => {
+              const [ direction ] = _products[product.productId].directions;
               product.product = _products[ product.productId ]
+              product.options = product.options || {
+                direction: {
+                  _key: direction._key,
+                  title: direction.title,
+                },
+                tickets: direction.tickets,
+              }
             } );
+
 
             setCart({ status: 'loaded', payload: cart })
           } )

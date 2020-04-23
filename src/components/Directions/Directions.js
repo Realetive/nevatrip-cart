@@ -14,8 +14,10 @@ export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRight
       _key,
       title,
     } = direction;
+
+    console.log('selectedDirection', direction, selectedDirection)
     
-    const checked = _key === selectedDirection;
+    const checked = _key === selectedDirection._key;
     
     return (
       <li key={ _key }
@@ -31,7 +33,7 @@ export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRight
             name={ name }
             value={ _key }
             checked={ checked }
-            onChange={ () => onChange( _key ) }
+            onChange={ () => onChange( { _key, title } ) }
           />
         </label>
       </li>

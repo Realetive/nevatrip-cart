@@ -5,11 +5,11 @@ import { api } from "../../../api";
 import { Time } from '../../Time/Time';
 import { Tickets } from '../../Tickets/Tickets';
 
-const normaliseDirections = ( directions = [] ) => {
-  console.log( `normaliseDirections` );
-  return directions.reduce( ( acc, direction ) => {
+const normalise = ( array = [] ) => {
+  console.log( `normalise` );
+  return array.reduce( ( acc, item ) => {
     acc = acc || {};
-    acc[ direction._key ] = direction;
+    acc[ item._key ] = item;
 
     return acc;
   }, {} );
@@ -31,17 +31,11 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
   const { name, alias } = getTitle( product.title, lang );
   const { directions = [] } = product;
-  const [ normalisedDirections, setNormalisedDirections ] = useState();
+  const [ normalisedDirections, setNormalisedDirections ] = useState( {} );
   const [ times, setTimes ] = useState({ status: 'loading' });
 
   useEffect( () => {
-    if ( !options.direction || !directions.includes( options.direction ) ) {
-      onChange({
-        ...options,
-        direction: directions[ 0 ]._key
-      });
-      setNormalisedDirections( normaliseDirections( directions ) );
-    }
+    setNormalisedDirections( normalise( directions ) );
   }, [] );
   
   const onDirectionChange = ( direction ) => {
@@ -51,13 +45,13 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       direction,
     })
   }
-  
+
   const onDateChange = async date => {
-    if ( !options.direction ) return;
+    if ( !options.direction._key ) return;
 
     setTimes( { status: 'loading' } );
     try {
-      const payload = await api.product.getProductTime( product._id, options.direction, date );
+      const payload = await api.product.getProductTime( product._id, options.direction._key, date );
       setTimes( { status: 'loaded', payload } );
       // onChange( {
       //   ...options,
@@ -71,6 +65,15 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   const onTimeChange = time => {
     console.log( `time`, time );
   }
+
+  const onTicketChange = ( key, count ) => {
+    const normalizedTickets = normalise((normalisedDirections[ options.direction._key ] || {}).tickets);
+    normalizedTickets[key].count = count;
+    onChange({
+      ...options,
+      tickets: Object.values(normalizedTickets)
+    })
+  }
   
   return (
     <fieldset className='product product_view_form'>
@@ -81,27 +84,25 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       </legend>
       <div className='product__inner'>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
-          {
-            directions && options.direction && <Directions
+          <Directions
               lang={ lang }
               isRightTranslate={ isRightTranslate }
               directions={ directions.filter( direction => direction.dates ) }
               selectedDirection={ options.direction }
               onChange={ onDirectionChange }
-            />
-          }
-          {
-            normalisedDirections
-            && options.direction
-            && normalisedDirections.hasOwnProperty( options.direction )
-            && <Calendar
-              lang={lang}
-              isRightTranslate={isRightTranslate}
-              dates={ normalisedDirections[ options.direction ].dates }
-              selectedDate={ ( options.event || {} ).start }
-              onChange={ onDateChange }
-            />
-          }
+          />
+          {/*{*/}
+          {/*  normalisedDirections*/}
+          {/*  && options.direction*/}
+          {/*  && normalisedDirections.hasOwnProperty( options.direction._key )*/}
+          {/*  && <Calendar*/}
+          {/*    lang={lang}*/}
+          {/*    isRightTranslate={isRightTranslate}*/}
+          {/*    dates={ normalisedDirections[ options.direction ].dates }*/}
+          {/*    selectedDate={ ( options.event || {} ).start }*/}
+          {/*    onChange={ onDateChange }*/}
+          {/*  />*/}
+          {/*}*/}
         </div>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
           {/*<div>*/}
@@ -113,30 +114,16 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           {/*    </code>*/}
           {/*  </pre>*/}
           {/*</div>*/}
-          {
-            times.status === 'loaded' && options.event && <Time
-              lang={ lang }
-              isRightTranslate={ isRightTranslate }
-              times={ times.payload }
-              selectedTime={ options.event }
-              onChange={ onTimeChange }
-            />
-          }
-          {/*<div>*/}
-          {/*  <pre style={{ overflow: 'auto', fontSize: '12px' }}>*/}
-          {/*    <code>*/}
-          {/*      {*/}
-          {/*        options.direction*/}
-          {/*        && normalisedDirections[ options.direction ]*/}
-          {/*          ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )*/}
-          {/*          : ''*/}
-          {/*      }*/}
-          {/*    </code>*/}
-          {/*  </pre>*/}
-          {/*</div>*/}
-          {options.direction
-          && normalisedDirections[ options.direction ]
-          && <Tickets
+          {/*{*/}
+          {/*  times.status === 'loaded' && options.event && <Time*/}
+          {/*    lang={ lang }*/}
+          {/*    isRightTranslate={ isRightTranslate }*/}
+          {/*    times={ times.payload }*/}
+          {/*    selectedTime={ options.event }*/}
+          {/*    onChange={ onTimeChange }*/}
+          {/*  />*/}
+          {/*}*/}
+          { normalisedDirections.hasOwnProperty( options.direction._key ) && <Tickets
             // getStatus={props.getStatus}
             // setDisabledBtn={setDisabledBtn}
             // isDisabledBtn={isDisabledBtn}
@@ -144,9 +131,9 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
             isRightTranslate={isRightTranslate}
             // ticketCategory={ticketCategory}
             // onTicketChange={setSelectedTickets}
-            tickets={ normalisedDirections[ options.direction ].tickets }
-            onChange={onChange}
-          />}
+            tickets={ normalisedDirections[ options.direction._key ].tickets }
+            onChange={onTicketChange}
+          /> }
         </div>
       </div>
     </fieldset>
