@@ -61,8 +61,12 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       setTimes( { status: 'error', error } );
     }
   }
-  const onTimeChange = time => {
-    console.log( `time`, time );
+
+  const onTimeChange = event => {
+    onChange( {
+      ...options,
+      event,
+    } )
   }
 
   const get = ( entity, direction = options.direction ) => {
