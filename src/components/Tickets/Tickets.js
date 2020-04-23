@@ -20,6 +20,7 @@ export const Tickets = ( props ) => {
     tickets
   } = props;
   const [statusTickets, setStatusTickets] = useState({});
+  console.log('tickets', tickets);
 
   // setDisabledBtn(tickets.length === 0);
 
@@ -37,39 +38,38 @@ export const Tickets = ( props ) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusTickets] );
 
-  const ticketKeys = Object.keys(tickets);
-  const _renderTickets = ticketKeys.map( (ticketId) => {
+  // const ticketKeys = Object.keys(tickets);
+  const renderTickets = tickets.map( ticket => {
     const {
       _key,
       category,
       count,
       price,
-    } = tickets[ ticketId ];
-    const name = (tickets[ ticketId ].name || {})[lang] || tickets[ ticketId ].ticket[0].title[lang];
+    } = ticket;
+    const name = (ticket.ticket.name || {})[lang] || ticket.ticket[0].title[lang];
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>
-      {/*<div key={ _key } className='ticketsItem'>*/}
         <dt className='ticketsItemText' >
             <span className={ isRightTranslate ? '' : ' translate' }>{ t( name ) }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
-            {/*{ (ticketCategory[category] || {}).name !== 'standart' &&*/}
-            {/*  <div className={ 'ticket_category ' + ( isRightTranslate ? '' : ' translate' ) }>*/}
-            {/*    { ((ticketCategory[category] || {}).title || {} )[lang] }*/}
-            {/*  </div>*/}
-            {/*}*/}
+            { (category || {}).name !== 'standart' &&
+              <div className={ 'ticket_category ' + ( isRightTranslate ? '' : ' translate' ) }>
+                { ((category || {}).title || {} )[lang] }
+              </div>
+            }
         </dt>
         <dd className='ticketsItemControls' >
-          {/*<Counter*/}
-          {/*  _key={_key}*/}
-          {/*  defaultValue={count}*/}
-          {/*  price={price}*/}
-          {/*  getCount={getCount}*/}
-          {/*  isRightTranslate={isRightTranslate}*/}
-          {/*  onTicketChange={onTicketChange}*/}
-          {/*  newOrder={newOrder}*/}
-          {/*  onChange={onChange}*/}
-          {/*/>*/}
+          <Counter
+            _key={_key}
+            defaultValue={count}
+            price={price}
+            getCount={getCount}
+            isRightTranslate={isRightTranslate}
+            onTicketChange={onTicketChange}
+            tickets={tickets}
+            onChange={onChange}
+          />
         </dd>
       </div>
     )
@@ -83,7 +83,7 @@ export const Tickets = ( props ) => {
         <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Пока нет билетов') }</div>
       }
       <dl className='ticketsDl'>
-        { _renderTickets }
+        { renderTickets }
       </dl>
       {/* <div class="caption" style={{ padding: '8px', borderRadius: '4px', backgroundColor: 'rgb(232, 176, 197)' }}>
         Вы выбрали бесплатную категорию билетов — нужно выбрать сопровождающего, например, билет категории «Взрослый»

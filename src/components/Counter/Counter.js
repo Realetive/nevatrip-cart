@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 const Counter = ( props ) => {
-  const { _key, defaultValue, price, getCount, onTicketChange, newOrder, onChange } = props;
-  const tickets = newOrder.tickets || {};
+  const { _key, defaultValue, price, getCount, onTicketChange, tickets, onChange } = props;
+  // const tickets = newOrder.tickets || {};
   const [count, _setValue] = useState(defaultValue || 0);
 
   useEffect(() => {
-    tickets[ _key ].count = count;
+    tickets.count = count;
     // onChange({...newOrder});
     getCount(_key, count);
   // eslint-disable-next-line react-hooks/exhaustive-deps

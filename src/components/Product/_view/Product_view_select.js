@@ -122,18 +122,18 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
               onChange={ onTimeChange }
             />
           }
-          <div>
-            {/*<pre style={{ overflow: 'auto' }}>*/}
-            {/*  <code>*/}
-            {/*    {*/}
-            {/*      options.direction*/}
-            {/*      && normalisedDirections[ options.direction ]*/}
-            {/*        ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )*/}
-            {/*        : ''*/}
-            {/*    }*/}
-            {/*  </code>*/}
-            {/*</pre>*/}
-          </div>
+          {/*<div>*/}
+          {/*  <pre style={{ overflow: 'auto', fontSize: '12px' }}>*/}
+          {/*    <code>*/}
+          {/*      {*/}
+          {/*        options.direction*/}
+          {/*        && normalisedDirections[ options.direction ]*/}
+          {/*          ? JSON.stringify( normalisedDirections[ options.direction ].tickets, null, 2 )*/}
+          {/*          : ''*/}
+          {/*      }*/}
+          {/*    </code>*/}
+          {/*  </pre>*/}
+          {/*</div>*/}
           {options.direction
           && normalisedDirections[ options.direction ]
           && <Tickets
