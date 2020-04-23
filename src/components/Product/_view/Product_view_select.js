@@ -30,11 +30,12 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
   const { name, alias } = getTitle( product.title, lang );
   const { directions = [] } = product;
-  const [ normalisedDirections, setNormalisedDirections ] = useState( {} );
+  const [ normalisedDirections, setNormalisedDirections ] = useState();
   const [ times, setTimes ] = useState({ status: 'loading' });
 
   useEffect( () => {
     setNormalisedDirections( normalise( directions ) );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
   
   const onDirectionChange = ( direction ) => {
@@ -64,12 +65,20 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     console.log( `time`, time );
   }
 
+  const get = ( entity, direction = options.direction ) => {
+    if ( !normalisedDirections || !direction ) return [];
+
+    console.log( `normalisedDirections, direction`, normalisedDirections, direction );
+
+    return normalisedDirections[ direction._key ][ entity ] || []
+  }
+
   const onTicketChange = ( key, count ) => {
-    const normalizedTickets = normalise((normalisedDirections[ options.direction._key ] || {}).tickets);
+    const normalizedTickets = normalise( get('tickets') );
     normalizedTickets[key].count = count;
     onChange({
       ...options,
-      tickets: Object.values(normalizedTickets)
+      tickets: Object.values( normalizedTickets )
     })
   }
 
@@ -89,117 +98,28 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
               selectedDirection={ options.direction }
               onChange={ onDirectionChange }
           />
-          {
-            normalisedDirections
-            && options.direction
-            && normalisedDirections.hasOwnProperty( options.direction._key )
-            && <Calendar
+          <Calendar
               lang={lang}
-              isRightTranslate={isRightTranslate}
-              dates={ normalisedDirections[ options.direction._key ].dates }
+            isRightTranslate={ isRightTranslate }
+            dates={ get('dates') }
               selectedDate={ (options.event || {} ).start }
               onChange={ onDateChange }
             />
-          }
         </div>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
-          {/*<div>*/}
-          {/*  <pre style={{ overflow: 'auto' }}>*/}
-          {/*    <code>*/}
-          {/*      {*/}
-          {/*        JSON.stringify( times, null, 2 )*/}
-          {/*      }*/}
-          {/*    </code>*/}
-          {/*  </pre>*/}
-          {/*</div>*/}
-          {
-            normalisedDirections.hasOwnProperty( options.direction._key ) && options.event && <Time
+          <Time
               lang={ lang }
               isRightTranslate={ isRightTranslate }
               times={ times.payload }
               selectedTime={ options.event }
               onChange={ onTimeChange }
             />
-          }
-          { normalisedDirections.hasOwnProperty( options.direction._key ) && <Tickets
-            // getStatus={props.getStatus}
-            // setDisabledBtn={setDisabledBtn}
-            // isDisabledBtn={isDisabledBtn}
+          <Tickets
             lang={lang}
-            isRightTranslate={isRightTranslate}
-            // ticketCategory={ticketCategory}
-            // onTicketChange={setSelectedTickets}
-            tickets={ normalisedDirections[ options.direction._key ].tickets }
-            onChange={onTicketChange}
-          /> }
-        </div>
-      </div>
-    </fieldset>
-  )
-
-  /*
-  
-  const dates = options.direction ? data[ options.direction ].dates : [];
-  
-  const [ date, setDate ] = useState( options.time );
-
-  useEffect( () => {
-    onDirectionChange( directions[ 0 ]._key );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [] )
-  
-  const onDirectionChange = directionId => {
-    const _date = new Date( data[ directionId ].dates[ 0 ] );
-    onDateChange( _date, directionId );
-    onChange( {
-      ...options,
-      direction: directionId,
-    } )
-  }
-  
-  const onDateChange = async (newDate, directionId = options.direction ) => {
-    setDate( newDate );
-
-    
-  };
-
-  const onTimeChange = event => {
-    onChange( {
-      ...options,
-      event,
-    } )
-  }
-
-  return (
-    <fieldset className='product product_view_form'>
-      <legend className={'product__legend' + (isRightTranslate ? '' : ' translate')}>
-        <a href={ alias } className="Link Link_view_inherit">
-          { name }
-        </a>
-      </legend>
-      <div className='product__inner'>
-        <div className='colDesktop'>
-          {
-            directions && <Directions
-              lang={ lang }
               isRightTranslate={ isRightTranslate }
-              directions={ directions.filter( direction => direction.dates ) }
-              selectedDirection={ options.direction }
-              onChange={ onDirectionChange }
+            tickets={ get('tickets') }
+            onChange={ onTicketChange }
             />
-          }
-          {
-            dates && date && <Calendar
-              lang={lang}
-              isRightTranslate={isRightTranslate}
-              dates={ dates }
-              selectedDate={ date }
-              onChange={ onDateChange }
-            />
-          }
-        </div>
-        <div className='colDesktop'>
-          
         </div>
       </div>
     </fieldset>
