@@ -1,11 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times = [], selectedTime, onChange = () => {} } ) => {
+export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times: { status, payload: times = [] } = [], selectedTime, onChange = () => {} } ) => {
   const { t } = useTranslation();
+  
+  if ( !selectedTime ) return null;
 
-  if (!times.length) {
-    return (<div className={'cart__error' + (isRightTranslate ? '' : ' translate')}>{t('На выбранную дату нет прогулок')}</div>);
+  if ( status === 'loaded' && !times.length ) {
+    return (
+      <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>
+        { t( 'На выбранную дату нет прогулок' ) }
+      </div>
+    );
   }
   
   const name = times.map( ({ _key }) => _key ).join('-');
@@ -20,7 +26,16 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
       {/*}*/}
       <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
       <ul className='grid-list'>
-        { times.map( time => {
+        {
+          status === 'loading' && (
+            <li title={ t( 'Загружаем билеты…' ) } className='grid-list__item'>
+              <label className='btn-radio__label btn-radio__label_disabled'>
+                Загрузка…
+              </label>
+            </li>
+          )
+        }
+        { status === 'loaded' && times.map( time => {
           const date = new Date( time.start );
           const formatTime = date.toLocaleTimeString( lang, { timeStyle: 'short' } );
           const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );

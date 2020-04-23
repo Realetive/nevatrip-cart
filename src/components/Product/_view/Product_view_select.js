@@ -19,7 +19,7 @@ const getTitle = ( title, lang ) => {
     name = 'Unnamed direction',
     key: { current: alias } = {},
   } = title[ lang ] || title[ process.env.REACT_APP_DEFAULT_LANG ] || {};
-  
+
   return { name, alias };
 }
 
@@ -37,7 +37,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     setNormalisedDirections( normalise( directions ) );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
-  
+
   const onDirectionChange = ( direction ) => {
     onChange({
       ...options,
@@ -69,7 +69,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       event,
     } )
   }
-
+  
   const get = ( entity, direction = options.direction ) => {
     if ( !normalisedDirections || !direction ) return [];
 
@@ -97,37 +97,36 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       <div className='product__inner'>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
           <Directions
-              lang={ lang }
-              isRightTranslate={ isRightTranslate }
-              directions={ directions.filter( direction => direction.dates ) }
-              selectedDirection={ options.direction }
-              onChange={ onDirectionChange }
+            lang={ lang }
+            isRightTranslate={ isRightTranslate }
+            directions={ directions.filter( direction => direction.dates ) }
+            selectedDirection={ options.direction }
+            onChange={ onDirectionChange }
           />
           <Calendar
-              lang={lang}
+            lang={lang}
             isRightTranslate={ isRightTranslate }
             dates={ get('dates') }
-              selectedDate={ (options.event || {} ).start }
-              onChange={ onDateChange }
-            />
+            selectedDate={ (options.event || {} ).start }
+            onChange={ onDateChange }
+          />
         </div>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
           <Time
-              lang={ lang }
-              isRightTranslate={ isRightTranslate }
-              times={ times.payload }
-              selectedTime={ options.event }
-              onChange={ onTimeChange }
-            />
+            lang={ lang }
+            isRightTranslate={ isRightTranslate }
+            times={ times }
+            selectedTime={ options.event }
+            onChange={ onTimeChange }
+          />
           <Tickets
             lang={lang}
-              isRightTranslate={ isRightTranslate }
+            isRightTranslate={ isRightTranslate }
             tickets={ get('tickets') }
             onChange={ onTicketChange }
-            />
+          />
         </div>
       </div>
     </fieldset>
   )
-  */
 }
