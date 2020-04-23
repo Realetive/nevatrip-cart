@@ -65,6 +65,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const { t } = useTranslation();
   const [ cart, setCart ] = useGetOrder( session );
   const [ sum, setSum ] = useState( 0 );
+  const [ ticketsCount, setTicketsCount ] = useState( 0 );
 
   const updateOrder = ( index, options ) => {
     if ( cart.status === 'loaded' ) {
@@ -83,15 +84,17 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   
   useEffect( () => {
     if ( cart.status === 'loaded' ) {
-      const newSum = ( cart.payload.products || [] ).reduce( ( newSum, { options } ) => {
+      const count = ( cart.payload.products || [] ).reduce( ( acc, { options } ) => {
         options.tickets.forEach( ( { count = 0, price = 0 } ) => {
-          newSum += count * price;
+          acc.tickets += count;
+          acc.sum += count * price;
         });
-        
-        return newSum;
-      }, 0 );
+
+        return acc;
+      }, { sum: 0, tickets: 0 } );
       
-      setSum( newSum );
+      setTicketsCount( count.tickets );
+      setSum( count.sum );
     }
   }, [ cart ] )
 
@@ -191,12 +194,16 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
             </label>
           </span>
-          <button className='btn btn_block btn_primary submitBtn' disabled={ true }>
+          <button className='btn btn_block btn_primary submitBtn' disabled={ !ticketsCount }>
             <span className={ isRightTranslate ? '' : ' translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
           </button>
-          <div className='cart__error' >
-            <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span>
-          </div>
+          {
+            !ticketsCount && (
+              <div className='cart__error' >
+                <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span>
+              </div>
+            )
+          }
         </div>
       </div>
     </form>
