@@ -2,9 +2,12 @@ import React from 'react';
 
 let count = 0;
 
-export const ListOfProducts = ( { lang, isRightTranslate, products, onChange, Item } ) => {
+export const ListOfProducts = ( { lang, isRightTranslate, products = [], onChange, Item } ) => {
   count += 1;
   console.log( `${ ListOfProducts.name } of ${ Item.name } rerender: ${ count }` );
+  
+  if ( !products.length ) return ( <div className="list">Корзина пуста, как сердце бывшей…</div> )
+  
   return (
     <ul className="list">
       {
