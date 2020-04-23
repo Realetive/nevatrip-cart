@@ -28,10 +28,7 @@ export const Tickets = ( props ) => {
     } = ticket;
     const name = (ticket.ticket.name || {})[lang] || ticket.ticket[0].title[lang];
 
-    const onCountChange = ( count ) => {
-      console.log('count', count)
-      onChange(_key, count);
-    }
+    const onCountChange = ( count ) => onChange(_key, count);
 
     return (
       <div key={ _key } className='ticketsItem' data-name = {name}>

@@ -6,7 +6,6 @@ import { Time } from '../../Time/Time';
 import { Tickets } from '../../Tickets/Tickets';
 
 const normalise = ( array = [] ) => {
-  console.log( `normalise` );
   return array.reduce( ( acc, item ) => {
     acc = acc || {};
     acc[ item._key ] = item;
@@ -39,7 +38,6 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   }, [] );
   
   const onDirectionChange = ( direction ) => {
-    console.log( `onDirectionChange`, direction );
     onChange({
       ...options,
       direction,
@@ -62,8 +60,6 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       setTimes( { status: 'error', error } );
     }
   }
-  // console.log('-', options.event)
-  
   const onTimeChange = time => {
     console.log( `time`, time );
   }
@@ -117,7 +113,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           {/*  </pre>*/}
           {/*</div>*/}
           {
-            normalisedDirections.hasOwnProperty( options.direction._key ) && <Time
+            normalisedDirections.hasOwnProperty( options.direction._key ) && options.event && <Time
               lang={ lang }
               isRightTranslate={ isRightTranslate }
               times={ times.payload }

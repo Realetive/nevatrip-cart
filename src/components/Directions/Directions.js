@@ -15,8 +15,6 @@ export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRight
       title,
     } = direction;
 
-    console.log('selectedDirection', direction, selectedDirection)
-    
     const checked = _key === selectedDirection._key;
     
     return (
