@@ -42,6 +42,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     onChange({
       ...options,
       direction,
+      tickets: get( 'tickets', direction ),
     })
   }
 
