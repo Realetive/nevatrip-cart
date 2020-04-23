@@ -74,7 +74,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       tickets: Object.values(normalizedTickets)
     })
   }
-  
+
   return (
     <fieldset className='product product_view_form'>
       <legend className={'product__legend' + (isRightTranslate ? '' : ' translate')}>
@@ -91,18 +91,18 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
               selectedDirection={ options.direction }
               onChange={ onDirectionChange }
           />
-          {/*{*/}
-          {/*  normalisedDirections*/}
-          {/*  && options.direction*/}
-          {/*  && normalisedDirections.hasOwnProperty( options.direction._key )*/}
-          {/*  && <Calendar*/}
-          {/*    lang={lang}*/}
-          {/*    isRightTranslate={isRightTranslate}*/}
-          {/*    dates={ normalisedDirections[ options.direction ].dates }*/}
-          {/*    selectedDate={ ( options.event || {} ).start }*/}
-          {/*    onChange={ onDateChange }*/}
-          {/*  />*/}
-          {/*}*/}
+          {
+            normalisedDirections
+            && options.direction
+            && normalisedDirections.hasOwnProperty( options.direction._key )
+            && <Calendar
+              lang={lang}
+              isRightTranslate={isRightTranslate}
+              dates={ normalisedDirections[ options.direction._key ].dates }
+              selectedDate={ ( options.event || {} ).start }
+              onChange={ onDateChange }
+            />
+          }
         </div>
         <div className='colDesktop' style={{ maxWidth: '50%' }}>
           {/*<div>*/}
@@ -114,15 +114,15 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           {/*    </code>*/}
           {/*  </pre>*/}
           {/*</div>*/}
-          {/*{*/}
-          {/*  times.status === 'loaded' && options.event && <Time*/}
-          {/*    lang={ lang }*/}
-          {/*    isRightTranslate={ isRightTranslate }*/}
-          {/*    times={ times.payload }*/}
-          {/*    selectedTime={ options.event }*/}
-          {/*    onChange={ onTimeChange }*/}
-          {/*  />*/}
-          {/*}*/}
+          {
+            normalisedDirections.hasOwnProperty( options.direction._key ) && <Time
+              lang={ lang }
+              isRightTranslate={ isRightTranslate }
+              times={ times.payload }
+              selectedTime={ options.event }
+              onChange={ onTimeChange }
+            />
+          }
           { normalisedDirections.hasOwnProperty( options.direction._key ) && <Tickets
             // getStatus={props.getStatus}
             // setDisabledBtn={setDisabledBtn}

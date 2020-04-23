@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times = [], selectedTime, onChange = () => {} } ) => {
-  console.log( `Run Time` );
   const { t } = useTranslation();
   
   if (!times.length) {
@@ -22,11 +21,11 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
       <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
       <ul className='grid-list'>
         { times.map( time => {
-          console.log( `selectedTime`, selectedTime );
           const date = new Date( time.start );
           const formatTime = date.toLocaleTimeString( lang, { timeStyle: 'short' } );
           const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
-          const checked = time._key === selectedTime._key && !time.expired;
+          // const checked = time._key === selectedTime._key && !time.expired;
+          const checked = false;
 
           return (
             <li key={ time._key }

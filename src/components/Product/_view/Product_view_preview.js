@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options } ) => {
   const { t } = useTranslation();
   const title = product.title[ lang ] || 'Unnamed direction';
-  const { selectedTime } = product;
+  const { selectedTime } = options;
 
   const renderTime = (date) => {
     if (!date) return;
@@ -70,7 +70,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
             <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
               <b>{ t('дата') }</b>
             </div>
-            {/*<div className="listPreviewDataLi__p">{renderDate(selectedTime.currentDate)}</div>*/}
+            {/*<div className="listPreviewDataLi__p">{renderDate(selectedTime)}</div>*/}
           </li>
 
           <li className='listPreviewDataLi'>
@@ -78,7 +78,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
               <b>{ t( 'время' ) }</b>
             </div>
             <div className="listPreviewDataLi__p">
-              {/*{ renderTime( selectedTime.currentDate ) }*/}
+              {/*{ renderTime( selectedTime ) }*/}
             </div>
           </li>
         {/*</> ) }*/}
