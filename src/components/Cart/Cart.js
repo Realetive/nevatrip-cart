@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useGetOrder } from "../../api";
+import { api, useGetOrder } from "../../api";
 
 import { ListOfProducts } from "../List/_of/List_of_products";
 import { ProductViewSelect, ProductViewPreview } from "../Product/_view";
@@ -64,24 +64,15 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   console.log( `${ Cart.name } rerender: ${ count }` );
   const { t } = useTranslation();
   const [ cart, setCart ] = useGetOrder( session );
+  const initUser = { fullName: '', phone: '', email: '' };
+  const [ user, setUser ] = useState( cart.status === 'loaded' ? cart.payload.user || initUser : initUser );
   const [ sum, setSum ] = useState( 0 );
   const [ ticketsCount, setTicketsCount ] = useState( 0 );
+  const [ promocode, setPromocode ] = useState('');
+  const [ sale ] = useState(0); // скидка в %
+  const [ inProcess, setInProcess ] = useState( false );
+  const [ paid, setPaid ] = useState();
 
-  const updateOrder = ( index, options ) => {
-    if ( cart.status === 'loaded' ) {
-      const newProducts = [ ...cart.payload.products ];
-      newProducts[ index ].options = options;
-      
-      setCart( {
-        status: 'loaded',
-        payload: {
-          ...cart.payload,
-          products: newProducts,
-        }
-      } );
-    }
-  }
-  
   useEffect( () => {
     if ( cart.status === 'loaded' ) {
       const count = ( cart.payload.products || [] ).reduce( ( acc, { options } ) => {
@@ -97,15 +88,82 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
       setSum( count.sum );
     }
   }, [ cart ] )
-
-  const {
-    fullName = '',
-    phone = '',
-    email = '',
-  } = cart.user || {};
   
+  const updateOrder = ( index, options ) => {
+    if ( cart.status === 'loaded' ) {
+      const newProducts = [ ...cart.payload.products ];
+      newProducts[ index ].options = options;
+      
+      setCart( {
+        status: 'loaded',
+        payload: {
+          ...cart.payload,
+          products: newProducts,
+        }
+      } );
+    }
+  }
+  
+  const onSubmit = async event => {
+    event.preventDefault();
+    setInProcess( true );
+
+    const order = cart.payload.products.map( ( { options } ) => options );
+    debugger;
+    await api.cart.updateCart(session, order, promocode, lang);
+    
+    const createOrder = await api.order.newOrder({ sessionId: session, user });
+
+    console.log(createOrder)
+
+    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
+      const invoiceId = createOrder.payment.Model.Number;
+
+      const pay = function () {
+        const cp = window.cp;
+        const widget = new cp.CloudPayments({
+          language: t( 'widgetLang' ),
+          googlePaySupport: false,
+        });
+        widget.charge({
+          publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
+          description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
+          amount: sum, //сумма
+          currency: t( 'currencyTag' ), //валюта
+          invoiceId, //номер заказа  (необязательно)
+          accountId: user.email, //идентификатор плательщика (необязательно)
+          skin: "mini", //дизайн виджета
+          // data: {
+          //   myProp: 'myProp value' //произвольный набор параметров
+          // }
+        },
+        function (success) { // success
+          console.log('success', success);
+
+          setPaid(createOrder);
+        },
+        function (reason, fail) { // fail
+          console.log('reason', reason);
+          console.log('fail', fail);
+
+          alert( 'Оплата не прошла' );
+        });
+      };
+
+      pay();
+    } else { // 100% промокод
+      setPaid(createOrder);
+    }
+
+    setInProcess(false);
+  }
+  
+  if ( paid ) {
+    console.log( `paid`, paid );
+  }
+
   return (
-    <form className='form' method='post' onSubmit={ e => { console.log( `onSubmit`, e ); } }>
+    <form className='form' method='post' disabled={ inProcess } onSubmit={ onSubmit }>
       { cart.status === 'loading' && 'Loading…' }
       { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
       { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
@@ -126,14 +184,14 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
                 {
                   name: 'fullName',
                   type: 'text',
-                  value: fullName,
+                  value: user.fullName,
                   label: t( 'Фамилия и имя' ),
                   maxlength: '250'
                 },
                 {
                   name: 'email',
                   type: 'email',
-                  value: email,
+                  value: user.email,
                   label: t( 'E-mail' ),
                   pattern: '^[-._a-zA-Za-яA-я0-9]{2,}@(?:[a-zA-Za-яА-Я0-9][-a-z-A-Z-a-я-А-Я0-9]+\\.)+[a-za-я]{2,6}$',
                   maxlength: '250'
@@ -141,7 +199,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
                 {
                   name: 'phone',
                   type: 'phone',
-                  value: phone,
+                  value: user.phone,
                   label: t( 'Телефон' ),
                   pattern: '(\\+?\\d[- .()]*){10,22}',
                   maxlength: '22',
@@ -161,7 +219,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
                             type={field.type}
                             name={field.name}
                             defaultValue={field.value}
-                            // onBlur={setUserData}
+                            onBlur={ e => setUser( { ...user, [ field.name ]: e.target.value } ) }
                             maxLength={field.maxlength}
                             pattern={field.pattern}
                             placeholder={field.placeholder}
@@ -183,9 +241,9 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
           <Promocode
             className='cart__promocode'
             isRightTranslate={isRightTranslate}
-            promocode=''
+            promocode={ promocode }
             sale={0}
-            onChange={ promocode => { console.log( `promocode`, promocode ); } }
+            onChange={ promocode => setPromocode( promocode ) }
           />
           <span className='checkbox'>
             <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
