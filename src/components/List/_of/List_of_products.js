@@ -1,7 +1,10 @@
 import React from 'react';
-import { ProductViewSelect } from "../../Product/_view/Product_view_select";
 
-export const ListOfProducts = ( { lang, isRightTranslate, products, onChange } ) => {
+let count = 0;
+
+export const ListOfProducts = ( { lang, isRightTranslate, products, onChange, Item } ) => {
+  count += 1;
+  console.log( `${ ListOfProducts.name } of ${ Item.name } rerender: ${ count }` );
   return (
     <ul className="list">
       {
@@ -12,7 +15,7 @@ export const ListOfProducts = ( { lang, isRightTranslate, products, onChange } )
           
           return (
             <li className="cart__item cart__item_view_product" key={ index }>
-              <ProductViewSelect
+              <Item
                 lang={ lang }
                 isRightTranslate={ isRightTranslate }
                 product={ product }

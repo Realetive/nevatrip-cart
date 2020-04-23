@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetOrder } from "../../api";
 
 import { ListOfProducts } from "../List/_of/List_of_products";
-import { ProductPreview } from '../ProductPreview/ProductPreview';
+import { ProductViewSelect, ProductViewPreview } from "../Product/_view";
 import { Promocode } from "../Promocode/Promocode";
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -57,42 +57,28 @@ import '../Calendar/Calendar.css';
 //   };
 // }
 
+let count = 0;
+
 export const Cart = ( { session, lang, isRightTranslate } ) => {
+  count += 1;
+  console.log( `${ Cart.name } rerender: ${ count }` );
   const { t } = useTranslation();
-  const cart = useGetOrder( session );
-  const [ products, setProducts ] = useState([]);
-  const [ order, setOrder ] = useState({});
-  const [ sum, setSum ] = useState(0);
+  const [ cart, setCart ] = useGetOrder( session );
+  const [ sum ] = useState( 0 );
 
-  useEffect( () => {
-    if ( cart.status === 'loaded' ) {
-      setProducts( cart.payload.products )
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ cart.status ] );
-
-  // const productsPreview = () => cart.map(key => {
-  //   const { productId } = order[key];
-  //   const product = order[ productId ];
-
-  //   return product ? (
-  //     <li className='cart__item cart__item_view_product' key={ key }>
-  //       <ProductPreview
-  //         product={product}
-  //         lang={lang}
-  //         isRightTranslate={isRightTranslate}
-  //       />
-  //     </li>
-  //   ) : null;
-  // });
-  
   const updateOrder = ( index, options ) => {
-    const newProducts = [ ...products ];
-    newProducts[ index ].options = options;
-    
-    console.log( `newProducts`, newProducts );
-    
-    setProducts( newProducts );
+    if ( cart.status === 'loaded' ) {
+      const newProducts = [ ...cart.payload.products ];
+      newProducts[ index ].options = options;
+      
+      setCart( {
+        status: 'loaded',
+        payload: {
+          ...cart.payload,
+          products: newProducts,
+        }
+      } );
+    }
   }
 
   const {
@@ -104,14 +90,14 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   return (
     <form className='form' method='post' onSubmit={ e => { console.log( `onSubmit`, e ); } }>
       { cart.status === 'loading' && 'Loading…' }
-      { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ products } onChange={ updateOrder } /> }
+      { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
       { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
-      {/* <ul className='list'>
-      </ul> */}
       <div className='aside'>
         <div className="aside__blank">
           <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
-          <ul className='listPreview'>{ /* productsPreview() */ }</ul>
+          { cart.status === 'loading' && 'Loading…' }
+          { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } Item={ ProductViewPreview } /> }
+          { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
         </div>
 
         <div className = 'asideSeparator'><div className="asideSeparator__line"></div></div>
@@ -142,7 +128,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
                   label: t( 'Телефон' ),
                   pattern: '(\\+?\\d[- .()]*){10,22}',
                   maxlength: '22',
-                  placeholder: '+XXХХХХХХХХХ'
+                  placeholder: '+7 9__ ___-__-__'
                 }
               ].map( field => (
                 <div key={field.name} className='cart__field'>

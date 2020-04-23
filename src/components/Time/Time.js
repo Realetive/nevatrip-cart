@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const Time = ( { isRightTranslate, lang, times, selectedTime, onChange } ) => {
+export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times = [], selectedTime, onChange = () => {} } ) => {
+  console.log( `Run Time` );
   const { t } = useTranslation();
   
   if (!times.length) {
@@ -20,36 +21,35 @@ export const Time = ( { isRightTranslate, lang, times, selectedTime, onChange } 
       {/*}*/}
       <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
       <ul className='grid-list'>
-          { times.map( time => {
-            console.log( `time`, time );
-            const date = new Date( time.start );
-            const formatTime = date.toLocaleTimeString( lang, { timeStyle: 'short' } );
-            const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
-            const checked = time._key === selectedTime._key;
+        { times.map( time => {
+          console.log( `selectedTime`, selectedTime );
+          const date = new Date( time.start );
+          const formatTime = date.toLocaleTimeString( lang, { timeStyle: 'short' } );
+          const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
+          const checked = time._key === selectedTime._key && !time.expired;
 
-            return (
-              <li key={ time._key }
-                title={ time.expired ? t( 'Это время уже не доступно' ) : `${ formatDate }`}
-                className='grid-list__item'>
-
-                <label
-                  className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' } ${ time.expired ? 'btn-radio__label_disabled' : '' }` }
-                  >
-                  { formatTime }
-                  <input
-                    type="radio"
-                    className='btn-radio'
-                    name={ name }
-                    value={ time._key }
-                    checked={ checked }
-                    onChange={ () => onChange( time ) }
-                    id={ time._key }
-                    disabled={ time.expired }
-                  />
-                </label>
-              </li>
-          ) } ) }
-        </ul>
+          return (
+            <li key={ time._key }
+              title={ time.expired ? t( 'Это время уже не доступно' ) : `${ formatDate }`}
+              className='grid-list__item'>
+              <label
+                className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' } ${ time.expired ? 'btn-radio__label_disabled' : '' }` }
+                >
+                { formatTime }
+                <input
+                  type="radio"
+                  className='btn-radio'
+                  name={ name }
+                  value={ time._key }
+                  checked={ checked }
+                  onChange={ () => onChange( time ) }
+                  id={ time._key }
+                  disabled={ time.expired }
+                />
+              </label>
+            </li>
+        ) } ) }
+      </ul>
     </>
   )
 };

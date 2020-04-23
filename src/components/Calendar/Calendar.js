@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 
@@ -33,11 +33,25 @@ const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
   return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
 };
 
-export const Calendar = ( { isRightTranslate, lang, dates, selectedDate, onChange } ) => {
+let count = 0;
+
+export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, dates = [], selectedDate, onChange = () => {} } ) => {
+  count += 1;
+  console.log( `${ Calendar.name } rerender: ${ count }` );
   const { t } = useTranslation();
-  console.log( `dates, selectedDate`, dates, selectedDate );
   const includeDates = getAvailableDates( dates );
-  const selected = getNearestDate( includeDates, selectedDate );
+  const initialDate = getNearestDate( includeDates, selectedDate );
+  const [ date, setDate ] = useState( initialDate );
+  
+  useEffect( () => {
+    setDate( initialDate );
+  }, [ dates ] );
+
+  useEffect( () => {
+    if ( date ) {
+      onChange( date );
+    }
+  }, [ date ] );
 
   return (
     <>
@@ -57,8 +71,8 @@ export const Calendar = ( { isRightTranslate, lang, dates, selectedDate, onChang
           dateFormat='dd MMMM yyyy'
           includeDates={ includeDates }
           locale='calendarLocale'
-          selected={ selected }
-          onChange={ date => onChange( date ) }
+          selected={ date }
+          onChange={ newDate => setDate( newDate ) }
         />
       </div>
     </>
