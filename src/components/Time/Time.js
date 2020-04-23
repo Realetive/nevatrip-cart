@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times = [], selectedTime, onChange = () => {} } ) => {
   const { t } = useTranslation();
+  console.log('t', times)
   
   if (!times.length) {
     return (<div className={'cart__error' + (isRightTranslate ? '' : ' translate')}>{t('На выбранную дату нет прогулок')}</div>);

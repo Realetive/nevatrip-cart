@@ -180,7 +180,6 @@ export const Product = (props) => {
           }
           {direction &&  <Tickets
             getStatus={props.getStatus}
-            setDisabledBtn={props.setDisabledBtn}
             isDisabledBtn={props.isDisabledBtn}
             lang={lang}
             isRightTranslate={isRightTranslate}

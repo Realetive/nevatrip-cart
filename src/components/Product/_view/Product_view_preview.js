@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options } ) => {
   const { t } = useTranslation();
   const title = product.title[ lang ] || 'Unnamed direction';
-  const { selectedTime } = options;
+  const selectedTime = ( options.event || {} ).start ;
 
   const renderTime = (date) => {
     if (!date) return;
@@ -50,7 +50,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
         _key,
         price
       } = ticket;
-      const { title } = ticket.ticket[0];
+      const [{ title }] = ticket.ticket;
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
@@ -65,12 +65,12 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
     <fieldset className='listPreviewFieldset'>
       <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
       <ul className='listPreviewData'>
-        {/*{selectedTime && ( <>*/}
+        { selectedTime && ( <>
           <li className='listPreviewDataLi'>
             <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
               <b>{ t('дата') }</b>
             </div>
-            {/*<div className="listPreviewDataLi__p">{renderDate(selectedTime)}</div>*/}
+            <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
           </li>
 
           <li className='listPreviewDataLi'>
@@ -78,10 +78,10 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
               <b>{ t( 'время' ) }</b>
             </div>
             <div className="listPreviewDataLi__p">
-              {/*{ renderTime( selectedTime ) }*/}
+              { renderTime( selectedTime ) }
             </div>
           </li>
-        {/*</> ) }*/}
+        </> ) }
 
         <li className='listPreviewDataLi'>
           <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>

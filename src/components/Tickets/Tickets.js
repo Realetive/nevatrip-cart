@@ -16,29 +16,8 @@ export const Tickets = ( props ) => {
     isRightTranslate,
     tickets,
     onChange,
-    getStatus,
-    setDisabledBtn,
     isDisabledBtn,
-    onTicketChange
   } = props;
-  // const [statusTickets, setStatusTickets] = useState({});
-  console.log('tickets', tickets);
-
-  // setDisabledBtn(tickets.length === 0);
-
-  // const getCount = (_key, count) => {
-  //   setStatusTickets({
-  //     ...statusTickets,
-  //     [_key]: count,
-  //     status: false,
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   const status = Object.values(statusTickets).some(item => item > 0);
-  //   // getStatus( status );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [statusTickets] );
 
   const renderTickets = tickets.map( ticket => {
     const {

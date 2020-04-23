@@ -10,23 +10,23 @@ const session = new URL( window.location.href ).searchParams.get( 'session' )
                 || root.dataset.session
                 || 'test-test-test';
 
-// const html = document.querySelector('html');
-// const [ currentLang, isRightTranslate ] = i18n(lang);
+const html = document.querySelector('html');
+const [ currentLang, isRightTranslate ] = i18n(lang);
 
-// const observer = new MutationObserver(function(mutationsList) {
-//     for (const mutation of mutationsList) {
-//         const attr = mutation.attributeName;
-//         const lang = mutation.target.getAttribute(attr);
-//         const [ currentLang, isRightTranslate ] = i18n(lang);
+const observer = new MutationObserver(function(mutationsList) {
+    for (const mutation of mutationsList) {
+        const attr = mutation.attributeName;
+        const lang = mutation.target.getAttribute(attr);
+        const [ currentLang, isRightTranslate ] = i18n(lang);
 
-//         render(
-//             <App session={session} lang={currentLang} isRightTranslate={isRightTranslate} />,
-//             root
-//         );
-//     }
-// });
+        render(
+            <App session={session} lang={currentLang} isRightTranslate={isRightTranslate} />,
+            root
+        );
+    }
+});
 
-// observer.observe(html, { attributeFilter: ['lang'] });
+observer.observe(html, { attributeFilter: ['lang'] });
 
 render(
   <App session={ session } lang={ lang } />,

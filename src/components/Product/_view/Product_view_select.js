@@ -52,15 +52,17 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     setTimes( { status: 'loading' } );
     try {
       const payload = await api.product.getProductTime( product._id, options.direction._key, date );
+      payload.forEach(item => item.start = new Date( item.start ));
       setTimes( { status: 'loaded', payload } );
-      // onChange( {
-      //   ...options,
-      //   event: payload[ 0 ],
-      // } )
+      onChange( {
+        ...options,
+        event: payload[ 0 ],
+      } )
     } catch ( error ) {
       setTimes( { status: 'error', error } );
     }
   }
+  // console.log('-', options.event)
   
   const onTimeChange = time => {
     console.log( `time`, time );
@@ -99,7 +101,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
               lang={lang}
               isRightTranslate={isRightTranslate}
               dates={ normalisedDirections[ options.direction._key ].dates }
-              selectedDate={ ( options.event || {} ).start }
+              selectedDate={ (options.event || {} ).start }
               onChange={ onDateChange }
             />
           }
