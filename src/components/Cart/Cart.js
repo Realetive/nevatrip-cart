@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useGetOrder } from "../../api";
@@ -64,7 +64,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   console.log( `${ Cart.name } rerender: ${ count }` );
   const { t } = useTranslation();
   const [ cart, setCart ] = useGetOrder( session );
-  const [ sum ] = useState( 0 );
+  const [ sum, setSum ] = useState( 0 );
 
   const updateOrder = ( index, options ) => {
     if ( cart.status === 'loaded' ) {
@@ -80,6 +80,20 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
       } );
     }
   }
+  
+  useEffect( () => {
+    if ( cart.status === 'loaded' ) {
+      const newSum = ( cart.payload.products || [] ).reduce( ( newSum, { options } ) => {
+        options.tickets.forEach( ( { count = 0, price = 0 } ) => {
+          newSum += count * price;
+        });
+        
+        return newSum;
+      }, 0 );
+      
+      setSum( newSum );
+    }
+  }, [ cart ] )
 
   const {
     fullName = '',
