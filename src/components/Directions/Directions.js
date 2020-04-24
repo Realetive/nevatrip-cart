@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 let count = 0;
 
 export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate = true, directions = [], selectedDirection, onChange = () => {} } ) => {
-  count += 1;
-  console.log( `${ Directions.name } rerender: ${ count }` );
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Directions.name} rerender: ${count}`);
+  }
+
   const { t } = useTranslation();
   const name = directions.map( ( { _key } ) => _key ).join('-');
 

@@ -60,8 +60,10 @@ import '../Calendar/Calendar.css';
 let count = 0;
 
 export const Cart = ( { session, lang, isRightTranslate } ) => {
-  count += 1;
-  console.log( `${ Cart.name } rerender: ${ count }` );
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Cart.name} rerender: ${count}`);
+  }
   const { t } = useTranslation();
   const [ cart, setCart ] = useGetOrder( session );
   const initUser = { fullName: '', phone: '', email: '' };

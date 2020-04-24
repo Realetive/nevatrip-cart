@@ -8,8 +8,11 @@ import './Tickets.css';
 let count = 0;
 
 export const Tickets = ( props ) => {
-  count += 1;
-  console.log( `${ Tickets.name } rerender: ${ count }` );
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Tickets.name} rerender: ${count}`);
+  }
+
   const { t } = useTranslation();
   const {
     lang,

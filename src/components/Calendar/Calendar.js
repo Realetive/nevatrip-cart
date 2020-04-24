@@ -36,8 +36,11 @@ const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
 let count = 0;
 
 export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, dates = [], selectedDate, onChange = () => {} } ) => {
-  count += 1;
-  console.log( `${ Calendar.name } rerender: ${ count }` );
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Calendar.name} rerender: ${count}`);
+  }
+
   const { t } = useTranslation();
   const includeDates = getAvailableDates( dates );
   const initialDate = getNearestDate( includeDates, selectedDate );

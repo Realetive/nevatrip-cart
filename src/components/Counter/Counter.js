@@ -3,8 +3,11 @@ import React from 'react';
 let consoleCount = 0;
 
 const Counter = ( props ) => {
-  consoleCount += 1;
-  console.log( `${ Counter.name } rerender: ${ consoleCount }` );
+  if ( process.env.NODE_ENV === 'development' ) {
+    consoleCount += 1;
+    console.log(`${Counter.name} rerender: ${consoleCount}`);
+  }
+
   const {
     count = 0,
     onChange,

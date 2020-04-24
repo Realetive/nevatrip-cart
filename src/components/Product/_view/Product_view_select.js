@@ -23,11 +23,10 @@ const getTitle = ( title, lang ) => {
   return { name, alias };
 }
 
-const __DEV__ = process.env.NODE_ENV;
 let count = 0;
 
 export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options, onChange }) => {
-  if ( __DEV__ ) {
+  if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
   }
