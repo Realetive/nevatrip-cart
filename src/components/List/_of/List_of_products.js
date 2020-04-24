@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 
 let count = 0;
 
@@ -7,8 +8,10 @@ export const ListOfProducts = ( { lang, isRightTranslate, products = [], onChang
     count += 1;
     console.log(`${ListOfProducts.name} of ${Item.name} rerender: ${count}`);
   }
-  
-  if ( !products.length ) return ( <div className="list">Корзина пуста, как сердце бывшей…</div> )
+
+  const { t } = useTranslation();
+
+  if ( !products.length ) return ( <div className={'list' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Корзина пуста' ) }</div> )
   
   return (
     <ul className="list">

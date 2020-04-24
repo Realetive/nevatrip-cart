@@ -96,7 +96,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
           </div>
         </li>
       </ul>
-      {/*{ tickets &&*/}
+      { options.tickets &&
       <div className='listPreviewTickets'>
         <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
           <b>{ t( 'билеты' ) }</b>
@@ -105,14 +105,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
           { renderTicket() }
         </div>
       </div>
-      {/*}*/}
-      {/*<pre>*/}
-      {/*  <code>*/}
-      {/*    {*/}
-      {/*      JSON.stringify( options, null, 2 )*/}
-      {/*    }*/}
-      {/*  </code>*/}
-      {/*</pre>*/}
+      }
     </fieldset>
   );
 }

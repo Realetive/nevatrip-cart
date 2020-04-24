@@ -177,13 +177,13 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     <form className='form' method='post' disabled={ inProcess } onSubmit={ onSubmit }>
       { cart.status === 'loading' && 'Loading…' }
       { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
-      { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
+      { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
       <div className='aside'>
         <div className="aside__blank">
           <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
           { cart.status === 'loading' && 'Loading…' }
           { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } Item={ ProductViewPreview } /> }
-          { cart.status === 'error' && 'Что-то пошло не так…' } { /* TODO: Добавить вёрстку */ }
+          { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
         </div>
 
         <div className = 'asideSeparator'><div className="asideSeparator__line"></div></div>

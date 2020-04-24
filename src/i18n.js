@@ -42,6 +42,8 @@ export default function i18n(lang) {
               'На выбранную вами дату нет прогулок': 'There are no tours on chosen date',
               'Выберите направление': 'Select direction',
               'направление': 'direction',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
             }
           },
           ru: {
@@ -79,6 +81,8 @@ export default function i18n(lang) {
               'На выбранную вами дату нет прогулок': 'На выбранную вами дату нет прогулок',
               'Выберите направление': 'Выберите направление',
               'направление': 'направление',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
             }
           },
           de: {
@@ -114,6 +118,8 @@ export default function i18n(lang) {
               'На выбранную вами дату нет прогулок': 'Für das gewählte Datum sind keine Tickets verfügbar',
               'Выберите направление': 'Select direction',
               'направление': 'direction',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
             }
           },
           cs: {
@@ -151,6 +157,8 @@ export default function i18n(lang) {
               'На выбранную вами дату нет прогулок': 'V daném termínu není k dispozici žádná plavba',
               'Выберите направление': 'Select direction',
               'направление': 'direction',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
             }
           },
         },
