@@ -108,7 +108,18 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     event.preventDefault();
     setInProcess( true );
 
-    const order = cart.payload.products.map( ( { options } ) => options );
+    const order = cart.payload.products.map( ( { productId, options } ) => ( {
+      productId,
+      options: {
+        direction: options.direction._key,
+        event: options.event._key,
+        tickets: options.tickets.reduce( ( tickets, ticket ) => {
+          tickets[ ticket._key ] = ticket.count;
+
+          return tickets;
+        }, {} )
+      }
+    } ) );
     debugger;
     await api.cart.updateCart(session, order, promocode, lang);
     
