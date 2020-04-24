@@ -21,21 +21,20 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
       'cs': 'cs-CS',
       'ru': 'ru-RU',
     };
-    let options = { day: 'numeric', month: 'long' };
+    const optionsWithoutYear = { day: 'numeric', month: 'long' };
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
     if ( hours > 21) {
       return `${ t( 'В ночь с' ) } 
-        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( date ) } 
         ${ t( 'на' ) } 
         ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date.setDate( date.getDate() ) + 86400000 ) }`; // TODO getDay
     } else if ( hours < 4  || hours === '0') {
       return `${ t( 'В ночь с' ) }
-        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date.setDate( date.getDate() ) - 86400000 ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( date.setDate( date.getDate() ) - 86400000 ) } 
         ${ t( 'на' ) } 
         ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date ) }`;
     } else {
-      options = { year: 'numeric', month: 'long', day: 'numeric' };
-
       return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
     }
   };
