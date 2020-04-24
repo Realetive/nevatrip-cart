@@ -66,8 +66,8 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const [ cart, setCart ] = useGetOrder( session );
   const initUser = { fullName: '', phone: '', email: '' };
   const [ user, setUser ] = useState( cart.status === 'loaded' ? cart.payload.user || initUser : initUser );
-  const [ sum, setSum ] = useState( 0 );
   const [ ticketsCount, setTicketsCount ] = useState( 0 );
+  const [ sum, setSum ] = useState( 0 );
   const [ promocode, setPromocode ] = useState('');
   const [ sale ] = useState(0); // скидка в %
   const [ inProcess, setInProcess ] = useState( false );
@@ -124,8 +124,6 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     await api.cart.updateCart(session, order, promocode, lang);
     
     const createOrder = await api.order.newOrder({ sessionId: session, user });
-
-    console.log(createOrder)
 
     if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;

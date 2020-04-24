@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options } ) => {
   const { t } = useTranslation();
-  const title = product.title[ lang ] || 'Unnamed direction';
+  const title = product.title[ lang ] ? product.title[ lang ].name : 'Unnamed direction';
   const selectedTime = ( options.event || {} ).start ;
 
   const renderTime = (date) => {
@@ -19,7 +19,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
       'en': 'en-US',
       'de': 'de-DE',
       'cs': 'cs-CS',
-      'ru': 'ru-RU'
+      'ru': 'ru-RU',
     };
     let options = { day: 'numeric', month: 'long' };
 

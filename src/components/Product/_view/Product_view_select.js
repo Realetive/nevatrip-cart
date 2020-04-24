@@ -23,11 +23,14 @@ const getTitle = ( title, lang ) => {
   return { name, alias };
 }
 
+const __DEV__ = process.env.NODE_ENV;
 let count = 0;
 
 export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options, onChange }) => {
-  count += 1;
-  console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
+  if ( __DEV__ ) {
+    count += 1;
+    console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
+  }
   const { name, alias } = getTitle( product.title, lang );
   const { directions = [] } = product;
   const [ normalisedDirections, setNormalisedDirections ] = useState();
@@ -72,8 +75,6 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   
   const get = ( entity, direction = options.direction ) => {
     if ( !normalisedDirections || !direction ) return [];
-
-    console.log( `normalisedDirections, direction`, normalisedDirections, direction );
 
     return normalisedDirections[ direction._key ][ entity ] || []
   }

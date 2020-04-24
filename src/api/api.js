@@ -38,7 +38,8 @@ export const useGetOrder = ( session, lang = 'en' ) => {
                 tickets: direction.tickets,
               }
             } );
-
+            
+            console.log( `cart`, cart );
 
             setCart({ status: 'loaded', payload: cart })
           } )
