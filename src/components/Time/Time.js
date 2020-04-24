@@ -9,11 +9,11 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
   if ( status === 'loaded' && !times.length ) {
     return (
       <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>
-        { t( 'На выбранную дату нет прогулок' ) }
+        { t( 'На выбранную вами дату нет прогулок' ) }
       </div>
     );
   }
-  
+
   const name = times.map( ({ _key }) => _key ).join('-');
   
   return (

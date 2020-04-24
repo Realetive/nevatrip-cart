@@ -62,7 +62,7 @@ export const Tickets = ( props ) => {
       {
         (!isDisabledBtn &&
         <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Выберите категории билетов') }</span>) ||
-        <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Пока нет билетов') }</div>
+        <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Билетов на данный момент нет') }</div>
       }
       <dl className='ticketsDl'>
         { renderTickets }
