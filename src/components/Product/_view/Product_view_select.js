@@ -4,6 +4,7 @@ import { Directions } from "../../Directions/Directions";
 import { api } from "../../../api";
 import { Time } from '../../Time/Time';
 import { Tickets } from '../../Tickets/Tickets';
+import '../Product.css'
 
 const normalise = ( array = [] ) => {
   return array.reduce( ( acc, item ) => {
@@ -95,7 +96,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
         </a>
       </legend>
       <div className='product__inner'>
-        <div className='colDesktop' style={{ maxWidth: '50%' }}>
+        <div className='colDesktop'>
           <Directions
             lang={ lang }
             isRightTranslate={ isRightTranslate }
@@ -111,7 +112,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
             onChange={ onDateChange }
           />
         </div>
-        <div className='colDesktop' style={{ maxWidth: '50%' }}>
+        <div className='colDesktop'>
           <Time
             lang={ lang }
             isRightTranslate={ isRightTranslate }
