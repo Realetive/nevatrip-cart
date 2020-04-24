@@ -23,15 +23,20 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
     };
     const optionsWithoutYear = { day: 'numeric', month: 'long' };
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    let newDay = new Date( date );
 
     if ( hours > 21) {
+      const nextDay = newDay.setDate( date.getDate() + 1 );
+
       return `${ t( 'В ночь с' ) } 
         ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( date ) } 
         ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date.setDate( date.getDate() ) + 86400000 ) }`; // TODO getDay
+        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( nextDay ) }`;
     } else if ( hours < 4  || hours === '0') {
+      const prevDay = newDay.setDate( date.getDate() - 1 );
+
       return `${ t( 'В ночь с' ) }
-        ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( date.setDate( date.getDate() ) - 86400000 ) } 
+        ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( prevDay ) } 
         ${ t( 'на' ) } 
         ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date ) }`;
     } else {
