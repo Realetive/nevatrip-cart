@@ -40,6 +40,8 @@ export default function i18n(lang) {
               'Нет выбранных билетов': 'Choose at least one ticket',
               'Пока нет билетов': 'No tickets',
               'На выбранную дату нет прогулок': 'No walks on the selected date',
+              'Выберите направление': 'Select direction',
+              'направление': 'direction',
             }
           },
           ru: {
@@ -75,6 +77,8 @@ export default function i18n(lang) {
               'Нет выбранных билетов': 'Нет выбранных билетов',
               'Пока нет билетов': 'Пока нет прогулок',
               'На выбранную дату нет прогулок': 'На выбранную дату нет прогулок',
+              'Выберите направление': 'Выберите направление',
+              'направление': 'направление',
             }
           },
           de: {
@@ -108,6 +112,8 @@ export default function i18n(lang) {
               'Нет выбранных билетов': 'Wählen Sie mindestens ein Ticket',
               'Пока нет билетов': 'No tickets',
               'На выбранную дату нет прогулок': 'No walks on the selected date',
+              'Выберите направление': 'Select direction',
+              'направление': 'direction',
             }
           },
           cs: {
@@ -143,11 +149,13 @@ export default function i18n(lang) {
               'Нет выбранных билетов': 'Vyberte alespoň jednu vstupenku',
               'Пока нет прогулок': 'No tickets',
               'На выбранную дату нет прогулок': 'No walks on the selected date',
+              'Выберите направление': 'Select direction',
+              'направление': 'direction',
             }
           },
         },
         lng: lang,
-        fallbackLng: 'ru',
+        fallbackLng: 'en',
 
         interpolation: {
           escapeValue: false
@@ -164,11 +172,11 @@ export default function i18n(lang) {
   let isRightTranslate;
 
   if (calendarLocaleObject.hasOwnProperty(lang)) {
-      _i18n.language = lang;
-      isRightTranslate = true;
+    _i18n.language = lang;
+    isRightTranslate = true;
   } else {
-      _i18n.language = 'en';
-      isRightTranslate = false;
+    _i18n.language = 'en';
+    isRightTranslate = false;
   }
 
   let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];

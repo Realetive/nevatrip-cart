@@ -18,16 +18,17 @@ const observer = new MutationObserver( function(mutationsList) {
     const attr = mutation.attributeName;
     const lang = mutation.target.getAttribute(attr);
     const [ currentLang, isRightTranslate ] = i18n(lang);
-    
+
     render(
       <App session={ session } lang={ currentLang } isRightTranslate={ isRightTranslate } />,
       root
     );
   }
 });
-  
+
 observer.observe(html, { attributeFilter: ['lang'] });
-  
+
+
 render(
   <App session={ session } lang={ currentLang } isRightTranslate={ isRightTranslate } />,
   root
