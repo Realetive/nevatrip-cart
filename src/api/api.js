@@ -3,6 +3,7 @@ import { MAIN_URL } from './config';
 
 const headers = { 'Content-Type': 'application/json' };
 
+/* Кастомный хук, который получет сессию и язык, запрашивает продукт и возвращает объект cart с данными и функцию, для изменений.  */
 export const useGetOrder = ( session, lang = 'en' ) => {
   const [ cart, setCart ] = useState({ status: 'loading' });
 
@@ -38,8 +39,6 @@ export const useGetOrder = ( session, lang = 'en' ) => {
                 tickets: direction.tickets,
               }
             } );
-            
-            console.log( `cart`, cart );
 
             setCart({ status: 'loaded', payload: cart })
           } )

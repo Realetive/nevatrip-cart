@@ -6,6 +6,7 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
   
   if ( !selectedTime ) return null;
 
+  /* Если на выбранную дату пришел пустой массив с временем, то выводится текст, указывающий, что нет прогулок. */
   if ( status === 'loaded' && !times.length ) {
     return (
       <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>

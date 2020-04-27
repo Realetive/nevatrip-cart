@@ -6,11 +6,13 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
   const title = product.title[ lang ] ? product.title[ lang ].name : 'Unnamed direction';
   const selectedTime = ( options.event || {} ).start ;
 
+  /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
     if (!date) return;
     return date.toLocaleTimeString(lang, { timeStyle: 'short' });
   };
 
+  /* Функция возвращает дату в нужном формате. */
   const renderDate = (date) => {
     if ( !date ) return;
 
@@ -25,6 +27,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     let newDay = new Date( date );
 
+    /* Если выбранное время находится в промежутке с 21 вечера до 4 часов ночи, то выводится дата в формате "в ночь с... на...". */
     if ( hours > 21) {
       const nextDay = newDay.setDate( date.getDate() + 1 );
 
@@ -44,6 +47,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
     }
   };
 
+  /* Функция выводит выбранные билеты, их количество и цену. */
   const renderTicket = () => {
     return options.tickets.map( ticket => {
       const count = ticket.count;

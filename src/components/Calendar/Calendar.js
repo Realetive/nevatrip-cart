@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
+/* Функция получает массив дат с типами "строка" и возвращает массив дат с типами "дата". */
 const getAvailableDates = ( dates = [] ) => {
   return dates.map( date => {
     const availableDate = new Date( date );
@@ -15,12 +16,14 @@ const getAvailableDates = ( dates = [] ) => {
   });
 }
 
+/* Функция возвращает первую дату из массива всех дат направления для инициализации календаря и выбранную пользователем дату. */
 const getNearestDate = ( dates = [], date ) => {
   const nearestDate = dates.includes( date ) ? date : dates[ 0 ];
 
   return nearestDate;
 };
 
+/* Функция возвращет дату для input выбора даты в нужном формате, в зависимости от языка. */
 const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
   const local = {
     'en': 'en-US',
@@ -45,12 +48,14 @@ export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_AP
   const includeDates = getAvailableDates( dates );
   const initialDate = getNearestDate( includeDates, selectedDate );
   const [ date, setDate ] = useState( initialDate );
-  
+
+  /* Подписываемся на изменение массива дат (изменится он при смене пользователем направления) и меняем выбранную дату. */
   useEffect( () => {
     setDate( initialDate );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ dates ] );
 
+  /* Подписываемся на смену выбранной даты и отправляем новую дату выше для загрузки времени для новой даты. */
   useEffect( () => {
     if ( date ) {
       onChange( date );

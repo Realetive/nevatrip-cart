@@ -75,6 +75,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const [ inProcess, setInProcess ] = useState( false );
   const [ paid, setPaid ] = useState();
 
+  /* При изменении cart меняем общее количество билетов и общую сумму. */
   useEffect( () => {
     if ( cart.status === 'loaded' ) {
       const count = ( cart.payload.products || [] ).reduce( ( acc, { options } ) => {
@@ -85,12 +86,13 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
         return acc;
       }, { sum: 0, tickets: 0 } );
-      
+
       setTicketsCount( count.tickets );
       setSum( count.sum );
     }
   }, [ cart ] )
-  
+
+  /* Функция меняет данные в поле payload в объекте cart. */
   const updateOrder = ( index, options ) => {
     if ( cart.status === 'loaded' ) {
       const newProducts = [ ...cart.payload.products ];
@@ -105,7 +107,8 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
       } );
     }
   }
-  
+
+  /* Отправка формы. */
   const onSubmit = async event => {
     event.preventDefault();
     setInProcess( true );
@@ -122,7 +125,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
         }, {} )
       }
     } ) );
-    debugger;
+
     await api.cart.updateCart(session, order, promocode, lang);
     
     const createOrder = await api.order.newOrder({ sessionId: session, user });
@@ -130,7 +133,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
       const invoiceId = createOrder.payment.Model.Number;
 
-      const pay = function () {
+      const pay = function() {
         const cp = window.cp;
         const widget = new cp.CloudPayments({
           language: t( 'widgetLang' ),

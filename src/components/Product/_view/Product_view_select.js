@@ -6,6 +6,8 @@ import { Time } from '../../Time/Time';
 import { Tickets } from '../../Tickets/Tickets';
 import '../Product.css'
 
+/* Функция принимает массив объектов направлений и возвпащает нормализованный объект,
+где ключем является идентификатор направлния, а значением объект с данными о направлении. */
 const normalise = ( array = [] ) => {
   return array.reduce( ( acc, item ) => {
     acc = acc || {};
@@ -15,6 +17,8 @@ const normalise = ( array = [] ) => {
   }, {} );
 }
 
+/* Функция возвращает заголовок экскурсии в нужном язке, если он объявлен, иначе возвращает заголовок на аглийском языке.
+Если не находит и на английском, то возвращает значение по умолчанию. */
 const getTitle = ( title, lang ) => {
   const {
     name = 'Unnamed direction',
@@ -36,11 +40,13 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   const [ normalisedDirections, setNormalisedDirections ] = useState();
   const [ times, setTimes ] = useState({ status: 'loading' });
 
+  /* По вызову комопнета ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
   useEffect( () => {
     setNormalisedDirections( normalise( directions ) );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
 
+  /* Функция меняет выбранное направление. */
   const onDirectionChange = ( direction ) => {
     onChange({
       ...options,
@@ -48,7 +54,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
       tickets: get( 'tickets', direction ),
     })
   }
-
+  /* Функция меняет выбранную дату. */
   const onDateChange = async date => {
     if ( !options.direction._key ) return;
 
@@ -66,6 +72,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     }
   }
 
+  /* Функция меняет выбранное время. */
   const onTimeChange = event => {
     onChange( {
       ...options,
@@ -79,6 +86,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     return normalisedDirections[ direction._key ][ entity ] || []
   }
 
+  /* Функция меняет выбранные билеты. */
   const onTicketChange = ( key, count ) => {
     const normalizedTickets = normalise( get('tickets') );
     normalizedTickets[key].count = count;

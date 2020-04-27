@@ -179,6 +179,8 @@ export default function i18n(lang) {
 
   let isRightTranslate;
 
+  /* Если при переводе страницы новый язык совпадает с языком, для котого уже предусмотрен перевод в i18n, то для страницы будет запрещен
+  перевод с помощью плагина браузера и перевод будет взят из ресурсов i18n. В противном случае isRightTranslate будет равен true и перевод будет разрешен для отдельных сущностей.  */
   if (calendarLocaleObject.hasOwnProperty(lang)) {
     _i18n.language = lang;
     isRightTranslate = true;
@@ -187,6 +189,7 @@ export default function i18n(lang) {
     isRightTranslate = false;
   }
 
+  /* Календарь будет создан в фомате en, если язык перевода страницы с помощью плагина-переводчика не совпадает ни с одним языком в нашем объекте, зарегистрированном в i18n. */
   let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
   let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
   registerLocale('calendarLocale', calendarLocale.default );
