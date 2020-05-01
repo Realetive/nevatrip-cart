@@ -17,7 +17,7 @@ const Counter = ( props ) => {
   return (
     <>
       <button type='button' className='counterBtn' disabled={ count <= 0 } onClick={ () => onChange( count - 1 ) }>–</button>
-      <input type='number' className='counterInput' min={ 0 } value={ count } onChange={ e => onChange( parseInt( e.target.value ) )} />
+      <input type='number' className='counterInput' min={ 0 } value={ count } onChange={ e => onChange( parseInt( e.target.value ) || 0 )} />
       <button type='button' className='counterBtn' disabled={ count >= max } onClick={ () => onChange( count + 1 ) }>+</button>
     </>
   );
