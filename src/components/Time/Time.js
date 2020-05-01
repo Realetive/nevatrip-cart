@@ -38,7 +38,7 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
         }
         { status === 'loaded' && times.map( time => {
           const date = new Date( time.start );
-          const formatTime = date.toLocaleTimeString( lang, { timeStyle: 'short' } );
+          const formatTime = date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
           const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
           const checked = time._key === selectedTime._key && !time.expired;
 
