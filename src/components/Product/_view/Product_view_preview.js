@@ -5,6 +5,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
   const { t } = useTranslation();
   const title = product.title[ lang ] ? product.title[ lang ].name : 'Unnamed direction';
   const selectedTime = ( options.event || {} ).start ;
+  const direction = product.directions.find( _direction => _direction._key === options.direction );
 
   /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
@@ -49,16 +50,12 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
 
   /* Функция выводит выбранные билеты, их количество и цену. */
   const renderTicket = () => {
-    return options.tickets.map( ticket => {
-      const count = ticket.count;
+    return direction.tickets.map( ( { _key, price, ticket } ) => {
+      const count = options.tickets[ _key ];
 
-      if (!count || !ticket) return null;
+      if ( !count ) return null;
 
-      const {
-        _key,
-        price
-      } = ticket;
-      const [{ title }] = ticket.ticket;
+      const [ { title } ] = ticket;
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
@@ -68,7 +65,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
       );
     } )
   };
-
+  
   return (
     <fieldset className='listPreviewFieldset'>
       <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
@@ -96,7 +93,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
             <b>{ t( 'направление' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">
-            { ( options.direction || {}).title[lang] || '' }
+            { direction.title[ lang ] || '' }
           </div>
         </li>
       </ul>

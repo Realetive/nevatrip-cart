@@ -51,21 +51,22 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     onChange({
       ...options,
       direction,
-      tickets: get( 'tickets', direction ),
+      tickets: getEntity( 'tickets', direction ),
     })
   }
+
   /* Функция меняет выбранную дату. */
   const onDateChange = async date => {
-    if ( !options.direction._key ) return;
+    if ( !options.direction ) return;
 
     setTimes( { status: 'loading' } );
     try {
-      const payload = await api.product.getProductTime( product._id, options.direction._key, date );
+      const payload = await api.product.getProductTime( product._id, options.direction, date );
       payload.forEach(item => item.start = new Date( item.start ));
       setTimes( { status: 'loaded', payload } );
       onChange( {
         ...options,
-        event: payload[ 0 ],
+        event: payload.find( time => !time.expired ),
       } )
     } catch ( error ) {
       setTimes( { status: 'error', error } );
@@ -80,20 +81,21 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     } )
   }
   
-  const get = ( entity, direction = options.direction ) => {
-    if ( !normalisedDirections || !direction ) return [];
-
-    return normalisedDirections[ direction._key ][ entity ] || []
-  }
-
   /* Функция меняет выбранные билеты. */
   const onTicketChange = ( key, count ) => {
-    const normalizedTickets = normalise( get('tickets') );
-    normalizedTickets[key].count = count;
+    const tickets = { ...options.tickets };
+    tickets[ key ] = count;
+    
     onChange({
       ...options,
-      tickets: Object.values( normalizedTickets )
+      tickets,
     })
+  }
+
+  const getEntity = ( entity, direction = options.direction ) => {
+    if ( !normalisedDirections || !direction ) return [];
+
+    return normalisedDirections[ direction ][ entity ] || []
   }
 
   return (
@@ -115,8 +117,8 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           <Calendar
             lang={lang}
             isRightTranslate={ isRightTranslate }
-            dates={ get('dates') }
-            selectedDate={ (options.event || {} ).start }
+            dates={ getEntity('dates') }
+            selectedDate={ options.event.start }
             onChange={ onDateChange }
           />
         </div>
@@ -131,7 +133,8 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           <Tickets
             lang={lang}
             isRightTranslate={ isRightTranslate }
-            tickets={ get('tickets') }
+            tickets={ getEntity('tickets') }
+            selectedTickets={ options.tickets }
             onChange={ onTicketChange }
           />
         </div>

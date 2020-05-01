@@ -73,13 +73,15 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const [ promocode, setPromocode ] = useState('');
   const [ sale ] = useState(0); // скидка в %
   const [ inProcess, setInProcess ] = useState( false );
-  const [ paid, setPaid ] = useState();
 
   /* При изменении cart меняем общее количество билетов и общую сумму. */
   useEffect( () => {
     if ( cart.status === 'loaded' ) {
-      const count = ( cart.payload.products || [] ).reduce( ( acc, { options } ) => {
-        options.tickets.forEach( ( { count = 0, price = 0 } ) => {
+      const count = ( cart.payload.products || [] ).reduce( ( acc, { product, options } ) => {
+        const direction = product.directions.find( direction => direction._key === options.direction );
+        
+        direction.tickets.forEach( ( { _key, price } ) => {
+          const count = options.tickets[ _key ] || 0;
           acc.tickets += count;
           acc.sum += count * price;
         });
@@ -98,6 +100,8 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
       const newProducts = [ ...cart.payload.products ];
       newProducts[ index ].options = options;
       
+      console.log( `options`, options );
+      
       setCart( {
         status: 'loaded',
         payload: {
@@ -111,26 +115,23 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   /* Отправка формы. */
   const onSubmit = async event => {
     event.preventDefault();
+
     setInProcess( true );
 
     const order = cart.payload.products.map( ( { productId, options } ) => ( {
       productId,
-      options: {
-        direction: options.direction._key,
-        event: options.event._key,
-        tickets: options.tickets.reduce( ( tickets, ticket ) => {
-          tickets[ ticket._key ] = ticket.count;
-
-          return tickets;
-        }, {} )
-      }
+      options,
     } ) );
+    
+    debugger;
 
     await api.cart.updateCart(session, order, promocode, lang);
-    
+
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-    if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
+    if (sum !== 0 && sale < 100) {
+      if ( !((( createOrder || {}).payment || {}).Model || {}).Number ) alert('Что-то пошло не так…')
+
       const invoiceId = createOrder.payment.Model.Number;
 
       const pay = function() {
@@ -139,22 +140,23 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
           language: t( 'widgetLang' ),
           googlePaySupport: false,
         });
+        const {
+          publicId,
+          projectName,
+        } = process.env;
         widget.charge({
-          publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
-          description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
-          amount: sum, //сумма
-          currency: t( 'currencyTag' ), //валюта
-          invoiceId, //номер заказа  (необязательно)
-          accountId: user.email, //идентификатор плательщика (необязательно)
-          skin: "mini", //дизайн виджета
-          // data: {
-          //   myProp: 'myProp value' //произвольный набор параметров
-          // }
+          publicId,                                      // id из личного кабинета
+          description: `River cruise ${ projectName }`,  // назначение
+          amount: sum,                                   // сумма
+          currency: t( 'currencyTag' ),                  // валюта
+          invoiceId,                                     // номер заказа (необязательно)
+          accountId: user.email,                         // идентификатор плательщика (необязательно)
+          skin: "mini",                                  // дизайн виджета
         },
         function (success) { // success
           console.log('success', success);
 
-          setPaid(createOrder);
+          // setPaid(createOrder);
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -166,14 +168,10 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
       pay();
     } else { // 100% промокод
-      setPaid(createOrder);
+      // setPaid(createOrder);
     }
 
     setInProcess(false);
-  }
-  
-  if ( paid ) {
-    console.log( `paid`, paid );
   }
 
   return (

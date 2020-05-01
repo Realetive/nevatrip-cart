@@ -13,18 +13,11 @@ export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRight
   const name = directions.map( ( { _key } ) => _key ).join('-');
 
   const renderDirections = directions.map( direction => {
-    const {
-      _key,
-      title,
-    } = direction;
+    const { _key, title } = direction;
+    const checked = _key === selectedDirection;
 
-    const checked = _key === selectedDirection._key;
-    
     return (
-      <li key={ _key }
-        // title={ date.isOffset ? t( 'Это время уже не доступно' ) : `${ formatDate } ${ formatTime }`}
-        className='grid-list__item'>
-
+      <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
           { title[ lang ] }
@@ -34,7 +27,7 @@ export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRight
             name={ name }
             value={ _key }
             checked={ checked }
-            onChange={ () => onChange( { _key, title } ) }
+            onChange={ () => onChange( _key ) }
           />
         </label>
       </li>

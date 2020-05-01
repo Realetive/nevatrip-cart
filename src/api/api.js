@@ -29,15 +29,21 @@ export const useGetOrder = ( session, lang = 'en' ) => {
             });
 
             cart.products.forEach( product => {
-              const [ direction ] = _products[product.productId].directions;
-              product.product = _products[ product.productId ]
-              product.options = product.options || {
-                direction: {
-                  _key: direction._key,
-                  title: direction.title,
-                },
-                tickets: direction.tickets,
-              }
+              product.product = _products[ product.productId ];
+
+              const [ firstDirection ] = _products[ product.productId ].directions;
+              const getTickets = ( tickets ) => tickets.reduce( ( acc, ticket ) => {
+                acc[ ticket._key ] = ticket.count || 0;
+
+                return acc;
+              }, {} );
+              const {
+                direction = firstDirection._key,
+                tickets = getTickets( firstDirection.tickets ),
+                event = {},
+              } = product.options || {};
+
+              product.options = { direction, tickets, event }
             } );
 
             setCart({ status: 'loaded', payload: cart })
