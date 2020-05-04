@@ -17,7 +17,7 @@ export const useGetOrder = ( session, lang = 'en' ) => {
           const ids = cart.products.map( ( { productId } ) => productId );
           const uniqueIds = [ ...new Set( ids ) ];
           
-          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }`).then( resp => resp.json() ) )
+          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }&ttl=3600000`).then( resp => resp.json() ) )
           
           Promise.allSettled( getProducts ).then( products => {
             const _products = {};
@@ -146,7 +146,7 @@ export const api = {
         return `${year}-${month}-${day}`;
       };
       const response = await fetch(
-        `${MAIN_URL}/product/${productId}/schedule/${directionId}/${createFormateDate( date )}`,
+        `${MAIN_URL}/product/${productId}/schedule/${directionId}/${createFormateDate( date )}?ttl=3600000`,
         {
           method: 'GET',
           headers,
