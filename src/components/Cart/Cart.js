@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { api, useGetOrder } from "../../api";
 
+import LangContext from "../App";
 import { ListOfProducts } from "../List/_of/List_of_products";
 import { ProductViewSelect, ProductViewPreview } from "../Product/_view";
 import { Promocode } from "../Promocode/Promocode";
@@ -59,12 +60,13 @@ import '../Calendar/Calendar.css';
 
 let count = 0;
 
-export const Cart = ( { session, lang, isRightTranslate } ) => {
+export const Cart = ( { session } ) => {
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Cart.name} rerender: ${count}`);
   }
   const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
   const [ cart, setCart ] = useGetOrder( session );
   const initUser = { fullName: '', phone: '', email: '' };
   const [ user, setUser ] = useState( cart.status === 'loaded' ? cart.payload.user || initUser : initUser );
@@ -73,7 +75,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const [ promocode, setPromocode ] = useState('');
   const [ sale ] = useState(0); // скидка в %
   const [ inProcess, setInProcess ] = useState( false );
-
+  
   /* При изменении cart меняем общее количество билетов и общую сумму. */
   useEffect( () => {
     if ( cart.status === 'loaded' ) {
@@ -99,9 +101,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     if ( cart.status === 'loaded' ) {
       const newProducts = [ ...cart.payload.products ];
       newProducts[ index ].options = options;
-      
-      console.log( `options`, options );
-      
+
       setCart( {
         status: 'loaded',
         payload: {
@@ -125,7 +125,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
     
     debugger;
 
-    await api.cart.updateCart(session, order, promocode, lang);
+    await api.cart.updateCart(session, order, promocode, t( 'locale' ));
 
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
@@ -177,13 +177,13 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   return (
     <form className='form' method='post' disabled={ inProcess } onSubmit={ onSubmit }>
       { cart.status === 'loading' && 'Loading…' }
-      { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
+      { cart.status === 'loaded' && <ListOfProducts products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
       { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
       <div className='aside'>
         <div className="aside__blank">
           <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
           { cart.status === 'loading' && 'Loading…' }
-          { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } Item={ ProductViewPreview } /> }
+          {/* { cart.status === 'loaded' && <ListOfProducts products={ cart.payload.products } Item={ ProductViewPreview } /> } */}
           { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
         </div>
 
