@@ -1,21 +1,12 @@
-import React, { useState, useEffect }  from 'react';
-import { Calendar } from "../../Calendar/Calendar";
-import { Directions } from "../../Directions/Directions";
-import { api } from "../../../api";
-import { Time } from '../../Time/Time';
-import { Tickets } from '../../Tickets/Tickets';
+import React, { useState, useEffect, useContext }  from 'react';
+import { useTranslation } from 'react-i18next';
+import { Directions } from "../Directions/Directions";
+// import { Calendar } from "../../Calendar/Calendar";
+// import { Time } from '../../Time/Time';
+// import { Tickets } from '../../Tickets/Tickets';
 import '../Product.css'
+import LangContext from '../../App';
 
-/* Функция принимает массив объектов направлений и возвпащает нормализованный объект,
-где ключем является идентификатор направлния, а значением объект с данными о направлении. */
-const normalise = ( array = [] ) => {
-  return array.reduce( ( acc, item ) => {
-    acc = acc || {};
-    acc[ item._key ] = item;
-
-    return acc;
-  }, {} );
-}
 
 /* Функция возвращает заголовок экскурсии в нужном язке, если он объявлен, иначе возвращает заголовок на аглийском языке.
 Если не находит и на английском, то возвращает значение по умолчанию. */
@@ -30,72 +21,23 @@ const getTitle = ( title, lang ) => {
 
 let count = 0;
 
-export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options, onChange }) => {
+export const ProductViewSelect = ({ product, options, onChange }) => {
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
   }
-  const { name, alias } = getTitle( product.title, lang );
+  const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
+  const { name, alias } = getTitle( product.title, t('locale') );
   const { directions = [] } = product;
-  const [ normalisedDirections, setNormalisedDirections ] = useState();
-  const [ times, setTimes ] = useState({ status: 'loading' });
 
-  /* По вызову комопнета ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
-  useEffect( () => {
-    setNormalisedDirections( normalise( directions ) );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [] );
+  const onOptionsChange = (newOptions) => {
+    console.log( `newOptions`, newOptions );
 
-  /* Функция меняет выбранное направление. */
-  const onDirectionChange = ( direction ) => {
     onChange({
       ...options,
-      direction,
-      tickets: getEntity( 'tickets', direction ),
+      ...newOptions,
     })
-  }
-
-  /* Функция меняет выбранную дату. */
-  const onDateChange = async date => {
-    if ( !options.direction ) return;
-
-    setTimes( { status: 'loading' } );
-    try {
-      const payload = await api.product.getProductTime( product._id, options.direction, date );
-      payload.forEach(item => item.start = new Date( item.start ));
-      setTimes( { status: 'loaded', payload } );
-      onChange( {
-        ...options,
-        event: payload.find( time => !time.expired ),
-      } )
-    } catch ( error ) {
-      setTimes( { status: 'error', error } );
-    }
-  }
-
-  /* Функция меняет выбранное время. */
-  const onTimeChange = event => {
-    onChange( {
-      ...options,
-      event,
-    } )
-  }
-  
-  /* Функция меняет выбранные билеты. */
-  const onTicketChange = ( key, count ) => {
-    const tickets = { ...options.tickets };
-    tickets[ key ] = count;
-    
-    onChange({
-      ...options,
-      tickets,
-    })
-  }
-
-  const getEntity = ( entity, direction = options.direction ) => {
-    if ( !normalisedDirections || !direction ) return [];
-
-    return normalisedDirections[ direction ][ entity ] || []
   }
 
   return (
@@ -105,12 +47,16 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
           { name }
         </a>
       </legend>
-      <div className='product__inner'>
+      <Directions
+        product={ product }
+        directions={ directions }
+        options={ options }
+        onChange={ onOptionsChange } 
+      />
+      {/* <div className='product__inner'>
         <div className='colDesktop'>
           <Directions
-            lang={ lang }
-            isRightTranslate={ isRightTranslate }
-            directions={ directions.filter( direction => direction.dates ) }
+            directions={ directions.filter( direction => direction.nested || direction.dates ) }
             selectedDirection={ options.direction }
             onChange={ onDirectionChange }
           />
@@ -130,15 +76,8 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
             selectedTime={ options.event }
             onChange={ onTimeChange }
           />
-          <Tickets
-            lang={lang}
-            isRightTranslate={ isRightTranslate }
-            tickets={ getEntity('tickets') }
-            selectedTickets={ options.tickets }
-            onChange={ onTicketChange }
-          />
         </div>
-      </div>
+      </div> */}
     </fieldset>
   )
 }

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
+import LangContext from '../../App';
 
 /* Функция получает массив дат с типами "строка" и возвращает массив дат с типами "дата". */
 const getAvailableDates = ( dates = [] ) => {
@@ -38,13 +39,14 @@ const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
 
 let count = 0;
 
-export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, dates = [], selectedDate, onChange = () => {} } ) => {
+export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) => {
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Calendar.name} rerender: ${count}`);
   }
 
   const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
   const includeDates = getAvailableDates( dates );
   const initialDate = getNearestDate( includeDates, selectedDate );
   const [ date, setDate ] = useState( initialDate );
@@ -70,7 +72,7 @@ export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_AP
         <input
           readOnly
           type='text'
-          value={ createDateValue( selectedDate, lang ) }
+          value={ createDateValue( selectedDate, t( 'locale' ) ) }
           className='input input_calendar'
         />
       </label>

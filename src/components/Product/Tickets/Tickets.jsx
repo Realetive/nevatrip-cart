@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Counter from '../Counter/Counter';
+import Counter from '../../Counter/Counter';
 
 import './Tickets.css';
+import LangContext from '../../App';
 
 let count = 0;
 
-export const Tickets = ( { lang, isRightTranslate, tickets, selectedTickets, onChange } ) => {
+export const Tickets = ( { tickets, selectedTickets, onChange } ) => {
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Tickets.name} rerender: ${count}`);
   }
   const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
 
   const renderTickets = tickets.map( ( { _key, category, price, name = {}, ticket: [ { title } ] } ) => {
-    const heading = name[ lang ] || title[ lang ];
+    const heading = name[ t('locale') ] || title[ t('locale') ];
     const count = selectedTickets[ _key ];
 
     const onCountChange = ( count ) => onChange(_key, count);
@@ -27,7 +29,7 @@ export const Tickets = ( { lang, isRightTranslate, tickets, selectedTickets, onC
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
             { category.name !== 'standart' &&
               <div className={ 'ticket_category ' + ( isRightTranslate ? '' : ' translate' ) }>
-                { (category.title || {} )[lang] }
+                { (category.title || {} )[ t('locale') ] }
               </div>
             }
         </dt>

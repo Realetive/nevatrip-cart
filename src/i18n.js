@@ -191,7 +191,7 @@ const observer = new MutationObserver( function(mutationsList) {
 
 observer.observe(html, { attributeFilter: ['lang'] });
 
-export const useI18n = (lang) => {
+export const useI18n = lang => {
   const [ isRightTranslate, setIsRightTranslate ] = useState( true );
   
   useEffect( () => {
@@ -207,7 +207,10 @@ export const useI18n = (lang) => {
       return isRightTranslate;
     }
     
-    _i18n.changeLanguage( lang )
+    _i18n.changeLanguage( lang );
+    
+    onChangeLang( lang, _i18n );
+    
     _i18n.on( 'languageChanged', newLang => setIsRightTranslate( onChangeLang( newLang, _i18n ) ) );
   }, [ lang ] )
 
