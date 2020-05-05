@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options } ) => {
   const { t } = useTranslation();
   const title = product.title[ lang ] ? product.title[ lang ].name : 'Unnamed direction';
-  const selectedTime = ( options.event || {} ).start ;
+  const selectedTime = ( options.events || [] ).start ;
   const direction = product.directions.find( _direction => _direction._key === options.direction );
 
   /* Функция возвращает время в нужном формате. */

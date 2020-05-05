@@ -31,14 +31,7 @@ export const ProductViewSelect = ({ product, options, onChange }) => {
   const { name, alias } = getTitle( product.title, t('locale') );
   const { directions = [] } = product;
 
-  const onOptionsChange = (newOptions) => {
-    console.log( `newOptions`, newOptions );
-
-    onChange({
-      ...options,
-      ...newOptions,
-    })
-  }
+  const onOptionsChange = newOptions => onChange( { ...options, ...newOptions } )
 
   return (
     <fieldset className='product product_view_form'>
@@ -53,31 +46,6 @@ export const ProductViewSelect = ({ product, options, onChange }) => {
         options={ options }
         onChange={ onOptionsChange } 
       />
-      {/* <div className='product__inner'>
-        <div className='colDesktop'>
-          <Directions
-            directions={ directions.filter( direction => direction.nested || direction.dates ) }
-            selectedDirection={ options.direction }
-            onChange={ onDirectionChange }
-          />
-          <Calendar
-            lang={lang}
-            isRightTranslate={ isRightTranslate }
-            dates={ getEntity('dates') }
-            selectedDate={ options.event.start }
-            onChange={ onDateChange }
-          />
-        </div>
-        <div className='colDesktop'>
-          <Time
-            lang={ lang }
-            isRightTranslate={ isRightTranslate }
-            times={ times }
-            selectedTime={ options.event }
-            onChange={ onTimeChange }
-          />
-        </div>
-      </div> */}
     </fieldset>
   )
 }

@@ -40,10 +40,10 @@ export const useGetOrder = ( session, lang = 'en' ) => {
               const {
                 direction = firstDirection._key,
                 tickets = getTickets( firstDirection.tickets ),
-                event = {},
+                events = [{}],
               } = product.options || {};
 
-              product.options = { direction, tickets, event }
+              product.options = { direction, tickets, events }
             } );
 
             setCart({ status: 'loaded', payload: cart })

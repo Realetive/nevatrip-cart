@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import LangContext from '../../App';
 
-export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times: { status, payload: times = [] } = [], selectedTime, onChange = () => {} } ) => {
+export const Time = ( { times: { status, payload: times }, selectedTime, direction, onChange = () => {} } ) => {
   const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
   
   if ( !selectedTime ) return null;
 
@@ -15,7 +17,7 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
     );
   }
 
-  const name = times.map( ({ _key }) => _key ).join('-');
+  const name = direction._key;
   
   return (
     <>
@@ -25,7 +27,9 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
       {/*        { checkLanguage( formatOffset(userTimeOffset) ) }*/}
       {/*    </div>*/}
       {/*}*/}
-      <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите время отправления' ) }</div>
+      <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>
+        { t( 'Выберите время отправления' ) } { direction?.title[ t( 'locale' ) ] }
+      </div>
       <ul className='grid-list'>
         {
           status === 'loading' && (
@@ -38,8 +42,8 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
         }
         { status === 'loaded' && times.map( time => {
           const date = new Date( time.start );
-          const formatTime = date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
-          const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
+          const formatTime = date.toLocaleTimeString( t( 'locale' ), { hour: '2-digit', minute: '2-digit' } );
+          const formatDate = date.toLocaleDateString( t( 'locale' ), { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
           const checked = time._key === selectedTime._key && !time.expired;
 
           return (
@@ -56,7 +60,7 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
                   name={ name }
                   value={ time._key }
                   checked={ checked }
-                  onChange={ () => onChange( time ) }
+                  onChange={ () => onChange( time, direction._key ) }
                   id={ time._key }
                   disabled={ time.expired }
                 />

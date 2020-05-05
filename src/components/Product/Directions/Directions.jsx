@@ -4,6 +4,7 @@ import { api } from "../../../api";
 import LangContext from '../../App';
 import { Tickets } from "../Tickets/Tickets";
 import { Calendar } from "../Calendar/Calendar";
+import { Time } from "../Time/Time";
 
 let count = 0;
 
@@ -62,46 +63,56 @@ const normalise = ( array = [] ) => {
   }, {} );
 }
 
-export const Directions = ( { product = {}, directions = [], options = {}, onChange = () => {} } ) => {
+const getDates = ( normalisedDirections, { direction } ) => {
+  let { nested, isEveryOwnDate, dates = [] } = normalisedDirections[ direction ];
+  
+  if ( nested ) {
+    if ( isEveryOwnDate ) {
+      alert( '[WIP]' ); // TODO: у каждого направления своя дата
+    } else {
+      nested.forEach( ({ _key }) => {
+        const direction = normalisedDirections[ _key ];
+        dates = dates.length
+          ? dates.filter( date => direction.dates.indexOf( date ) !== -1 )
+          : direction.dates;
+      } );
+      return dates;
+    }
+  } else {
+    return dates;
+  }
+}
+
+const getSelectedDirections = ( normalisedDirections, { direction } ) => {
+  let { nested } = normalisedDirections[ direction ];
+  
+  const selectedDirections = nested
+    ? nested.map( ( { _key } ) => normalisedDirections[ _key ] )
+    : [ normalisedDirections[ direction ] ]
+
+  return selectedDirections;
+}
+
+export const Directions = ( { product = {}, directions = [], options = { events: [] }, onChange = () => {} } ) => {
   const [ normalisedDirections, setNormalisedDirections ] = useState();
-  const [ times, setTimes ] = useState({ status: 'loading' });
+  const [ selectedDirections, setSelectedDirections ] = useState( [] )
+  const [ dates, setDates ] = useState( [] );
+  const [ times, setTimes ] = useState( [ { status: 'loading' } ] );
 
   /* По вызову комопнета ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
   useEffect( () => {
-    setNormalisedDirections( normalise( directions ) );
+    const _normalisedDirections = normalise( directions );
+    setNormalisedDirections( _normalisedDirections );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
-  
-  const selectedDirection = normalisedDirections ? normalisedDirections[ options.direction ] : {};
-  const {
-    nested,
-    isEveryOwnDate = false,
-    dates,
-  } = selectedDirection;
-  
-  const [ complexDates, setComplexDates ] = useState( [] );
 
   useEffect( () => {
-    if ( nested ) {
-      if ( !isEveryOwnDate ) {
-        let _dates = [];
-        nested.forEach( ({ _key }) => {
-          const direction = normalisedDirections[ _key ];
-          if (_dates.length) {
-            const allDays = _dates.concat( direction.dates );
-            console.log( `--------------------allDays`, allDays );
-            const crossDays = allDays.filter( date => direction.dates.indexOf( date ) != -1 );
-            console.log( `--------------------crossDays`, crossDays );
-            _dates = crossDays;
-          } else {
-            _dates = direction.dates;
-          }
-          console.log( `--------------complexDates`, _dates );
-        } );
-        setComplexDates( _dates );
-      }
+    if ( normalisedDirections ) {
+      setSelectedDirections( getSelectedDirections( normalisedDirections, options ) );
+      setDates( getDates( normalisedDirections, options ) );
     }
-  }, [ options.direction ] )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ options.direction, normalisedDirections ] )
   
 
   /* Функция меняет выбранное направление. */
@@ -114,28 +125,40 @@ export const Directions = ( { product = {}, directions = [], options = {}, onCha
   }
 
   /* Функция меняет выбранную дату. */
-  const onDateChange = async date => {
-    if ( !options.direction ) return;
+  const onDateChange = date => {
+    if ( !options.direction || !selectedDirections ) return;
 
-    setTimes( { status: 'loading' } );
-    try {
-      const payload = await api.product.getProductTime( product._id, options.direction, date );
-      payload.forEach(item => item.start = new Date( item.start ));
-      setTimes( { status: 'loaded', payload } );
-      onChange( {
-        ...options,
-        event: payload.find( time => !time.expired ),
-      } )
-    } catch ( error ) {
-      setTimes( { status: 'error', error } );
-    }
+    const newTimes = [];
+    const events = Object.assign( [], options.events );
+    selectedDirections.forEach( async ( { _key }, index ) => {
+      newTimes[ index ] = { status: 'loading' };
+      setTimes( newTimes );
+      
+      try {
+        const payload = await api.product.getProductTime( product._id, _key, date );
+        payload.forEach( item => item.start = new Date( item.start ) );
+        newTimes[ index ] = { status: 'loaded', payload };
+        
+        setTimes( newTimes );
+
+        events[ index ] = payload.find( time => !time.expired );
+        onChange( { ...options, events } )
+      } catch ( error ) {
+        setTimes( [ { status: 'error', error } ] );
+      }
+    } )
   }
 
   /* Функция меняет выбранное время. */
-  const onTimeChange = event => {
+  const onTimeChange = ( event, direction ) => {
+    const { nested } = normalisedDirections[ options.direction ];
+    const index = nested ? nested.indexOf( item => item._key === direction ) : 0;
+    const newEvents = Object.assign( [], options.events );
+    newEvents[ index ] = event;
+
     onChange( {
       ...options,
-      event,
+      events: newEvents,
     } )
   }
 
@@ -155,39 +178,31 @@ export const Directions = ( { product = {}, directions = [], options = {}, onCha
   
     return normalisedDirections[ direction ][ entity ] || []
   }
-
+  
   return (
     <div className='product__inner'>
       <div className='colDesktop'>
         <DirectionsList directions={ directions } selectedDirection={ options.direction } onChange={ onDirectionChange } />
         <Calendar
-          dates={ dates || complexDates }
+          dates={ dates }
           selectedDate={ undefined }
           onChange={ onDateChange }
         />
-        <pre>
-          <code>
-            {
-              JSON.stringify( { nested }, null, 2 )
-            }
-          </code>
-        </pre>
-        <pre>
-          <code>
-            {
-              JSON.stringify( { isEveryOwnDate }, null, 2 )
-            }
-          </code>
-        </pre>
-        <pre>
-          <code>
-            {
-              JSON.stringify( { dates }, null, 2 )
-            }
-          </code>
-        </pre>
       </div>
       <div className='colDesktop'>
+        {
+          options.events && selectedDirections
+            ? selectedDirections.map( ( direction, index ) => times[ index ] && (
+                <Time
+                  key={ index }
+                  times={ times[ index ] }
+                  direction={ direction }
+                  selectedTime={ options.events[ index ] }
+                  onChange={ onTimeChange }
+                />
+              ) )
+            : null
+        }
         <Tickets
           tickets={ getEntity('tickets') }
           selectedTickets={ options.tickets }
