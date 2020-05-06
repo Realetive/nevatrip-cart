@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options } ) => {
   const { t } = useTranslation();
   const title = product.title[ lang ] ? product.title[ lang ].name : 'Unnamed direction';
-  const selectedTime = ( options.events || [] ).start ;
+  const events = options.events || [];
   const direction = product.directions.find( _direction => _direction._key === options.direction );
 
   /* Функция возвращает время в нужном формате. */
@@ -65,28 +65,33 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
       );
     } )
   };
-  
+
   return (
     <fieldset className='listPreviewFieldset'>
       <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
       <ul className='listPreviewData'>
-        { selectedTime && ( <>
-          <li className='listPreviewDataLi'>
-            <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
-              <b>{ t('дата') }</b>
-            </div>
-            <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
-          </li>
+        { events.map(( event, index ) => {
+          const selectedTime = event.start;
 
-          <li className='listPreviewDataLi'>
-            <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-              <b>{ t( 'время' ) }</b>
-            </div>
-            <div className="listPreviewDataLi__p">
-              { renderTime( selectedTime ) }
-            </div>
-          </li>
-        </> ) }
+          return event._key && (
+            <li key={ index } className='listPreviewDataLi'>
+              <div className='listPreviewDataLi'>
+                <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
+                  <b>{ t('дата') }</b>
+                </div>
+                <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
+              </div>
+
+              <div className='listPreviewDataLi'>
+                <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
+                  <b>{ t( 'время' ) }</b>
+                </div>
+                <div className="listPreviewDataLi__p">
+                  { renderTime( selectedTime ) }
+                </div>
+              </div>
+            </li>
+          )}) }
 
         <li className='listPreviewDataLi'>
           <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>

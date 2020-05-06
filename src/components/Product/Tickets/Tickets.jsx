@@ -23,7 +23,7 @@ export const Tickets = ( { tickets, selectedTickets, onChange } ) => {
     const onCountChange = ( count ) => onChange(_key, count);
 
     return (
-      <div key={ _key } className='ticketsItem'>
+      <div key={ _key } className='ticketsItem' data-name = { heading }>
         <dt className='ticketsItemText' >
             <span className={ isRightTranslate ? '' : ' translate' }>{ heading }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>

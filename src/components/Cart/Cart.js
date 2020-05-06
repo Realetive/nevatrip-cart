@@ -10,7 +10,6 @@ import { Promocode } from "../Promocode/Promocode";
 
 import 'react-datepicker/dist/react-datepicker.css';
 import './Cart.css';
-import '../Calendar/Calendar.css';
 
 // Returns a function, that, when invoked, will only be triggered at most once
 // during a given window of time. Normally, the throttled function will run
@@ -183,7 +182,7 @@ export const Cart = ( { session } ) => {
         <div className="aside__blank">
           <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
           { cart.status === 'loading' && 'Loading…' }
-          {/* { cart.status === 'loaded' && <ListOfProducts products={ cart.payload.products } Item={ ProductViewPreview } /> } */}
+           { cart.status === 'loaded' && <ListOfProducts products={ cart.payload.products } Item={ ProductViewPreview } /> }
           { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
         </div>
 

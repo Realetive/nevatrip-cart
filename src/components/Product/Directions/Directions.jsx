@@ -129,7 +129,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
     if ( !options.direction || !selectedDirections ) return;
 
     const newTimes = [];
-    const events = Object.assign( [], options.events );
+    const events = [];
     selectedDirections.forEach( async ( { _key }, index ) => {
       newTimes[ index ] = { status: 'loading' };
       setTimes( newTimes );
