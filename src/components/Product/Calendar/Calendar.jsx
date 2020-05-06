@@ -25,7 +25,7 @@ const getNearestDate = ( dates = [], date ) => {
 };
 
 /* Функция возвращет дату для input выбора даты в нужном формате, в зависимости от языка. */
-const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
+const createDateValue = ( date, lang ) => {
   const local = {
     'en': 'en-US',
     'de': 'de-DE',

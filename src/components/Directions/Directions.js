@@ -1,15 +1,17 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { useTranslation } from 'react-i18next';
+import LangContext from "../App";
 
 let count = 0;
 
-export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate = true, directions = [], selectedDirection, onChange = () => {} } ) => {
+export const Directions = ( { directions = [], selectedDirection, onChange = () => {} } ) => {
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Directions.name} rerender: ${count}`);
   }
 
   const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
   const name = directions.map( ( { _key } ) => _key ).join('-');
 
   const renderDirections = directions.map( direction => {
@@ -20,7 +22,7 @@ export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRight
       <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
-          { title[ lang ] }
+          { title[ t('locale') ] }
           <input
             type="radio"
             className='btn-radio'

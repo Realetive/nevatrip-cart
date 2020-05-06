@@ -1,16 +1,18 @@
-import React  from 'react';
+import React, {useContext} from 'react';
 import { useTranslation } from "react-i18next";
+import LangContext from "../../App";
 
-export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate, product, options } ) => {
+export const ProductViewPreview = ( { product, options } ) => {
   const { t } = useTranslation();
-  const title = product.title[ lang ] ? product.title[ lang ].name : 'Unnamed direction';
+  const isRightTranslate = useContext( LangContext );
+  const title = product.title[ t('locale') ] ? product.title[ t('locale') ].name : 'Unnamed direction';
   const events = options.events || [];
   const direction = product.directions.find( _direction => _direction._key === options.direction );
 
   /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
     if (!date) return;
-    return date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
+    return date.toLocaleTimeString( t('locale'), { hour: '2-digit', minute: '2-digit' } );
   };
 
   /* Функция возвращает дату в нужном формате. */
@@ -33,18 +35,18 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
       const nextDay = newDay.setDate( date.getDate() + 1 );
 
       return `${ t( 'В ночь с' ) } 
-        ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( date ) } 
+        ${ new Intl.DateTimeFormat( local[ t('locale') ], optionsWithoutYear ).format( date ) } 
         ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( nextDay ) }`;
+        ${ new Intl.DateTimeFormat( local[ t('locale') ], options ).format( nextDay ) }`;
     } else if ( hours < 4  || hours === '0') {
       const prevDay = newDay.setDate( date.getDate() - 1 );
 
       return `${ t( 'В ночь с' ) }
-        ${ new Intl.DateTimeFormat( local[ lang ], optionsWithoutYear ).format( prevDay ) } 
+        ${ new Intl.DateTimeFormat( local[ t('locale') ], optionsWithoutYear ).format( prevDay ) } 
         ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( local[ lang ], options ).format( date ) }`;
+        ${ new Intl.DateTimeFormat( local[ t('locale') ], options ).format( date ) }`;
     } else {
-      return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
+      return new Intl.DateTimeFormat( local[ t('locale') ], options ).format( date );
     }
   };
 
@@ -59,7 +61,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
 
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
-          <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ title[ lang ] }: </span>
+          <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ title[ t('locale') ] }: </span>
           <span dangerouslySetInnerHTML={{__html: `${price}&nbsp;${t( 'currency' )} × ${count} = ${count * price}&nbsp;${t( 'currency' )}`}} />
         </li>
       );
@@ -98,7 +100,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
             <b>{ t( 'направление' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">
-            { direction.title[ lang ] || '' }
+            { direction.title[ t('locale') ] || '' }
           </div>
         </li>
       </ul>

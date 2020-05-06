@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { useTranslation } from 'react-i18next';
+import LangContext from "../App";
 
-export const Promocode = ({ isRightTranslate, promocode = '', sale = 0, onChange }) => {
+export const Promocode = ({ promocode = '', sale = 0, onChange }) => {
   const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
   const [ isShowPromocode, setIsShowPromocode ] = useState( !!promocode );
   const setPromocode = ( newPromocode ) => {
     onChange( newPromocode )
