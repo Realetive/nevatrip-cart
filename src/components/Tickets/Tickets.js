@@ -1,40 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStoreon from 'storeon/react';
 
 import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn, lang, isRightTranslate }) => {
+export const Tickets = ( props ) => {
   const { t } = useTranslation();
-  const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
-  const [{ direction: selectedDirection }] = order[cartKey].options;
-  const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
+  const {
+      getStatus,
+      setDisabledBtn,
+      isDisabledBtn,
+      lang,
+      isRightTranslate,
+      tickets,
+      _tickets,
+      _setTickets,
+      ticket,
+      ticketCategory
+  } = props;
   const [statusTickets, setStatusTickets] = useState({});
 
   setDisabledBtn(tickets.length === 0);
-
-  const initialTickets = tickets.reduce( ( obj, ticketId ) => {
-    const { _key, count } = ticket[ ticketId ];
-    obj[ _key ] = count;
-
-    return obj;
-  }, {} );
-
-  const [ _tickets, _setTickets ] = useState(initialTickets);
-
-  useEffect(() => {
-    order[cartKey].options[0].tickets = _tickets;
-    dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_tickets]);
-
-  useEffect(() => {
-    setStatusTickets({
-      status: Object.values(ticket).some(element => element.count >= 1)
-    });
-  }, []);
 
   const getCount = (_key, count) => {
     setStatusTickets({
@@ -50,7 +37,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusTickets] );
 
-  const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
+  const _renderTickets = tickets.map( (ticketId) => {
     const {
       _key,
       category,
@@ -65,7 +52,7 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
             <span className={ isRightTranslate ? '' : ' translate' }>{ t( name ) }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
             { (ticketCategory[category] || {}).name !== 'standart' &&
-              <div className={ 'ticketCategory ' + ( isRightTranslate ? '' : ' translate' ) }>
+              <div className={ 'ticket_category ' + ( isRightTranslate ? '' : ' translate' ) }>
                 { ((ticketCategory[category] || {}).title || {} )[lang] }
               </div>
             }
