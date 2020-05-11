@@ -12,6 +12,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Directions.name} rerender: ${count}`);
+    console.log('========', directions, selectedDirection)
   }
 
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
     const { _key, title } = direction;
     const checked = _key === selectedDirection;
 
-    return (
+    return ( ( ( direction._type === 'complex' && ( direction.dates || [] ).length > 0 ) || direction._type !== 'complex' ) && (
       <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
@@ -37,7 +38,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
           />
         </label>
       </li>
-    );
+    ));
   });
 
   return (
@@ -72,14 +73,18 @@ const getDates = ( normalisedDirections, { direction } ) => {
     } else {
       nested.forEach( ({ _key }) => {
         const direction = normalisedDirections[ _key ];
+        console.log('dates', dates)
+        console.log(direction.dates)
 
         dates = dates.length
           && dates.filter( date => {
+            console.log( direction.dates.indexOf( date ) !== -1 )
             return direction.dates.indexOf( date ) !== -1
           } )
           // : direction.dates;
       } );
 
+      console.log(dates)
       return dates;
     }
   } else {
@@ -98,6 +103,7 @@ const getSelectedDirections = ( normalisedDirections, { direction } ) => {
 }
 
 export const Directions = ( { product = {}, directions = [], options = { events: [] }, onChange = () => {} } ) => {
+  const { t } = useTranslation();
   const [ normalisedDirections, setNormalisedDirections ] = useState();
   const [ selectedDirections, setSelectedDirections ] = useState( [] )
   const [ dates, setDates ] = useState( [] );
@@ -182,16 +188,20 @@ export const Directions = ( { product = {}, directions = [], options = { events:
   
     return normalisedDirections[ direction ][ entity ] || []
   }
-  
+
   return (
     <div className='product__inner'>
       <div className='colDesktop'>
         <DirectionsList directions={ directions } selectedDirection={ options.direction } onChange={ onDirectionChange } />
-        <Calendar
-          dates={ dates }
-          selectedDate={ undefined }
-          onChange={ onDateChange }
-        />
+        {
+          dates.length
+            ? <Calendar
+                dates={ dates }
+                selectedDate={ undefined }
+                onChange={ onDateChange }
+              />
+            : <p className='listPreviewTicketsLi'>{ t( 'Пока нет расписания на выбранное направление, но оно появится в скором времени' ) }.</p>
+        }
       </div>
       <div className='colDesktop'>
         {
