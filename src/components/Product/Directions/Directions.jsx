@@ -22,7 +22,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
     const { _key, title } = direction;
     const checked = _key === selectedDirection;
 
-    return ( ( ( direction._type === 'complex' && ( direction.dates || [] ).length > 0 ) || direction._type !== 'complex' ) && (
+    return ( ( ( direction._type === 'complex' && ( direction.nested || [] ).length !== 0 ) || direction._type !== 'complex' ) && (
       <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
@@ -73,7 +73,7 @@ const getDates = ( normalisedDirections, { direction } ) => {
       nested.forEach( ({ _key }) => {
         const direction = normalisedDirections[ _key ];
 
-        dates = dates.length && dates.filter( date => direction.dates.indexOf( date ) !== -1 )
+        dates = dates.length && dates.filter( date => direction.dates.indexOf( date ) !== -1 );
       } );
 
       return dates;
@@ -185,7 +185,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
       <div className='colDesktop'>
         <DirectionsList directions={ directions } selectedDirection={ options.direction } onChange={ onDirectionChange } />
         {
-          dates.length
+          dates?.length
             ? <Calendar
                 dates={ dates }
                 selectedDate={ undefined }
@@ -195,7 +195,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
         }
       </div>
       {
-        dates.length
+        dates?.length
           ? <div className='colDesktop'>
             {
               options.events && selectedDirections
@@ -216,7 +216,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
               onChange={ onTicketChange }
             />
           </div>
-          : <div className='colDesktop'>
+          : times[0].status === 'loaded' && <div className='colDesktop'>
               <p className='listPreviewTicketsLi'>{ t( 'Пока нет расписания на выбранное направление, но оно появится в скором времени' ) }.</p>
             </div>
       }
