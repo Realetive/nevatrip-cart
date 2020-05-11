@@ -12,7 +12,6 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Directions.name} rerender: ${count}`);
-    console.log('========', directions, selectedDirection)
   }
 
   const { t } = useTranslation();
@@ -73,18 +72,14 @@ const getDates = ( normalisedDirections, { direction } ) => {
     } else {
       nested.forEach( ({ _key }) => {
         const direction = normalisedDirections[ _key ];
-        console.log('dates', dates)
-        console.log(direction.dates)
 
         dates = dates.length
           && dates.filter( date => {
             console.log( direction.dates.indexOf( date ) !== -1 )
             return direction.dates.indexOf( date ) !== -1
           } )
-          // : direction.dates;
       } );
 
-      console.log(dates)
       return dates;
     }
   } else {

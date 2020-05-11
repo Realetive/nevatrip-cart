@@ -9,10 +9,12 @@ export const ProductViewPreview = ( { product, options } ) => {
   const events = options.events || [];
   const direction = product.directions.find( _direction => _direction._key === options.direction );
 
-  const titleOfComplexDirection = (direction._type === 'complex') && direction.nested.map((dir) => {
-    const currentDirection = product.directions.find( _direction => _direction._key === dir._key );
-    return currentDirection.title[ t('locale') ];
-  });
+  const directionTitle = direction._type === 'complex'
+    ? direction.nested.map((dir) => {
+        const currentDirection = product.directions.find( _direction => _direction._key === dir._key );
+        return currentDirection.title[ t('locale') ];
+      })
+    : direction.title[ t('locale') ] || '';
 
   /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
@@ -78,7 +80,6 @@ export const ProductViewPreview = ( { product, options } ) => {
       <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
         { events && events.map(( event = {}, index ) => {
           const selectedTime = ( event || {} ).start;
-          console.log('event', event)
 
           return event._key && (
             <ul className='listPreviewData' key={ index }>
@@ -104,7 +105,7 @@ export const ProductViewPreview = ( { product, options } ) => {
                   <b>{ t( 'направление' ) }</b>
                 </div>
                 <div className="listPreviewDataLi__p">
-                  { titleOfComplexDirection ? titleOfComplexDirection : direction.title[ t('locale') ] || '' }
+                  { directionTitle }
                 </div>
               </li>
             </ul>
