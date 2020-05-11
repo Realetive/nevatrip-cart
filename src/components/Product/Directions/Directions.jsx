@@ -72,10 +72,14 @@ const getDates = ( normalisedDirections, { direction } ) => {
     } else {
       nested.forEach( ({ _key }) => {
         const direction = normalisedDirections[ _key ];
+
         dates = dates.length
-          ? dates.filter( date => direction.dates.indexOf( date ) !== -1 )
-          : direction.dates;
+          && dates.filter( date => {
+            return direction.dates.indexOf( date ) !== -1
+          } )
+          // : direction.dates;
       } );
+
       return dates;
     }
   } else {

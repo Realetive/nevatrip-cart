@@ -9,6 +9,11 @@ export const ProductViewPreview = ( { product, options } ) => {
   const events = options.events || [];
   const direction = product.directions.find( _direction => _direction._key === options.direction );
 
+  const titleOfComplexDirection = (direction._type === 'complex') && direction.nested.map((dir) => {
+    const currentDirection = product.directions.find( _direction => _direction._key === dir._key );
+    return currentDirection.title[ t('locale') ];
+  });
+
   /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
     if (!date) return;
@@ -71,39 +76,40 @@ export const ProductViewPreview = ( { product, options } ) => {
   return (
     <fieldset className='listPreviewFieldset'>
       <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
-      <ul className='listPreviewData'>
-        { events.map(( event, index ) => {
-          const selectedTime = event.start;
+        { events && events.map(( event = {}, index ) => {
+          const selectedTime = ( event || {} ).start;
+          console.log('event', event)
 
           return event._key && (
-            <li key={ index } className='listPreviewDataLi'>
-              <div className='listPreviewDataLi'>
-                <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
-                  <b>{ t('дата') }</b>
+            <ul className='listPreviewData' key={ index }>
+              <li className='listPreviewDataLi'>
+                <div className='listPreviewDataLi'>
+                  <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
+                    <b>{ t('дата') }</b>
+                  </div>
+                  <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
                 </div>
-                <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
-              </div>
 
-              <div className='listPreviewDataLi'>
+                <div className='listPreviewDataLi'>
+                  <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
+                    <b>{ t( 'время' ) }</b>
+                  </div>
+                  <div className="listPreviewDataLi__p">
+                    { renderTime( selectedTime ) }
+                  </div>
+                </div>
+              </li>
+              <li className='listPreviewDataLi'>
                 <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-                  <b>{ t( 'время' ) }</b>
+                  <b>{ t( 'направление' ) }</b>
                 </div>
                 <div className="listPreviewDataLi__p">
-                  { renderTime( selectedTime ) }
+                  { titleOfComplexDirection ? titleOfComplexDirection : direction.title[ t('locale') ] || '' }
                 </div>
-              </div>
-            </li>
+              </li>
+            </ul>
           )}) }
 
-        <li className='listPreviewDataLi'>
-          <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-            <b>{ t( 'направление' ) }</b>
-          </div>
-          <div className="listPreviewDataLi__p">
-            { direction.title[ t('locale') ] || '' }
-          </div>
-        </li>
-      </ul>
       { options.tickets &&
       <div className='listPreviewTickets'>
         <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
