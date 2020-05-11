@@ -70,10 +70,12 @@ const getDates = ( normalisedDirections, { direction } ) => {
     if ( isEveryOwnDate ) {
       alert( '[WIP]' ); // TODO: у каждого направления своя дата
     } else {
-      nested.forEach( ({ _key }) => {
+      nested.forEach( ( { _key }, index ) => {
         const direction = normalisedDirections[ _key ];
 
-        dates = dates.length && dates.filter( date => direction.dates.indexOf( date ) !== -1 );
+        dates = dates.length && index !== 0
+          ? dates.filter( date => direction.dates.indexOf( date ) !== -1 )
+          : direction.dates;
       } );
 
       return dates;
