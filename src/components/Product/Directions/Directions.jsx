@@ -65,7 +65,7 @@ const normalise = ( array = [] ) => {
 
 const getDates = ( normalisedDirections, { direction } ) => {
   let { nested, isEveryOwnDate, dates = [] } = normalisedDirections[ direction ];
-  
+
   if ( nested ) {
     if ( isEveryOwnDate ) {
       alert( '[WIP]' ); // TODO: у каждого направления своя дата
@@ -73,11 +73,7 @@ const getDates = ( normalisedDirections, { direction } ) => {
       nested.forEach( ({ _key }) => {
         const direction = normalisedDirections[ _key ];
 
-        dates = dates.length
-          && dates.filter( date => {
-            console.log( direction.dates.indexOf( date ) !== -1 )
-            return direction.dates.indexOf( date ) !== -1
-          } )
+        dates = dates.length && dates.filter( date => direction.dates.indexOf( date ) !== -1 )
       } );
 
       return dates;
