@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useContext }  from 'react';
+import React, { useContext }  from 'react';
 import { useTranslation } from 'react-i18next';
 import { Directions } from "../Directions/Directions";
-// import { Calendar } from "../../Calendar/Calendar";
-// import { Time } from '../../Time/Time';
-// import { Tickets } from '../../Tickets/Tickets';
 import '../Product.css'
 import LangContext from '../../App';
 
