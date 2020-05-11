@@ -195,29 +195,35 @@ export const Directions = ( { product = {}, directions = [], options = { events:
                 selectedDate={ undefined }
                 onChange={ onDateChange }
               />
-            : <p className='listPreviewTicketsLi'>{ t( 'Пока нет расписания на выбранное направление, но оно появится в скором времени' ) }.</p>
-        }
-      </div>
-      <div className='colDesktop'>
-        {
-          options.events && selectedDirections
-            ? selectedDirections.map( ( direction, index ) => times[ index ] && (
-                <Time
-                  key={ index }
-                  times={ times[ index ] }
-                  direction={ direction }
-                  selectedTime={ options.events[ index ] }
-                  onChange={ onTimeChange }
-                />
-              ) )
             : null
         }
-        <Tickets
-          tickets={ getEntity('tickets') }
-          selectedTickets={ options.tickets }
-          onChange={ onTicketChange }
-        />
       </div>
+      {
+        dates.length
+          ? <div className='colDesktop'>
+            {
+              options.events && selectedDirections
+                ? selectedDirections.map( ( direction, index ) => times[ index ] && (
+                  <Time
+                    key={ index }
+                    times={ times[ index ] }
+                    direction={ direction }
+                    selectedTime={ options.events[ index ] }
+                    onChange={ onTimeChange }
+                  />
+                ) )
+                : null
+            }
+            <Tickets
+              tickets={ getEntity('tickets') }
+              selectedTickets={ options.tickets }
+              onChange={ onTicketChange }
+            />
+          </div>
+          : <div className='colDesktop'>
+              <p className='listPreviewTicketsLi'>{ t( 'Пока нет расписания на выбранное направление, но оно появится в скором времени' ) }.</p>
+            </div>
+      }
     </div>
   )
 }
