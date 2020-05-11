@@ -1,34 +1,49 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import { useTranslation } from 'react-i18next';
+import LangContext from "../App";
 
-export const Directions = (props) => {
-  const { isRightTranslate, directionsId, selectedDirection, _setDirection, directions } = props;
-  const renderDirections = directionsId.map( ( directionId ) => {
-    const {
-      _key,
-      title,
-    } = directions[directionId];
+let count = 0;
+
+export const Directions = ( { directions = [], selectedDirection, onChange = () => {} } ) => {
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Directions.name} rerender: ${count}`);
+  }
+
+  const { t } = useTranslation();
+  const isRightTranslate = useContext( LangContext );
+  const name = directions.map( ( { _key } ) => _key ).join('-');
+
+  const renderDirections = directions.map( direction => {
+    const { _key, title } = direction;
+    const checked = _key === selectedDirection;
 
     return (
-      <option
-        key={_key}
-        value={_key}>
-        {title}
-      </option>
+      <li key={ _key } className='grid-list__item'>
+        <label
+          className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
+          { title[ t('locale') ] }
+          <input
+            type="radio"
+            className='btn-radio'
+            name={ name }
+            value={ _key }
+            checked={ checked }
+            onChange={ () => onChange( _key ) }
+          />
+        </label>
+      </li>
     );
   });
 
   return (
     renderDirections.length > 1
-      ? <label>
-        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>Выберите направление</span>
-        <select
-          value={selectedDirection}
-          onChange={ event => _setDirection( event.target.value ) }
-          className='input'
-        >
-          { renderDirections }
-        </select>
-      </label>
+      ? <>
+          <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите направление' ) }</div>
+          <ul className='grid-list'>
+            { renderDirections }
+          </ul>
+        </>
       : null
   );
 };

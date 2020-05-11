@@ -1,365 +1,280 @@
-import React, { useEffect, useState, useRef } from 'react';
-import useStoreon from 'storeon/react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { api } from '../../api';
-import { Product } from '../Product/Product';
-import { ProductPreview } from '../ProductPreview/ProductPreview';
+import { api, useGetOrder } from "../../api";
+
+import LangContext from "../App";
+import { ListOfProducts } from "../List/_of/List_of_products";
+import { ProductViewSelect, ProductViewPreview } from "../Product/_view";
+import { Promocode } from "../Promocode/Promocode";
 
 import 'react-datepicker/dist/react-datepicker.css';
 import './Cart.css';
-import '../Calendar/Calendar.css';
 
 // Returns a function, that, when invoked, will only be triggered at most once
 // during a given window of time. Normally, the throttled function will run
 // as much as it can, without ever going more than once per `wait` duration;
 // but if you'd like to disable the execution on the leading edge, pass
 // `{leading: false}`. To disable execution on the trailing edge, ditto.
-function throttle( func, wait, options ) {
-  let context, args, result;
-  let timeout = null;
-  let previous = 0;
+// function throttle( func, wait, options ) {
+//   let context, args, result;
+//   let timeout = null;
+//   let previous = 0;
+//
+//   if ( !options ) options = {};
+//
+//   const later = () => {
+//     previous = options.leading === false ? 0 : Date.now();
+//     timeout = null;
+//     result = func.apply(context, args);
+//     if (!timeout) context = args = null;
+//   };
+//
+//   return function() {
+//     const now = Date.now();
+//
+//     if ( !previous && options.leading === false ) previous = now;
+//
+//     const remaining = wait - (now - previous);
+//     context = this;
+//     args = arguments;
+//
+//     if ( remaining <= 0 || remaining > wait ) {
+//       if (timeout) {
+//         clearTimeout( timeout );
+//         timeout = null;
+//       }
+//
+//       previous = now;
+//       result = func.apply(context, args);
+//
+//       if (!timeout) context = args = null;
+//     } else if ( !timeout && options.trailing !== false ) {
+//       timeout = setTimeout(later, remaining);
+//     }
+//
+//     return result;
+//   };
+// }
 
-  if ( !options ) options = {};
+let count = 0;
 
-  const later = () => {
-    previous = options.leading === false ? 0 : Date.now();
-    timeout = null;
-    result = func.apply(context, args);
-    if (!timeout) context = args = null;
-  };
-
-  return function() {
-    const now = Date.now();
-
-    if ( !previous && options.leading === false ) previous = now;
-
-    const remaining = wait - (now - previous);
-    context = this;
-    args = arguments;
-
-    if ( remaining <= 0 || remaining > wait ) {
-      if (timeout) {
-        clearTimeout( timeout );
-        timeout = null;
-      }
-
-      previous = now;
-      result = func.apply(context, args);
-
-      if (!timeout) context = args = null;
-    } else if ( !timeout && options.trailing !== false ) {
-      timeout = setTimeout(later, remaining);
-    }
-
-    return result;
-  };
-}
-
-export const Cart = ( { session, lang, isRightTranslate } ) => {
+export const Cart = ( { session } ) => {
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Cart.name} rerender: ${count}`);
+  }
   const { t } = useTranslation();
-  const { dispatch, cart, user, order, ticket = {}, product } = useStoreon('cart', 'user', 'order', 'ticket', 'product');
-  const { fullName, email, phone } = user;
-  const [ isShowPromocode, setShowPromocode ] = useState(false);
-  const [ sale, setSale ] = useState(0);
+  const isRightTranslate = useContext( LangContext );
+  const [ cart, setCart ] = useGetOrder( session );
+  const initUser = { fullName: '', phone: '', email: '' };
+  const [ user, setUser ] = useState( cart.status === 'loaded' ? cart.payload.user || initUser : initUser );
+  const [ ticketsCount, setTicketsCount ] = useState( 0 );
+  const [ sum, setSum ] = useState( 0 );
   const [ promocode, setPromocode ] = useState('');
-  const [ paid, setPaid ] = useState(false);
-  const [ emailContent, setEmailContent ] = useState();
-  const [ oldId, setOldId ] = useState(0);
-  const [ inProcess, setInProcess ] = useState(false);
-  const [ ticketStatus, setTicketStatus ] = useState({});
-  const [ valid, setValid ] = useState(true);
-  const [ isDisabledBtn, setDisabledBtn ] = useState(Object.keys(ticket).length === 0);
-  const isTicketTime = order && Object.values(order).every(item => {
-    return (((item || {}).options || {}).event || {}).expired;
-  });
+  const [ sale ] = useState(0); // скидка в %
+  const [ inProcess, setInProcess ] = useState( false );
+  
+  /* При изменении cart меняем общее количество билетов и общую сумму. */
+  useEffect( () => {
+    if ( cart.status === 'loaded' ) {
+      const count = ( cart.payload.products || [] ).reduce( ( acc, { product, options } ) => {
+        const direction = product.directions.find( direction => direction._key === options.direction );
+        
+        direction.tickets.forEach( ( { _key, price } ) => {
+          const count = options.tickets[ _key ] || 0;
+          acc.tickets += count;
+          acc.sum += count * price;
+        });
 
-  const throttled = useRef(throttle(async (oldId, newValue) => {
-    if (newValue) {
-      const resp = await api.order.promocode(oldId, newValue);
-      setSale(resp);
+        return acc;
+      }, { sum: 0, tickets: 0 } );
+
+      setTicketsCount( count.tickets );
+      setSum( count.sum );
     }
-  }, 700));
+  }, [ cart ] )
 
-  const products = () => cart.map(key => {
-    const { productId } = order[key];
-    const getStatus = (status = false) => {
-      setTicketStatus({
-        ...ticketStatus,
-        status,
-      })
-    };
+  /* Функция меняет данные в поле payload в объекте cart. */
+  const updateOrder = ( index, options ) => {
+    if ( cart.status === 'loaded' ) {
+      const newProducts = [ ...cart.payload.products ];
+      newProducts[ index ].options = options;
 
-    return (
-      <li className='cart__item cart__item_view_product' key={key}>
-        <Product
-          cartKey={key}
-          productId={productId}
-          lang={lang}
-          getStatus={getStatus}
-          setDisabledBtn={setDisabledBtn}
-          isDisabledBtn={isDisabledBtn}
-          isTicketTime={isTicketTime}
-          isRightTranslate={isRightTranslate}
-      />
-      </li>
-    );
-  });
+      setCart( {
+        status: 'loaded',
+        payload: {
+          ...cart.payload,
+          products: newProducts,
+        }
+      } );
+    }
+  }
 
-  const productsPreview = () => cart.map(key => {
-    const { productId } = order[key];
+  /* Отправка формы. */
+  const onSubmit = async event => {
+    event.preventDefault();
 
-    return (
-      <li className='cart__item cart__item_view_product' key={ key }>
-        <ProductPreview
-          cartKey={key}
-          productId={productId}
-          lang={lang}
-          isRightTranslate={isRightTranslate}
-        />
-      </li>
-    );
-  });
+    setInProcess( true );
 
-  const setUserData = event => {
-    user[event.target.name] = event.target.value;
-
-    dispatch('user/update', user);
-  };
-
-  const sum = Object.values(order).reduce((sum, cartItem) => {
-    if ( !cartItem.options || !cartItem.options.length ) return 0;
-
-    const {
+    const order = cart.payload.products.map( ( { productId, options } ) => ( {
       productId,
-      options: [{
-        direction,
-        tickets
-      }],
-    } = cartItem;
+      options,
+    } ) );
+    
+    debugger;
 
-    if (!direction || !tickets) return 0;
+    await api.cart.updateCart(session, order, promocode, t( 'locale' ));
 
-    Object.keys(tickets).forEach(key => {
-      const count = tickets[ key ] || 0;
-      const ticketKey = `${productId}.${direction}.${key}`;
+    const createOrder = await api.order.newOrder({ sessionId: session, user });
 
-      if ( ticket.hasOwnProperty( ticketKey ) ) {
-        const { price } = ticket[ ticketKey ];
-        const priceSale = Math.ceil( price - ( price * ( sale / 100 ) ) );
+    if (sum !== 0 && sale < 100) {
+      if ( !((( createOrder || {}).payment || {}).Model || {}).Number ) alert('Что-то пошло не так…')
 
-        sum += count * priceSale;
-      }
-    } );
+      const invoiceId = createOrder.payment.Model.Number;
 
-    return sum;
-  }, 0 );
+      const pay = function() {
+        const cp = window.cp;
+        const widget = new cp.CloudPayments({
+          language: t( 'widgetLang' ),
+          googlePaySupport: false,
+        });
+        const {
+          publicId,
+          projectName,
+        } = process.env;
+        widget.charge({
+          publicId,                                      // id из личного кабинета
+          description: `River cruise ${ projectName }`,  // назначение
+          amount: sum,                                   // сумма
+          currency: t( 'currencyTag' ),                  // валюта
+          invoiceId,                                     // номер заказа (необязательно)
+          accountId: user.email,                         // идентификатор плательщика (необязательно)
+          skin: "mini",                                  // дизайн виджета
+        },
+        function (success) { // success
+          console.log('success', success);
 
-  const checkOut = async e => {
-    e.preventDefault();
+          // setPaid(createOrder);
+        },
+        function (reason, fail) { // fail
+          console.log('reason', reason);
+          console.log('fail', fail);
 
-    const currentTicketStatus = Object.values(ticketStatus).every(item => item);
+          alert( 'Оплата не прошла' );
+        });
+      };
 
-    if (currentTicketStatus) {
-      setInProcess(true);
-
-      await api.cart.updateCart(session, Object.values(order), promocode, lang);
-      const createOrder = await api.order.newOrder({ sessionId: session, user });
-
-      console.log(createOrder)
-
-      if (sum !== 0 && sale < 100 && createOrder.payment.Model.Number) {
-        const invoiceId = createOrder.payment.Model.Number;
-
-        const pay = function () {
-          const cp = window.cp;
-          const widget = new cp.CloudPayments({
-            language: t( 'widgetLang' ),
-            googlePaySupport: false,
-          });
-          widget.charge({
-            publicId: process.env.REACT_APP_CLOUDPAYMENTS_PUBLICID,  //id из личного кабинета
-            description: 'Оплата на сайте ' + process.env.REACT_APP_PROJECT_NAME, //назначение
-            amount: sum, //сумма
-            currency: t( 'currencyTag' ), //валюта
-            invoiceId, //номер заказа  (необязательно)
-            accountId: user.email, //идентификатор плательщика (необязательно)
-            skin: "mini", //дизайн виджета
-            // data: {
-            //   myProp: 'myProp value' //произвольный набор параметров
-            // }
-          },
-          function (success) { // success
-            console.log('success', success);
-
-            setPaid(createOrder);
-          },
-          function (reason, fail) { // fail
-            console.log('reason', reason);
-            console.log('fail', fail);
-
-            alert( 'Оплата не прошла' );
-          });
-        };
-
-        pay();
-      } else {
-        setPaid(createOrder);
-      }
-
-      setInProcess(false);
-    } else {
-      // alert('Need select tickets');
-    }
-  };
-
-  useEffect(() => {
-    if (product && order && cart && cart[0] && order[cart[0]]) {
-      setOldId( product[order[cart[0]].productId].oldId );
-
-      throttled.current(oldId, promocode)
+      pay();
+    } else { // 100% промокод
+      // setPaid(createOrder);
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [promocode, oldId])
+    setInProcess(false);
+  }
 
-  useEffect(() => {
-    if (ticketStatus.status) {
-      setValid(ticketStatus.status);
-    }
-  }, [ticketStatus]);
-
-  useEffect(() => {
-    dispatch('cart/get', {session, lang});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  useEffect(() => {
-    if (!paid.hash) return;
-
-    setTimeout(async () => {
-      const _emailContent = await api.order.getMail( paid.id, paid.hash );
-      setEmailContent( _emailContent );
-      const sheet = document.createElement('link');
-      sheet.rel = 'stylesheet';
-      sheet.href = '//api.nevatrip.ru/assets/css/web-desktop.min.css';
-      sheet.type = 'text/css';
-      document.head.appendChild(sheet);
-    }, 1000);
-  }, [paid]);
-
-  if (paid) return (<div dangerouslySetInnerHTML={{__html: emailContent }}></div>);
-
-  return cart && !cart.loading && !cart.error
-    ? <form className='form' method='post' onSubmit={ checkOut }>
-        <ul className='list'>{ products() }</ul>
-        <div className='aside'>
-          <div className="aside__blank">
-            <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
-            <ul className='listPreview'>{ productsPreview() }</ul>
-          </div>
-
-          <div className = 'asideSeparator'><div className="asideSeparator__line"></div></div>
-
-          <div className="aside__blank">
-            <div className='cart__user'>
-              {
-                [
-                  {
-                    name: 'fullName',
-                    type: 'text',
-                    value: fullName,
-                    label: t( 'Фамилия и имя' ),
-                    maxlength: '250'
-                  },
-                  {
-                    name: 'email',
-                    type: 'email',
-                    value: email,
-                    label: t( 'E-mail' ),
-                    pattern: '^[-._a-zA-Za-яA-я0-9]{2,}@(?:[a-zA-Za-яА-Я0-9][-a-z-A-Z-a-я-А-Я0-9]+\\.)+[a-za-я]{2,6}$',
-                    maxlength: '250'
-                  },
-                  {
-                    name: 'phone',
-                    type: 'phone',
-                    value: phone,
-                    label: t( 'Телефон' ),
-                    pattern: '(\\+?\\d[- .()]*){10,22}',
-                    maxlength: '22',
-                    placeholder: '+XXХХХХХХХХХ'
-                  }
-                ].map( field => (
-                      <div key={field.name} className='cart__field'>
-                        <label className='form-label' htmlFor={`id-${field.name}`}>
-                          <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>
-                            { field.label }
-                          </span>
-                        </label>
-                        <div className='form-input-wrap'>
-                          <input
-                              className='input'
-                              id={`id-${field.name}`}
-                              type={field.type}
-                              name={field.name}
-                              defaultValue={field.value}
-                              onBlur={setUserData}
-                              maxLength={field.maxlength}
-                              pattern={field.pattern}
-                              placeholder={field.placeholder}
-                              required
-                          />
-                          <svg className='form-icon' fill='green' viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 0 1-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"></path></svg>
-                        </div>
-                        <div className={ 'cart__tooltip' + ( isRightTranslate ? '' : ' translate' ) }>
-                            { (field.name === 'fullName' && t('Почему используем имя'))
-                              || (field.name === 'email' && t('Почему используем e-mail'))
-                              || (field.name === 'phone' && t('Почему используем телефон'))
-                              || ''
-                            }
-                        </div>
-                      </div>
-                  ) )
-              }
-            </div>
-            <div className='cart__promocode'>
-              {
-                isShowPromocode
-                  ? <label className='form-label'>
-                  <span className='caption'>
-                    <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Промокод' ) } </span>
-                    {
-                      sale > 0 ? `«${ promocode.toUpperCase() }» на ${ sale }% 👍` : null
-                    }
-                  </span>
-                    <input
-                      className='input'
-                      name='promocode'
-                      defaultValue={promocode}
-                      onKeyUp={ e => setPromocode( e.target.value ) }
-                      autoComplete='off'
-                      autoFocus={isShowPromocode}
-                      onBlur={()=> !promocode && setShowPromocode(false)}
-                    />
-                  </label>
-                  : <button className={ 'btn-radio__label' + (isRightTranslate ? '' : ' translate' ) } onClick={ () => setShowPromocode(true) }>{ t('У меня есть промокод') }</button>
-              }
-            </div>
-            <span className='checkbox'>
-              <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
-              <label className={ 'caption checkboxCaption' + (isRightTranslate ? '' : ' translate' ) } htmlFor='ofertaCheck'>
-                { t( 'Я согласен' ) }&nbsp;
-              <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
-              </label>
-            </span>
-            <button className='btn btn_block btn_primary submitBtn' disabled={inProcess || isDisabledBtn || isTicketTime } onClick={() => setValid(ticketStatus.status)}>
-              <span className={ isRightTranslate ? '' : ' translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
-            </button>
-             <div className='cart__error' >
-               { !valid && <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span> }
-             </div>
-          </div>
+  return (
+    <form className='form' method='post' disabled={ inProcess } onSubmit={ onSubmit }>
+      { cart.status === 'loading' && 'Loading…' }
+      { cart.status === 'loaded' && <ListOfProducts products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
+      { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
+      <div className='aside'>
+        <div className="aside__blank">
+          <span className={ 'caption caption_l' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Ваш заказ' ) }</span>
+          { cart.status === 'loading' && 'Loading…' }
+           { cart.status === 'loaded' && <ListOfProducts products={ cart.payload.products } Item={ ProductViewPreview } /> }
+          { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
         </div>
-      </form>
-    : <div className='cart'></div>
+
+        <div className = 'asideSeparator'><div className="asideSeparator__line"></div></div>
+
+        <div className="aside__blank">
+          <div className='cart__user'>
+            {
+              [
+                {
+                  name: 'fullName',
+                  type: 'text',
+                  value: user.fullName,
+                  label: t( 'Фамилия и имя' ),
+                  maxlength: '250'
+                },
+                {
+                  name: 'email',
+                  type: 'email',
+                  value: user.email,
+                  label: t( 'E-mail' ),
+                  pattern: '^[-._a-zA-Za-яA-я0-9]{2,}@(?:[a-zA-Za-яА-Я0-9][-a-z-A-Z-a-я-А-Я0-9]+\\.)+[a-za-я]{2,6}$',
+                  maxlength: '250'
+                },
+                {
+                  name: 'phone',
+                  type: 'phone',
+                  value: user.phone,
+                  label: t( 'Телефон' ),
+                  pattern: '(\\+?\\d[- .()]*){10,22}',
+                  maxlength: '22',
+                  placeholder: '+7 9__ ___-__-__'
+                }
+              ].map( field => (
+                <div key={field.name} className='cart__field'>
+                      <label className='form-label' htmlFor={`id-${field.name}`}>
+                        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>
+                          { field.label }
+                        </span>
+                      </label>
+                      <div className='form-input-wrap'>
+                        <input
+                            className='input'
+                            id={`id-${field.name}`}
+                            type={field.type}
+                            name={field.name}
+                            defaultValue={field.value}
+                            onBlur={ e => setUser( { ...user, [ field.name ]: e.target.value } ) }
+                            maxLength={field.maxlength}
+                            pattern={field.pattern}
+                            placeholder={field.placeholder}
+                            required
+                        />
+                        <svg className='form-icon' fill='green' viewBox="64 64 896 896" focusable="false" data-icon="check-circle" width="1em" height="1em" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 0 1-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"></path></svg>
+                      </div>
+                      <div className={ 'cart__tooltip' + ( isRightTranslate ? '' : ' translate' ) }>
+                          { (field.name === 'fullName' && t('Используем для персонализации'))
+                            || (field.name === 'email' && t('На адрес этой почты мы пришлем вам билет на прогулку'))
+                            || (field.name === 'phone' && t('В случае изменений, мы оповестим вас по номеру телефона'))
+                            || ''
+                          }
+                      </div>
+                    </div>
+              ) )
+            }
+          </div>
+          <Promocode
+            className='cart__promocode'
+            isRightTranslate={isRightTranslate}
+            promocode={ promocode }
+            sale={0}
+            onChange={ promocode => setPromocode( promocode ) }
+          />
+          <span className='checkbox'>
+            <input className='checkboxInput' type='checkbox' required='required' id='ofertaCheck'/>
+            <label className={ 'caption checkboxCaption' + (isRightTranslate ? '' : ' translate' ) } htmlFor='ofertaCheck'>
+              { t( 'Я согласен' ) }&nbsp;
+              <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
+            </label>
+          </span>
+          <button className='btn btn_block btn_primary submitBtn' disabled={ !ticketsCount }>
+            <span className={ isRightTranslate ? '' : ' translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
+          </button>
+          {
+            !ticketsCount && (
+              <div className='cart__error' >
+                <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </form>
+  )
 };
