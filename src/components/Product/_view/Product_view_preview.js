@@ -111,15 +111,16 @@ export const ProductViewPreview = ( { product, options } ) => {
             </ul>
           )}) }
 
-      { options.tickets &&
-      <div className='listPreviewTickets'>
-        <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-          <b>{ t( 'билеты' ) }</b>
+      { options.tickets && direction.dates && direction.dates.length !== 0
+       ? <div className='listPreviewTickets'>
+          <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
+            <b>{ t( 'тип билета' ) }</b>
+          </div>
+          <div className="listPreviewDataLi__p">
+            { renderTicket() }
+          </div>
         </div>
-        <div className="listPreviewDataLi__p">
-          { renderTicket() }
-        </div>
-      </div>
+      : <p>Пока нет выбранных билетов.</p>
       }
     </fieldset>
   );

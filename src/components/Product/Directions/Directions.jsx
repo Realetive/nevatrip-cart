@@ -22,7 +22,9 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
     const { _key, title } = direction;
     const checked = _key === selectedDirection;
 
-    return ( ( ( direction._type === 'complex' && ( direction.nested || [] ).length !== 0 ) || direction._type !== 'complex' ) && (
+    const emptyDatesInComplex = direction._type === 'complex' && direction.nested.find(one => normalise( directions )[ one._key ].dates.length === 0 );
+
+    return ( ( emptyDatesInComplex === undefined || direction._type !== 'complex' ) && (
       <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
@@ -73,9 +75,9 @@ const getDates = ( normalisedDirections, { direction } ) => {
       nested.forEach( ( { _key }, index ) => {
         const direction = normalisedDirections[ _key ];
 
-        dates = dates.length && index !== 0
+        dates = dates.length
           ? dates.filter( date => direction.dates.indexOf( date ) !== -1 )
-          : direction.dates;
+          : index === 0 && direction.dates;
       } );
 
       return dates;
@@ -101,6 +103,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
   const [ selectedDirections, setSelectedDirections ] = useState( [] )
   const [ dates, setDates ] = useState( [] );
   const [ times, setTimes ] = useState( [ { status: 'loading' } ] );
+
 
   /* По вызову комопнета ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
   useEffect( () => {
@@ -218,7 +221,8 @@ export const Directions = ( { product = {}, directions = [], options = { events:
               onChange={ onTicketChange }
             />
           </div>
-          : times[0].status === 'loaded' && <div className='colDesktop'>
+          // : times[0].status === 'loaded' && <div className='colDesktop'>
+          : <div className='colDesktop'>
               <p className='listPreviewTicketsLi'>{ t( 'Пока нет расписания на выбранное направление, но оно появится в скором времени' ) }.</p>
             </div>
       }
