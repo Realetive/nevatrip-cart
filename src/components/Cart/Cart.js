@@ -123,7 +123,6 @@ export const Cart = ( { session } ) => {
     } ) );
 
     await api.cart.updateCart(session, order, promocode, t( 'locale' ));
-    console.log(JSON.stringify(order))
 
     const createOrder = await api.order.newOrder({ sessionId: session, user });
 
