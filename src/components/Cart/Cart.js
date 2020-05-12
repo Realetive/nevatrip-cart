@@ -121,8 +121,6 @@ export const Cart = ( { session } ) => {
       productId,
       options,
     } ) );
-    
-    debugger;
 
     await api.cart.updateCart(session, order, promocode, t( 'locale' ));
 

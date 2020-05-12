@@ -22,7 +22,9 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
     const { _key, title } = direction;
     const checked = _key === selectedDirection;
 
-    return (
+    const emptyDatesInComplex = direction._type === 'complex' && direction.nested.find(one => normalise( directions )[ one._key ].dates.length === 0 );
+
+    return ( ( emptyDatesInComplex === undefined || direction._type !== 'complex' ) && (
       <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
@@ -37,7 +39,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
           />
         </label>
       </li>
-    );
+    ));
   });
 
   return (
@@ -65,17 +67,19 @@ const normalise = ( array = [] ) => {
 
 const getDates = ( normalisedDirections, { direction } ) => {
   let { nested, isEveryOwnDate, dates = [] } = normalisedDirections[ direction ];
-  
+
   if ( nested ) {
     if ( isEveryOwnDate ) {
       alert( '[WIP]' ); // TODO: у каждого направления своя дата
     } else {
-      nested.forEach( ({ _key }) => {
+      nested.forEach( ( { _key }, index ) => {
         const direction = normalisedDirections[ _key ];
+
         dates = dates.length
           ? dates.filter( date => direction.dates.indexOf( date ) !== -1 )
-          : direction.dates;
+          : index === 0 && direction.dates;
       } );
+
       return dates;
     }
   } else {
@@ -94,10 +98,12 @@ const getSelectedDirections = ( normalisedDirections, { direction } ) => {
 }
 
 export const Directions = ( { product = {}, directions = [], options = { events: [] }, onChange = () => {} } ) => {
+  const { t } = useTranslation();
   const [ normalisedDirections, setNormalisedDirections ] = useState();
   const [ selectedDirections, setSelectedDirections ] = useState( [] )
   const [ dates, setDates ] = useState( [] );
   const [ times, setTimes ] = useState( [ { status: 'loading' } ] );
+
 
   /* По вызову комопнета ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
   useEffect( () => {
@@ -178,37 +184,48 @@ export const Directions = ( { product = {}, directions = [], options = { events:
   
     return normalisedDirections[ direction ][ entity ] || []
   }
-  
+
   return (
     <div className='product__inner'>
       <div className='colDesktop'>
         <DirectionsList directions={ directions } selectedDirection={ options.direction } onChange={ onDirectionChange } />
-        <Calendar
-          dates={ dates }
-          selectedDate={ undefined }
-          onChange={ onDateChange }
-        />
-      </div>
-      <div className='colDesktop'>
         {
-          options.events && selectedDirections
-            ? selectedDirections.map( ( direction, index ) => times[ index ] && (
-                <Time
-                  key={ index }
-                  times={ times[ index ] }
-                  direction={ direction }
-                  selectedTime={ options.events[ index ] }
-                  onChange={ onTimeChange }
-                />
-              ) )
+          dates?.length
+            ? <Calendar
+                dates={ dates }
+                selectedDate={ undefined }
+                onChange={ onDateChange }
+              />
             : null
         }
-        <Tickets
-          tickets={ getEntity('tickets') }
-          selectedTickets={ options.tickets }
-          onChange={ onTicketChange }
-        />
       </div>
+      {
+        dates?.length
+          ? <div className='colDesktop'>
+            {
+              options.events && selectedDirections
+                ? selectedDirections.map( ( direction, index ) => times[ index ] && (
+                  <Time
+                    key={ index }
+                    times={ times[ index ] }
+                    direction={ direction }
+                    selectedTime={ options.events[ index ] }
+                    onChange={ onTimeChange }
+                  />
+                ) )
+                : null
+            }
+            <Tickets
+              tickets={ getEntity('tickets') }
+              selectedTickets={ options.tickets }
+              onChange={ onTicketChange }
+            />
+          </div>
+          // : times[0].status === 'loaded' && <div className='colDesktop'>
+          : <div className='colDesktop'>
+              <p className='listPreviewTicketsLi'>{ t( 'Пока нет расписания на выбранное направление, но оно появится в скором времени' ) }.</p>
+            </div>
+      }
     </div>
   )
 }

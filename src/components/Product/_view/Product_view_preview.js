@@ -9,6 +9,13 @@ export const ProductViewPreview = ( { product, options } ) => {
   const events = options.events || [];
   const direction = product.directions.find( _direction => _direction._key === options.direction );
 
+  const directionTitle = direction._type === 'complex'
+    ? direction.nested.map((dir) => {
+        const currentDirection = product.directions.find( _direction => _direction._key === dir._key );
+        return currentDirection.title[ t('locale') ];
+      })
+    : direction.title[ t('locale') ] || '';
+
   /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
     if (!date) return;
@@ -71,48 +78,49 @@ export const ProductViewPreview = ( { product, options } ) => {
   return (
     <fieldset className='listPreviewFieldset'>
       <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
-      <ul className='listPreviewData'>
-        { events.map(( event, index ) => {
-          const selectedTime = event.start;
+        { events && events.map(( event = {}, index ) => {
+          const selectedTime = ( event || {} ).start;
 
           return event._key && (
-            <li key={ index } className='listPreviewDataLi'>
-              <div className='listPreviewDataLi'>
-                <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
-                  <b>{ t('дата') }</b>
+            <ul className='listPreviewData' key={ index }>
+              <li className='listPreviewDataLi'>
+                <div className='listPreviewDataLi'>
+                  <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
+                    <b>{ t('дата') }</b>
+                  </div>
+                  <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
                 </div>
-                <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
-              </div>
 
-              <div className='listPreviewDataLi'>
+                <div className='listPreviewDataLi'>
+                  <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
+                    <b>{ t( 'время' ) }</b>
+                  </div>
+                  <div className="listPreviewDataLi__p">
+                    { renderTime( selectedTime ) }
+                  </div>
+                </div>
+              </li>
+              <li className='listPreviewDataLi'>
                 <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-                  <b>{ t( 'время' ) }</b>
+                  <b>{ t( 'направление' ) }</b>
                 </div>
                 <div className="listPreviewDataLi__p">
-                  { renderTime( selectedTime ) }
+                  { directionTitle }
                 </div>
-              </div>
-            </li>
+              </li>
+            </ul>
           )}) }
 
-        <li className='listPreviewDataLi'>
+      { options.tickets && direction.dates && direction.dates.length !== 0
+       ? <div className='listPreviewTickets'>
           <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-            <b>{ t( 'направление' ) }</b>
+            <b>{ t( 'тип билета' ) }</b>
           </div>
           <div className="listPreviewDataLi__p">
-            { direction.title[ t('locale') ] || '' }
+            { renderTicket() }
           </div>
-        </li>
-      </ul>
-      { options.tickets &&
-      <div className='listPreviewTickets'>
-        <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
-          <b>{ t( 'билеты' ) }</b>
         </div>
-        <div className="listPreviewDataLi__p">
-          { renderTicket() }
-        </div>
-      </div>
+      : <p>Пока нет выбранных билетов.</p>
       }
     </fieldset>
   );
