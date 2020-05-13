@@ -5,6 +5,13 @@ const headers = { 'Content-Type': 'application/json' };
 
 /* Кастомный хук, который получет сессию и язык, запрашивает продукт и возвращает объект cart с данными и функцию, для изменений.  */
 export const useGetOrder = ( session, lang = 'en' ) => {
+  let ttl = 3600000;
+  let cash = '';
+  if ( process.env.NODE_ENV === 'development' ) {
+    ttl = 1;
+    cash = '&cash=false';
+  }
+
   const [ cart, setCart ] = useState({ status: 'loading' });
 
   useEffect(() => {
@@ -16,9 +23,9 @@ export const useGetOrder = ( session, lang = 'en' ) => {
 
           const ids = cart.products.map( ( { productId } ) => productId );
           const uniqueIds = [ ...new Set( ids ) ];
-          
-          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }&ttl=3600000`).then( resp => resp.json() ) )
-          
+
+          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }${ cash }&ttl=${ ttl }`).then( resp => resp.json() ) );
+
           Promise.allSettled( getProducts ).then( products => {
             const _products = {};
 
