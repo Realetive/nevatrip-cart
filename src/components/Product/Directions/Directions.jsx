@@ -104,8 +104,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
   const [ dates, setDates ] = useState( [] );
   const [ times, setTimes ] = useState( [ { status: 'loading' } ] );
 
-
-  /* По вызову комопнета ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
+  /* По вызову компонента ProductViewSelect массив направлений нормализуется – перезаписывается в нужный формат. */
   useEffect( () => {
     const _normalisedDirections = normalise( directions );
     setNormalisedDirections( _normalisedDirections );
@@ -119,14 +118,19 @@ export const Directions = ( { product = {}, directions = [], options = { events:
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ options.direction, normalisedDirections ] )
-  
 
   /* Функция меняет выбранное направление. */
   const onDirectionChange = ( direction ) => {
+    const tickets = {}
+
+    getEntity( 'tickets', direction ).forEach( ({ _key, count = 0 }) => {
+      tickets[ _key ] = count;
+    } )
+
     onChange({
       ...options,
       direction,
-      tickets: getEntity( 'tickets', direction ),
+      tickets,
     })
   }
 
@@ -169,7 +173,7 @@ export const Directions = ( { product = {}, directions = [], options = { events:
   }
 
   /* Функция меняет выбранные билеты. */
-  const onTicketChange = ( key, count ) => {
+  const onTicketChange = ( key, count = 0 ) => {
     const tickets = { ...options.tickets };
     tickets[ key ] = count;
     

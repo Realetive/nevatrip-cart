@@ -117,11 +117,14 @@ export const Cart = ( { session } ) => {
 
     setInProcess( true );
 
-    const order = cart.payload.products.map( ( { productId, options } ) => ( {
-      productId,
-      options,
-    } ) );
+    const order = cart.payload.products
+      .filter( ({ options }) => options.events.length )
+      .map( ( { productId, options } ) => ( {
+        productId,
+        options,
+      } ) );
 
+    debugger;
     await api.cart.updateCart(session, order, promocode, t( 'locale' ));
 
     const createOrder = await api.order.newOrder({ sessionId: session, user });

@@ -40,7 +40,7 @@ export const useGetOrder = ( session, lang = 'en' ) => {
               const {
                 direction = firstDirection._key,
                 tickets = getTickets( firstDirection.tickets ),
-                events = [{}],
+                events = [],
               } = product.options || {};
 
               product.options = { direction, tickets, events }
