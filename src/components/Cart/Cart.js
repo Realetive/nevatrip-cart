@@ -11,52 +11,6 @@ import { Promocode } from "../Promocode/Promocode";
 import 'react-datepicker/dist/react-datepicker.css';
 import './Cart.css';
 
-// Returns a function, that, when invoked, will only be triggered at most once
-// during a given window of time. Normally, the throttled function will run
-// as much as it can, without ever going more than once per `wait` duration;
-// but if you'd like to disable the execution on the leading edge, pass
-// `{leading: false}`. To disable execution on the trailing edge, ditto.
-// function throttle( func, wait, options ) {
-//   let context, args, result;
-//   let timeout = null;
-//   let previous = 0;
-//
-//   if ( !options ) options = {};
-//
-//   const later = () => {
-//     previous = options.leading === false ? 0 : Date.now();
-//     timeout = null;
-//     result = func.apply(context, args);
-//     if (!timeout) context = args = null;
-//   };
-//
-//   return function() {
-//     const now = Date.now();
-//
-//     if ( !previous && options.leading === false ) previous = now;
-//
-//     const remaining = wait - (now - previous);
-//     context = this;
-//     args = arguments;
-//
-//     if ( remaining <= 0 || remaining > wait ) {
-//       if (timeout) {
-//         clearTimeout( timeout );
-//         timeout = null;
-//       }
-//
-//       previous = now;
-//       result = func.apply(context, args);
-//
-//       if (!timeout) context = args = null;
-//     } else if ( !timeout && options.trailing !== false ) {
-//       timeout = setTimeout(later, remaining);
-//     }
-//
-//     return result;
-//   };
-// }
-
 let count = 0;
 
 export const Cart = ( { session } ) => {
@@ -69,7 +23,7 @@ export const Cart = ( { session } ) => {
   const [ cart, setCart ] = useGetOrder( session );
   const initUser = { fullName: '', phone: '', email: '' };
   const [ user, setUser ] = useState( cart.status === 'loaded' ? cart.payload.user || initUser : initUser );
-  const [ ticketsCount, setTicketsCount ] = useState( 0 );
+  const [ ticketsCount, setTicketsCount ] = useState( { count: 0, sending: false } );
   const [ sum, setSum ] = useState( 0 );
   const [ promocode, setPromocode ] = useState('');
   const [ sale ] = useState(0); // скидка в %
@@ -81,10 +35,9 @@ export const Cart = ( { session } ) => {
       const count = ( cart.payload.products || [] ).reduce( ( acc, { product, options } ) => {
         const direction = product.directions.find( direction => direction._key === options.direction );
 
-        if (( direction.dates && direction.dates.length > 0 ) || direction._type === 'complex') {
-          direction.tickets.forEach(({_key, price}) => {
-            console.log(price, direction, direction.tickets)
-            const count = options.tickets[_key] || 0;
+        if (( direction.dates && direction.dates.length > 0 ) || direction._type === 'complex' ) {
+          direction.tickets.forEach(({ _key, price }) => {
+            const count = options.tickets[ _key ] || 0;
             acc.tickets += count;
             acc.sum += count * price;
           });
@@ -93,7 +46,7 @@ export const Cart = ( { session } ) => {
         return acc;
       }, { sum: 0, tickets: 0 } );
 
-      setTicketsCount( count.tickets );
+      setTicketsCount( { count: count.tickets, sending: false } );
       setSum( count.sum );
     }
   }, [ cart ] )
@@ -118,6 +71,7 @@ export const Cart = ( { session } ) => {
   const onSubmit = async event => {
     event.preventDefault();
 
+    setTicketsCount({...ticketsCount, sending: true})
     setInProcess( true );
 
     const order = cart.payload.products
@@ -127,7 +81,6 @@ export const Cart = ( { session } ) => {
         options,
       } ) );
 
-    debugger;
     await api.cart.updateCart(session, order, promocode, t( 'locale' ));
 
     const createOrder = await api.order.newOrder({ sessionId: session, user });
@@ -267,11 +220,11 @@ export const Cart = ( { session } ) => {
               <a href={ t( 'oferta' ) } target="_blank" rel="noopener noreferrer">{ t( 'условиями покупки и политикой' ) }</a>
             </label>
           </span>
-          <button className='btn btn_block btn_primary submitBtn' disabled={ !ticketsCount }>
+          <button className='btn btn_block btn_primary submitBtn' disabled={ !ticketsCount.count && ticketsCount.sending }>
             <span className={ isRightTranslate ? '' : ' translate' }>{ t( 'Оплатить' ) }</span> { sum } { t( 'currency' ) }
           </button>
           {
-            !ticketsCount && (
+            !ticketsCount.count && ticketsCount.sending && (
               <div className='cart__error' >
                 <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ t('Нет выбранных билетов') }</span>
               </div>
