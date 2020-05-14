@@ -80,12 +80,15 @@ export const Cart = ( { session } ) => {
     if ( cart.status === 'loaded' ) {
       const count = ( cart.payload.products || [] ).reduce( ( acc, { product, options } ) => {
         const direction = product.directions.find( direction => direction._key === options.direction );
-        
-        direction.tickets.forEach( ( { _key, price } ) => {
-          const count = options.tickets[ _key ] || 0;
-          acc.tickets += count;
-          acc.sum += count * price;
-        });
+
+        if (( direction.dates && direction.dates.length > 0 ) || direction._type === 'complex') {
+          direction.tickets.forEach(({_key, price}) => {
+            console.log(price, direction, direction.tickets)
+            const count = options.tickets[_key] || 0;
+            acc.tickets += count;
+            acc.sum += count * price;
+          });
+        }
 
         return acc;
       }, { sum: 0, tickets: 0 } );
