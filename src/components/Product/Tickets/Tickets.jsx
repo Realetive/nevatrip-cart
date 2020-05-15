@@ -18,7 +18,7 @@ export const Tickets = ( { tickets, selectedTickets, onChange } ) => {
 
   const renderTickets = tickets.map( ( { _key, category, price, ticket: [ { name, title } ] }, index ) => {
     const heading = title[ t( 'locale' ) ] || name;
-    const count = index === 0 ? 1 : 0;
+    const count = selectedTickets[ _key ];
 
     const onCountChange = ( count ) => onChange(_key, count);
 

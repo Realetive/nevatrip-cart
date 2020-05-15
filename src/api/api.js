@@ -39,8 +39,8 @@ export const useGetOrder = ( session, lang = 'en' ) => {
               product.product = _products[ product.productId ];
 
               const [ firstDirection ] = _products[ product.productId ].directions;
-              const getTickets = ( tickets ) => tickets.reduce( ( acc, ticket ) => {
-                acc[ ticket._key ] = 0;
+              const getTickets = ( tickets ) => tickets.reduce( ( acc, ticket, index ) => {
+                acc[ ticket._key ] = index === 0 ? 1 : 0;
 
                 return acc;
               }, {} );
