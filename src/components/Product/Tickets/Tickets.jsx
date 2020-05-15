@@ -16,9 +16,9 @@ export const Tickets = ( { tickets, selectedTickets, onChange } ) => {
   const { t } = useTranslation();
   const isRightTranslate = useContext( LangContext );
 
-  const renderTickets = tickets.map( ( { _key, category, price, ticket: [ { name, title } ] } ) => {
+  const renderTickets = tickets.map( ( { _key, category, price, ticket: [ { name, title } ] }, index ) => {
     const heading = title[ t( 'locale' ) ] || name;
-    const count = selectedTickets[ _key ];
+    const count = index === 0 ? 1 : 0;
 
     const onCountChange = ( count ) => onChange(_key, count);
 

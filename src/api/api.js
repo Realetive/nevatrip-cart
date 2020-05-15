@@ -40,7 +40,7 @@ export const useGetOrder = ( session, lang = 'en' ) => {
 
               const [ firstDirection ] = _products[ product.productId ].directions;
               const getTickets = ( tickets ) => tickets.reduce( ( acc, ticket ) => {
-                acc[ ticket._key ] = ticket.count || 0;
+                acc[ ticket._key ] = 0;
 
                 return acc;
               }, {} );
