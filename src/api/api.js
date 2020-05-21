@@ -37,11 +37,11 @@ export const useGetOrder = ( session, lang = 'en' ) => {
 
                 return acc;
               }, {} );
-              const {
+              const [{
                 direction = firstDirection._key,
                 tickets = getTickets( firstDirection.tickets ),
                 event = {},
-              } = product.options || {};
+              }] = product.options || [{}];
 
               product.options = { direction, tickets, event }
             } );

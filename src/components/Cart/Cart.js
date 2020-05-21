@@ -120,7 +120,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
     const order = cart.payload.products.map( ( { productId, options } ) => ( {
       productId,
-      options,
+      options: [{...options, direction: { _key: options.direction }}],
     } ) );
     
     debugger;
@@ -141,8 +141,8 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
           googlePaySupport: false,
         });
         const {
-          publicId,
-          projectName,
+          REACT_APP_CLOUDPAYMENTS_PUBLICID: publicId,
+          REACT_APP_PROJECT_NAME: projectName,
         } = process.env;
         widget.charge({
           publicId,                                      // id из личного кабинета
