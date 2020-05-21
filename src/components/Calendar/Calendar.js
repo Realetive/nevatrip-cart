@@ -1,59 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
-import useStoreon from 'storeon/react';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 
-const getNearestDate = ( date = new Intl.DateTimeFormat( { timeZone: process.env.REACT_APP_TIMEZONE } ).format( new Date() ), dates = [] ) => {
-  return dates.includes( date ) ? date : dates[ 0 ];
-};
-
-export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
-  const { t } = useTranslation();
-  const { dispatch, direction, order } = useStoreon('direction', 'order' );
-  const [ {
-    direction: selectedDirection,
-    date: selectedDate,
-  } ] = order[ cartKey ].options;
-
-  const {
-    dates,
-  } = direction[ `${ productId }.${ selectedDirection }` ];
-
-  const availableDates = dates.map( date => {
+/* Функция получает массив дат с типами "строка" и возвращает массив дат с типами "дата". */
+const getAvailableDates = ( dates = [] ) => {
+  return dates.map( date => {
     const availableDate = new Date( date );
     const userTimeOffset = availableDate.getTimezoneOffset();
-    availableDate.setMinutes(availableDate.getMinutes() + userTimeOffset);
+    availableDate.setMinutes( availableDate.getMinutes() + userTimeOffset );
 
     return availableDate;
-  } );
+  });
+}
 
-  const [ date, setDate ] = useState( getNearestDate( selectedDate, availableDates ) );
+/* Функция возвращает первую дату из массива всех дат направления для инициализации календаря и выбранную пользователем дату. */
+const getNearestDate = ( dates = [], date ) => {
+  const nearestDate = dates.includes( date ) ? date : dates[ 0 ];
 
-  const createDateValue = ( date, lang = 'en' ) => {
-    const local = {
-      'en': 'en-US',
-      'de': 'de-DE',
-      'cs': 'cs-CS',
-      'ru': 'ru-RU'
-    };
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return nearestDate;
+};
 
-    return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
+/* Функция возвращет дату для input выбора даты в нужном формате, в зависимости от языка. */
+const createDateValue = ( date, lang = process.env.REACT_APP_DEFAULT_LANG ) => {
+  const local = {
+    'en': 'en-US',
+    'de': 'de-DE',
+    'cs': 'cs-CS',
+    'ru': 'ru-RU'
   };
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-  useEffect(() => {
-    order[ cartKey ].options[ 0 ].date = date;
-    dispatch('order/update', order );
+  return new Intl.DateTimeFormat( local[ lang ], options ).format( date );
+};
+
+let count = 0;
+
+export const Calendar = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, dates = [], selectedDate, onChange = () => {} } ) => {
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Calendar.name} rerender: ${count}`);
+  }
+
+  const { t } = useTranslation();
+  const includeDates = getAvailableDates( dates );
+  const initialDate = getNearestDate( includeDates, selectedDate );
+  const [ date, setDate ] = useState( initialDate );
+
+  /* Подписываемся на изменение массива дат (изменится он при смене пользователем направления) и меняем выбранную дату. */
+  useEffect( () => {
+    setDate( initialDate );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ dates ] );
+
+  /* Подписываемся на смену выбранной даты и отправляем новую дату выше для загрузки времени для новой даты. */
+  useEffect( () => {
+    if ( date ) {
+      onChange( date );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ date ] );
-
-  useEffect(() => {
-    setDate( getNearestDate( date, availableDates ) );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ selectedDirection ] );
 
   return (
     <>
@@ -62,7 +70,7 @@ export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
         <input
           readOnly
           type='text'
-          value={ createDateValue( date, lang) }
+          value={ createDateValue( selectedDate, lang ) }
           className='input input_calendar'
         />
       </label>
@@ -71,10 +79,10 @@ export const Calendar = ( { cartKey, productId, isRightTranslate, lang } ) => {
           inline
           calendarClassName='calendar'
           dateFormat='dd MMMM yyyy'
-          includeDates={ availableDates }
+          includeDates={ includeDates }
           locale='calendarLocale'
           selected={ date }
-          onChange={ date => setDate( date ) }
+          onChange={ newDate => setDate( newDate ) }
         />
       </div>
     </>

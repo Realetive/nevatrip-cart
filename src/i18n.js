@@ -34,12 +34,17 @@ export default function i18n(lang) {
               'Похоже, часовой пояс экскурсии отличается от вашего': 'It seems like the time zone of the tour is different from yours',
               'Указано отправление по местному времени': 'Departure time is indicated according to the local time',
               'Это время уже не доступно': 'This time is no longer available',
-              'Почему используем имя': 'We use it to identify you',
-              'Почему используем e-mail': 'We use it to send you a ticket',
-              'Почему используем телефон': 'In case of any changes, we will contact you',
+              'Используем для персонализации': 'We use it to identify you',
+              'На адрес этой почты мы пришлем вам билет на прогулку': 'We use it to send you a ticket',
+              'В случае изменений, мы оповестим вас по номеру телефона': 'In case of any changes, we will contact you',
               'Нет выбранных билетов': 'Choose at least one ticket',
-              'Пока нет билетов': 'No tickets',
-              'На выбранную дату нет прогулок': 'No walks on the selected date',
+              'Билетов на данный момент нет': 'There are no tickets at the moment',
+              'На выбранную вами дату нет прогулок': 'There are no tours on chosen date',
+              'Выберите направление': 'Select direction',
+              'направление': 'direction',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Thank you for your order',
             }
           },
           ru: {
@@ -69,12 +74,17 @@ export default function i18n(lang) {
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Похоже, часовой пояс экскурсии отличается от вашего',
               'Указано отправление по местному времени': 'Указано отправление по местному времени',
               'Это время уже не доступно': 'Это время уже не доступно',
-              'Почему используем имя': 'Используем для персонализации',
-              'Почему используем e-mail': 'На адрес этой почты мы пришлем вам билет на прогулку',
-              'Почему используем телефон': 'В случае изменений, мы оповестим вас по номеру телефона',
+              'Используем для персонализации': 'Используем для персонализации',
+              'На адрес этой почты мы пришлем вам билет на прогулку': 'На адрес этой почты мы пришлем вам билет на прогулку',
+              'В случае изменений, мы оповестим вас по номеру телефона': 'В случае изменений, мы оповестим вас по номеру телефона',
               'Нет выбранных билетов': 'Нет выбранных билетов',
-              'Пока нет билетов': 'Пока нет прогулок',
-              'На выбранную дату нет прогулок': 'На выбранную дату нет прогулок',
+              'Билетов на данный момент нет': 'Билетов на данный момент нет',
+              'На выбранную вами дату нет прогулок': 'На выбранную вами дату нет прогулок',
+              'Выберите направление': 'Выберите направление',
+              'направление': 'направление',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Спасибо за покупку',
             }
           },
           de: {
@@ -102,12 +112,17 @@ export default function i18n(lang) {
               'widgetLang': 'en-US',
               'currencyTag': 'EUR',
               'Это время уже не доступно': 'Diese Zeit ist nicht mehr verfügbar',
-              'Почему используем имя': 'We use it to identify you',
-              'Почему используем e-mail': 'We use it to send you a ticket',
-              'Почему используем телефон': 'In case of any changes, we will contact you',
+              'Используем для персонализации': 'Wird zur Identifizierung genutzt',
+              'На адрес этой почты мы пришлем вам билет на прогулку': 'An diese Adresse wird dein Ticket geschickt',
+              'В случае изменений, мы оповестим вас по номеру телефона': 'Bei Änderungen informieren wir dich sofort',
               'Нет выбранных билетов': 'Wählen Sie mindestens ein Ticket',
-              'Пока нет билетов': 'No tickets',
-              'На выбранную дату нет прогулок': 'No walks on the selected date',
+              'Билетов на данный момент нет': 'Im Moment sind keine Tickets verfügbar',
+              'На выбранную вами дату нет прогулок': 'Für das gewählte Datum sind keine Tickets verfügbar',
+              'Выберите направление': 'Select direction',
+              'направление': 'direction',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Vielen Dank für Ihre Bestellung',
             }
           },
           cs: {
@@ -137,17 +152,22 @@ export default function i18n(lang) {
               'Похоже, часовой пояс экскурсии отличается от вашего': 'Vypadá to, že časové pásmo, ve kterém je plavba, je rozdílné od vašeho',
               'Указано отправление по местному времени': 'Čas odjezdu je dle místního času',
               'Это время уже не доступно': 'Tento čas již není k dispozici',
-              'Почему используем имя': 'We use it to identify you',
-              'Почему используем e-mail': 'We use it to send you a ticket',
-              'Почему используем телефон': 'In case of any changes, we will contact you',
+              'Используем для персонализации': 'Tyto data využijeme k Vaší identifikaci',
+              'На адрес этой почты мы пришлем вам билет на прогулку': 'Vaše adresa bude využitá k zaslání palubních lístků',
+              'В случае изменений, мы оповестим вас по номеру телефона': 'V případě změn Vás budeme kontaktovat',
               'Нет выбранных билетов': 'Vyberte alespoň jednu vstupenku',
-              'Пока нет прогулок': 'No tickets',
-              'На выбранную дату нет прогулок': 'No walks on the selected date',
+              'Билетов на данный момент нет': 'Momentálně nejsou k dispozici žádné vstupenky',
+              'На выбранную вами дату нет прогулок': 'V daném termínu není k dispozici žádná plavba',
+              'Выберите направление': 'Select direction',
+              'направление': 'direction',
+              'Что-то пошло не так...': 'Something went wrong...',
+              'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Děkujeme za váš nákup',
             }
           },
         },
         lng: lang,
-        fallbackLng: 'ru',
+        fallbackLng: 'en',
 
         interpolation: {
           escapeValue: false
@@ -163,14 +183,17 @@ export default function i18n(lang) {
 
   let isRightTranslate;
 
+  /* Если при переводе страницы новый язык совпадает с языком, для котого уже предусмотрен перевод в i18n, то для страницы будет запрещен
+  перевод с помощью плагина браузера и перевод будет взят из ресурсов i18n. В противном случае isRightTranslate будет равен true и перевод будет разрешен для отдельных сущностей.  */
   if (calendarLocaleObject.hasOwnProperty(lang)) {
-      _i18n.language = lang;
-      isRightTranslate = true;
+    _i18n.language = lang;
+    isRightTranslate = true;
   } else {
-      _i18n.language = 'en';
-      isRightTranslate = false;
+    _i18n.language = 'en';
+    isRightTranslate = false;
   }
 
+  /* Календарь будет создан в фомате en, если язык перевода страницы с помощью плагина-переводчика не совпадает ни с одним языком в нашем объекте, зарегистрированном в i18n. */
   let calendarLocaleKey = calendarLocaleObject[ _i18n.language ];
   let calendarLocale = require( `date-fns/locale/${ calendarLocaleKey }` );
   registerLocale('calendarLocale', calendarLocale.default );

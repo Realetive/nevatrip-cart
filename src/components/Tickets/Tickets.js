@@ -1,84 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useStoreon from 'storeon/react';
 
 import Counter from '../Counter/Counter';
 
 import './Tickets.css';
 
-export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisabledBtn, lang, isRightTranslate }) => {
+let count = 0;
+
+export const Tickets = ( { lang, isRightTranslate, tickets, selectedTickets, onChange } ) => {
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Tickets.name} rerender: ${count}`);
+  }
   const { t } = useTranslation();
-  const { dispatch, direction, order, ticket, ticketCategory } = useStoreon('direction', 'order', 'ticket', 'ticketCategory');
-  const [{ direction: selectedDirection }] = order[cartKey].options;
-  const tickets = direction[ `${ productId }.${ selectedDirection }` ].tickets;
-  const [statusTickets, setStatusTickets] = useState({});
 
-  setDisabledBtn(tickets.length === 0);
+  const renderTickets = tickets.map( ( { _key, category, price, name = {}, ticket: [ { title } ] } ) => {
+    const heading = name[ lang ] || title[ lang ];
+    const count = selectedTickets[ _key ];
 
-  const initialTickets = tickets.reduce( ( obj, ticketId ) => {
-    const { _key, count } = ticket[ ticketId ];
-    obj[ _key ] = count;
-
-    return obj;
-  }, {} );
-
-  const [ _tickets, _setTickets ] = useState(initialTickets);
-
-  useEffect(() => {
-    order[cartKey].options[0].tickets = _tickets;
-    dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_tickets]);
-
-  useEffect(() => {
-    setStatusTickets({
-      status: Object.values(ticket).some(element => element.count >= 1)
-    });
-  }, []);
-
-  const getCount = (_key, count) => {
-    setStatusTickets({
-      ...statusTickets,
-      [_key]: count,
-      status: false,
-    });
-  };
-
-  useEffect(() => {
-    const status = Object.values(statusTickets).some(item => item > 0);
-    getStatus( status );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusTickets] );
-
-  const _renderTickets = tickets.map( (ticketId, ticketIndex) => {
-    const {
-      _key,
-      category,
-      count,
-      price,
-    } = ticket[ ticketId ];
-    const name = (ticket[ ticketId ].name || {})[lang] || ticket[ ticketId ].ticket[0].title[lang];
+    const onCountChange = ( count ) => onChange(_key, count);
 
     return (
-      <div key={ _key } className='ticketsItem' data-name = {name}>
+      <div key={ _key } className='ticketsItem'>
         <dt className='ticketsItemText' >
-            <span className={ isRightTranslate ? '' : ' translate' }>{ t( name ) }</span>,
+            <span className={ isRightTranslate ? '' : ' translate' }>{ heading }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>
-            { (ticketCategory[category] || {}).name !== 'standart' &&
-              <div className={ 'ticketCategory ' + ( isRightTranslate ? '' : ' translate' ) }>
-                { ((ticketCategory[category] || {}).title || {} )[lang] }
+            { category.name !== 'standart' &&
+              <div className={ 'ticket_category ' + ( isRightTranslate ? '' : ' translate' ) }>
+                { (category.title || {} )[lang] }
               </div>
             }
         </dt>
         <dd className='ticketsItemControls' >
           <Counter
             _key={_key}
-            defaultValue={count}
-            tickets={_tickets}
-            setTickets={_setTickets}
+            count={ count }
             price={price}
-            getCount={getCount}
-            isRightTranslate={isRightTranslate}
+            onChange={onCountChange}
+            max={ count >= 3 && count * price <= 0 ? 3 : 30 }
           />
         </dd>
       </div>
@@ -87,13 +46,9 @@ export const Tickets = ({ cartKey, productId, getStatus, setDisabledBtn, isDisab
 
   return (
     <div className='ticketsWrapper'>
-      {
-        (!isDisabledBtn &&
-        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Выберите категории билетов') }</span>) ||
-        <div className={ 'cart__error' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Пока нет билетов') }</div>
-      }
+      <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t('Выберите категории билетов') }</span>
       <dl className='ticketsDl'>
-        { _renderTickets }
+        { renderTickets }
       </dl>
       {/* <div class="caption" style={{ padding: '8px', borderRadius: '4px', backgroundColor: 'rgb(232, 176, 197)' }}>
         Вы выбрали бесплатную категорию билетов — нужно выбрать сопровождающего, например, билет категории «Взрослый»

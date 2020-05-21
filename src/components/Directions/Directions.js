@@ -1,46 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import useStoreon from 'storeon/react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-export const Directions = ({ cartKey, productId, isRightTranslate }) => {
-  const { dispatch, product, direction, order } = useStoreon('product', 'direction', 'order');
-  const { directions } = product[productId];
-  const defaultDirectionKey = ((order[cartKey] || {}).options || [{}])[0].direction || direction[directions[0]]._key;
-  const [selectedDirection, _setDirection] = useState(defaultDirectionKey);
+let count = 0;
 
-  useEffect(() => {
-    order[cartKey].options = order[cartKey].options || [{}];
-    order[cartKey].options[0].direction = selectedDirection;
-    dispatch('order/update', order);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDirection])
+export const Directions = ( { lang = process.env.REACT_APP_DEFAULT_LANG, isRightTranslate = true, directions = [], selectedDirection, onChange = () => {} } ) => {
+  if ( process.env.NODE_ENV === 'development' ) {
+    count += 1;
+    console.log(`${Directions.name} rerender: ${count}`);
+  }
 
-  const renderDirections = directions.map((directionId) => {
-    const {
-      _key,
-      title,
-    } = direction[directionId];
+  const { t } = useTranslation();
+  const name = directions.map( ( { _key } ) => _key ).join('-');
+
+  const renderDirections = directions.map( direction => {
+    const { _key, title } = direction;
+    const checked = _key === selectedDirection;
 
     return (
-      <option
-        key = { _key }
-        value = { _key }>
-        { title }
-      </option>
+      <li key={ _key } className='grid-list__item'>
+        <label
+          className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
+          { title[ lang ] }
+          <input
+            type="radio"
+            className='btn-radio'
+            name={ name }
+            value={ _key }
+            checked={ checked }
+            onChange={ () => onChange( _key ) }
+          />
+        </label>
+      </li>
     );
   });
 
   return (
     renderDirections.length > 1
-      ? <label>
-          <span className={ 'caption'  + ( isRightTranslate ? '' : ' translate' ) }>Выберите направление</span>
-          <select
-            value={selectedDirection}
-            onChange={ event => _setDirection(event.target.value) }
-            className = 'input'
-          >
-            {renderDirections}
-          </select>
-        </label>
+      ? <>
+          <div className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите направление' ) }</div>
+          <ul className='grid-list'>
+            { renderDirections }
+          </ul>
+        </>
       : null
   );
 };
