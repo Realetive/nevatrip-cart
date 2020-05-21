@@ -44,6 +44,7 @@ export default function i18n(lang) {
               'направление': 'direction',
               'Что-то пошло не так...': 'Something went wrong...',
               'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Thank you for your order',
             }
           },
           ru: {
@@ -83,6 +84,7 @@ export default function i18n(lang) {
               'направление': 'направление',
               'Что-то пошло не так...': 'Something went wrong...',
               'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Спасибо за покупку',
             }
           },
           de: {
@@ -120,6 +122,7 @@ export default function i18n(lang) {
               'направление': 'direction',
               'Что-то пошло не так...': 'Something went wrong...',
               'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Vielen Dank für Ihre Bestellung',
             }
           },
           cs: {
@@ -159,6 +162,7 @@ export default function i18n(lang) {
               'направление': 'direction',
               'Что-то пошло не так...': 'Something went wrong...',
               'Корзина пуста': 'Cart is empty',
+              'Спасибо за покупку': 'Děkujeme za váš nákup',
             }
           },
         },

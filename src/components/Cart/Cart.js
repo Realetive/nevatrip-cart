@@ -72,7 +72,12 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const [ sum, setSum ] = useState( 0 );
   const [ promocode, setPromocode ] = useState('');
   const [ sale ] = useState(0); // скидка в %
-  const [ inProcess, setInProcess ] = useState( false );
+  const states = {
+    DEFAULT: 'default',
+    PAYING: 'paying',
+    PAID: 'paid',
+  }
+  const [ state, setState ] = useState( states.DEFAULT );
 
   /* При изменении cart меняем общее количество билетов и общую сумму. */
   useEffect( () => {
@@ -116,7 +121,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
   const onSubmit = async event => {
     event.preventDefault();
 
-    setInProcess( true );
+    setState( states.PAYING );
 
     const order = cart.payload.products.map( ( { productId, options } ) => ( {
       productId,
@@ -156,7 +161,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
         function (success) { // success
           console.log('success', success);
 
-          // setPaid(createOrder);
+          setState( states.PAID )
         },
         function (reason, fail) { // fail
           console.log('reason', reason);
@@ -168,14 +173,20 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
 
       pay();
     } else { // 100% промокод
-      // setPaid(createOrder);
+      setState( states.PAID )
     }
-
-    setInProcess(false);
   }
 
   return (
-    <form className='form' method='post' disabled={ inProcess } onSubmit={ onSubmit }>
+    <form className='form' method='post' disabled={ state !== states.DEFAULT } onSubmit={ onSubmit }>
+      {
+        state === states.PAID && (
+          <div className='form__success'>
+            <span role="img" aria-label="Congratulation!">🎉</span>
+            <br />{ t( 'Спасибо за покупку' ) }
+          </div>
+        )
+      }
       { cart.status === 'loading' && 'Loading…' }
       { cart.status === 'loaded' && <ListOfProducts lang={ lang } isRightTranslate={ isRightTranslate } products={ cart.payload.products } onChange={ updateOrder } Item={ ProductViewSelect } /> }
       { cart.status === 'error' && <div className={'' + ( isRightTranslate ? '' : ' translate' )}>{ t( 'Что-то пошло не так…' ) }</div> }
