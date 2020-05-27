@@ -40,6 +40,8 @@ const createDateValue = ( date, lang ) => {
 let count = 0;
 
 export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) => {
+  console.log('dates', dates)
+  console.log('selectedDate', selectedDate)
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Calendar.name} rerender: ${count}`);
