@@ -37,7 +37,6 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
           )
         }
         { status === 'loaded' && times.map( time => {
-          console.log(time)
           const date = new Date( time.start );
           date.setHours(date.getHours() - 1);
           const formatTime = date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
