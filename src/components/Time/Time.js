@@ -37,7 +37,13 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
           )
         }
         { status === 'loaded' && times.map( time => {
-          const date = new Date( time.start );
+          const year = new Intl.DateTimeFormat(lang, {year: 'numeric', timeZone: 'Europe/Prague'}).format(time.start);
+          const month = new Intl.DateTimeFormat(lang, {month: 'numeric', timeZone: 'Europe/Prague'}).format(time.start);
+          const day = new Intl.DateTimeFormat(lang, {day: 'numeric', timeZone: 'Europe/Prague'}).format(time.start);
+          const hour = new Intl.DateTimeFormat(lang, {hour: 'numeric', timeZone: 'Europe/Prague'}).format(time.start);
+          const minute = new Intl.DateTimeFormat(lang, {minute: 'numeric', timeZone: 'Europe/Prague'}).format(time.start);
+          const second = new Intl.DateTimeFormat(lang, {second: 'numeric', timeZone: 'Europe/Prague'}).format(time.start);
+          const date = new Date(year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second);
           const formatTime = date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
           const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
           const checked = time._key === selectedTime._key && !time.expired;
