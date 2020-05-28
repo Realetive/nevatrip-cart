@@ -10,7 +10,7 @@ export const ProductViewPreview = ( { lang = process.env.REACT_APP_DEFAULT_LANG,
   /* Функция возвращает время в нужном формате. */
   const renderTime = (date) => {
     if (!date) return;
-    return date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
+    return date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague' } );
   };
 
   /* Функция возвращает дату в нужном формате. */
