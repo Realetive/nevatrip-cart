@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import { useTranslation } from "react-i18next";
 import LangContext from "../../App";
+import dateFormatting from 'nevatrip-date-formatting';
 
 export const ProductViewPreview = ( { product, options } ) => {
   const { t } = useTranslation();
@@ -15,47 +16,6 @@ export const ProductViewPreview = ( { product, options } ) => {
         return currentDirection.title[ t('locale') ];
       })
     : direction.title[ t('locale') ] || '';
-
-  /* Функция возвращает время в нужном формате. */
-  const renderTime = (date) => {
-    if (!date) return;
-    return date.toLocaleTimeString( t('locale'), { hour: '2-digit', minute: '2-digit' } );
-  };
-
-  /* Функция возвращает дату в нужном формате. */
-  const renderDate = (date) => {
-    if ( !date ) return;
-
-    const hours = date.getHours();
-    const local = {
-      'en': 'en-US',
-      'de': 'de-DE',
-      'cs': 'cs-CS',
-      'ru': 'ru-RU',
-    };
-    const optionsWithoutYear = { day: 'numeric', month: 'long' };
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    let newDay = new Date( date );
-
-    /* Если выбранное время находится в промежутке с 21 вечера до 4 часов ночи, то выводится дата в формате "в ночь с... на...". */
-    if ( hours > 21) {
-      const nextDay = newDay.setDate( date.getDate() + 1 );
-
-      return `${ t( 'В ночь с' ) } 
-        ${ new Intl.DateTimeFormat( local[ t('locale') ], optionsWithoutYear ).format( date ) } 
-        ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( local[ t('locale') ], options ).format( nextDay ) }`;
-    } else if ( hours < 4  || hours === '0') {
-      const prevDay = newDay.setDate( date.getDate() - 1 );
-
-      return `${ t( 'В ночь с' ) }
-        ${ new Intl.DateTimeFormat( local[ t('locale') ], optionsWithoutYear ).format( prevDay ) } 
-        ${ t( 'на' ) } 
-        ${ new Intl.DateTimeFormat( local[ t('locale') ], options ).format( date ) }`;
-    } else {
-      return new Intl.DateTimeFormat( local[ t('locale') ], options ).format( date );
-    }
-  };
 
   /* Функция выводит выбранные билеты, их количество и цену. */
   const renderTicket = () => {
@@ -88,7 +48,7 @@ export const ProductViewPreview = ( { product, options } ) => {
                   <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
                     <b>{ t('дата') }</b>
                   </div>
-                  <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
+                  <div className="listPreviewDataLi__p">{ dateFormatting.renderDate(selectedTime, t('locale')) }</div>
                 </div>
 
                 <div className='listPreviewDataLi'>
@@ -96,7 +56,7 @@ export const ProductViewPreview = ( { product, options } ) => {
                     <b>{ t( 'время' ) }</b>
                   </div>
                   <div className="listPreviewDataLi__p">
-                    { renderTime( selectedTime ) }
+                    { dateFormatting.renderTime( selectedTime, t('locale') ) }
                   </div>
                 </div>
               </li>

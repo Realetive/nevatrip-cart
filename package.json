@@ -8,6 +8,7 @@
     "date-fns-tz": "^1.0.8",
     "i18next": "^19.1.0",
     "nanoid": "^2.0.3",
+    "nevatrip-date-formatting": "^1.0.3",
     "normalizr": "^3.4.0",
     "patch-package": "^6.2.0",
     "react": "^16.8.6",
