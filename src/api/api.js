@@ -16,15 +16,14 @@ export const useGetOrder = ( session, lang = 'en' ) => {
 
   useEffect(() => {
     if (session) {
-      fetch(`${MAIN_URL}/shoppingCarts/${session}`)
+      fetch(`${MAIN_URL}carts/${session}`)
         .then( response => response.json() )
         .then( cart => {
           if ( !cart.products ) setCart({ status: 'loaded', payload: cart });
 
           const ids = cart.products.map( ( { productId } ) => productId );
           const uniqueIds = [ ...new Set( ids ) ];
-
-          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }${ cash }&ttl=${ ttl }`).then( resp => resp.json() ) );
+          const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/products/${ id }/cart?lang=${ lang }${ cash }&ttl=${ ttl }`).then( resp => resp.json() ) );
 
           Promise.allSettled( getProducts ).then( products => {
             const _products = {};
@@ -80,7 +79,7 @@ export const useGetTimes = (id, direction, date) => {
   useEffect(() => {
     if ( id && direction && date ) {
       setResult({ status: 'loading' });
-      fetch( `${ MAIN_URL }/product/${ id }/schedule/${ direction }/${ createFormateDate( date ) }`)
+      fetch( `${ MAIN_URL }/products/${ id }/schedule/${ direction }/${ createFormateDate( date ) }`)
         .then(response => response.json())
         .then(response => setResult({ status: 'loaded', payload: response }))
         .catch(error => setResult({ status: 'error', error }));
@@ -134,7 +133,7 @@ export const api = {
   product: {
     async getProductData(productId, lang = 'ru') {
       const response = await fetch(
-        `${MAIN_URL}/product/${productId}/cart?lang=${ lang }`,
+        `${MAIN_URL}/products/${productId}/cart?lang=${ lang }`,
         {
           method: 'GET',
           headers,
@@ -153,7 +152,7 @@ export const api = {
         return `${year}-${month}-${day}`;
       };
       const response = await fetch(
-        `${MAIN_URL}/product/${productId}/schedule/${directionId}/${createFormateDate( date )}?ttl=3600000`,
+        `${MAIN_URL}/products/${productId}/schedule/${directionId}/${createFormateDate( date )}?ttl=3600000`,
         {
           method: 'GET',
           headers,
