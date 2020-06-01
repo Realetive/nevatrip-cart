@@ -60,17 +60,16 @@ export const ProductViewPreview = ( { product, options } ) => {
                   </div>
                 </div>
                 <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
-              </div>
-            </li>
-            <li className='listPreviewDataLi'>
-              <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
-                <b>{ t('время') }</b>
-              </div>
-              <div className="listPreviewDataLi__p">
-                { renderTime(selectedTime) }
-              </div>
-            </li>
-          </ul>
+              </li>
+              <li className='listPreviewDataLi'>
+                <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
+                  <b>{ t('время') }</b>
+                </div>
+                <div className="listPreviewDataLi__p">
+                  { renderTime(selectedTime) }
+                </div>
+              </li>
+            </ul>
         )
       })}
       { ( options.tickets && direction.dates && direction.dates.length !== 0 ) || ( direction._type === 'complex' && options.tickets )
