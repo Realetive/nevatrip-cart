@@ -9,7 +9,7 @@ export const useGetOrder = ( session, lang = 'en' ) => {
 
   useEffect(() => {
     if (session) {
-      fetch(`${MAIN_URL}carts/${'olya-test-test'}`)
+      fetch(`${MAIN_URL}carts/${session}`)
         .then( response => response.json() )
         .then( cart => {
           if ( !cart.products ) setCart({ status: 'loaded', payload: cart });
