@@ -78,7 +78,7 @@ export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) =>
           className='input input_calendar'
         />
       </label>
-      <div className='calendarWrapper'>
+      <div className='calendar__wrapper'>
         <DatePicker
           inline
           calendarClassName='calendar'
