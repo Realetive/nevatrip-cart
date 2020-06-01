@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import { useTranslation } from "react-i18next";
 import LangContext from "../../App";
-import dateFormatting from 'nevatrip-date-formatting';
+import { renderTime, renderDate } from '@nevatrip/date-formatter';
 
 export const ProductViewPreview = ( { product, options } ) => {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ export const ProductViewPreview = ( { product, options } ) => {
                   <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
                     <b>{ t('дата') }</b>
                   </div>
-                  <div className="listPreviewDataLi__p">{ dateFormatting.renderDate(selectedTime, t('locale')) }</div>
+                  <div className="listPreviewDataLi__p">{ renderDate(selectedTime, t('locale')) }</div>
                 </div>
 
                 <div className='listPreviewDataLi'>
@@ -56,7 +56,7 @@ export const ProductViewPreview = ( { product, options } ) => {
                     <b>{ t( 'время' ) }</b>
                   </div>
                   <div className="listPreviewDataLi__p">
-                    { dateFormatting.renderTime( selectedTime, t('locale') ) }
+                    { renderTime( selectedTime, t('locale') ) }
                   </div>
                 </div>
               </li>
