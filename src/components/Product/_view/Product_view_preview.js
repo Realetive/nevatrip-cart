@@ -24,8 +24,6 @@ export const ProductViewPreview = ( { product, options } ) => {
 
       if ( !count ) return null;
 
-      const [ { title } ] = ticket;
-
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
           <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ title[ t('locale') ] }: </span>
@@ -36,13 +34,20 @@ export const ProductViewPreview = ( { product, options } ) => {
   };
 
   return (
-    <fieldset className='listPreviewFieldset'>
-      <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
+    <div className='listPreviewFieldset'>
         { events && events.map(( event = {}, index ) => {
           const selectedTime = ( event || {} ).start;
 
           return event._key && (
             <ul className='listPreviewData' key={ index }>
+              <li className='listPreviewDataLi'>
+                <div className={'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate') }>
+                  <b>{ t('направление') }</b>
+                </div>
+                <div className="listPreviewDataLi__p">
+                  { direction._type === 'complex' ? directionTitle[ index ] : directionTitle }
+                </div>
+              </li>
               <li className='listPreviewDataLi'>
                 <div className='listPreviewDataLi'>
                   <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
@@ -83,6 +88,6 @@ export const ProductViewPreview = ( { product, options } ) => {
         </div>
         : <p>Нет выбранных билетов.</p>
       }
-    </fieldset>
+    </div>
   );
 }
