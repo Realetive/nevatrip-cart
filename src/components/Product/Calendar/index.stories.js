@@ -13,11 +13,14 @@ function generateDates(length) {
 
   const randomDate = (start, end) => {
     const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    date.setHours('0');
+    date.setMinutes('0');
+    date.setSeconds('0');
 
     return date.toString();
   }
 
-  for (let i = 0; i <= length; i++) {
+  for (let i = 0; i < length; i++) {
     const currentDate = randomDate(start, end);
 
     if (!datesArray.includes(currentDate)) {
@@ -25,10 +28,21 @@ function generateDates(length) {
     }
   }
 
-  return datesArray;
+  return datesArray.sort(( a, b ) => new Date(a) > new Date(b) ? 1 : -1 );
 }
 const dates = generateDates(100);
 
 export const withDates = () => (
-  <Calendar dates={dates}/>
+  <div className='story-container' style={{ maxWidth: '335px' }}>
+    <Calendar dates={dates}/>
+  </div>
+);
+
+const randomNumber = Math.floor(Math.random() * dates.length);
+const randomDate = new Date( dates[randomNumber] );
+
+export const withDatesAndSelectedDate = () => (
+  <div className='story-container' style={{ maxWidth: '335px' }}>
+    <Calendar dates={dates} selectedDate={randomDate}/>
+  </div>
 );

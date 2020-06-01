@@ -40,8 +40,6 @@ const createDateValue = ( date, lang ) => {
 let count = 0;
 
 export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) => {
-  console.log('dates', dates)
-  console.log('selectedDate', selectedDate)
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Calendar.name} rerender: ${count}`);
@@ -70,11 +68,11 @@ export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) =>
   return (
     <>
       <label>
-        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Дата поездки' ) }</span>
+        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите дату' ) }</span>
         <input
           readOnly
           type='text'
-          value={ createDateValue( selectedDate, t( 'locale' ) ) }
+          value={ createDateValue( selectedDate || initialDate, t( 'locale' ) ) }
           className='input input_calendar'
         />
       </label>
