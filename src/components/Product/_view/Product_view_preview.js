@@ -24,6 +24,8 @@ export const ProductViewPreview = ( { product, options } ) => {
 
       if ( !count ) return null;
 
+      const [ { title } ] = ticket;
+
       return (
         <li key={ _key } className='listPreviewTicketsLi'>
           <span className={ ( isRightTranslate ? '' : ' translate' ) }>{ title[ t('locale') ] }: </span>
@@ -34,20 +36,13 @@ export const ProductViewPreview = ( { product, options } ) => {
   };
 
   return (
-    <div className='listPreviewFieldset'>
+    <fieldset className='listPreviewFieldset'>
+      <legend className={ 'listPreviewLegend' + ( isRightTranslate ? '' : ' translate' ) }>{ title }</legend>
         { events && events.map(( event = {}, index ) => {
           const selectedTime = ( event || {} ).start;
 
           return event._key && (
             <ul className='listPreviewData' key={ index }>
-              <li className='listPreviewDataLi'>
-                <div className={'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate') }>
-                  <b>{ t('направление') }</b>
-                </div>
-                <div className="listPreviewDataLi__p">
-                  { direction._type === 'complex' ? directionTitle[ index ] : directionTitle }
-                </div>
-              </li>
               <li className='listPreviewDataLi'>
                 <div className='listPreviewDataLi'>
                   <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
@@ -64,14 +59,13 @@ export const ProductViewPreview = ( { product, options } ) => {
                     { renderTime( selectedTime, t('locale') ) }
                   </div>
                 </div>
-                <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
               </li>
               <li className='listPreviewDataLi'>
-                <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
-                  <b>{ t('время') }</b>
+                <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
+                  <b>{ t( 'направление' ) }</b>
                 </div>
                 <div className="listPreviewDataLi__p">
-                  { renderTime(selectedTime) }
+                  { directionTitle }
                 </div>
               </li>
             </ul>
@@ -88,6 +82,6 @@ export const ProductViewPreview = ( { product, options } ) => {
         </div>
         : <p>Нет выбранных билетов.</p>
       }
-    </div>
+    </fieldset>
   );
 }
