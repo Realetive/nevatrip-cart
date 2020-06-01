@@ -16,14 +16,14 @@ export const Tickets = ( { tickets, selectedTickets, onChange } ) => {
   const { t } = useTranslation();
   const isRightTranslate = useContext( LangContext );
 
-  const renderTickets = tickets.map( ( { _key, category, price, name = {}, ticket: [ { title } ] } ) => {
-    const heading = name[ t('locale') ] || title[ t('locale') ];
+  const renderTickets = tickets.map( ( { _key, category, price, ticket: [ { name, title } ] }, index ) => {
+    const heading = title[ t( 'locale' ) ] || name;
     const count = selectedTickets[ _key ];
 
     const onCountChange = ( count ) => onChange(_key, count);
 
     return (
-      <div key={ _key } className='ticketsItem' data-name = { heading }>
+      <div key={ _key } className={ 'ticketsItem ticketsItem_view_' + name }>
         <dt className='ticketsItemText' >
             <span className={ isRightTranslate ? '' : ' translate' }>{ heading }</span>,
             <span className='ticketsItemPrice'>&nbsp;{ price }&nbsp;{t( 'currency' )}</span>

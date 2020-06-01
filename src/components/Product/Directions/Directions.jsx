@@ -123,9 +123,9 @@ export const Directions = ( { product = {}, directions = [], options = { events:
   const onDirectionChange = ( direction ) => {
     const tickets = {}
 
-    getEntity( 'tickets', direction ).forEach( ({ _key, count = 0 }) => {
-      tickets[ _key ] = count;
-    } )
+    getEntity( 'tickets', direction ).forEach( ({ _key }, index) => {
+      tickets[ _key ] = index === 0 ? 1 : 0;
+    } );
 
     onChange({
       ...options,
