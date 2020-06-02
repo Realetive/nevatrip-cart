@@ -197,7 +197,6 @@ export const Directions = ( { product = {}, directions = [], options = { events:
           dates?.length
             ? <Calendar
                 dates={ dates }
-                selectedDate={ undefined }
                 onChange={ onDateChange }
               />
             : null
