@@ -4,14 +4,13 @@ import { Calendar } from './Calendar';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import '../../App/App.css';
-import CalendarReadme from './README.md';
+// import CalendarReadme from './README.md';
 
-// export default { title: 'Calendar' };
-
-function generateDates(length) {
+function generateDates(length, timeStr) {
+  const time = timeStr === 'future' && 1 || timeStr === 'past' && -1;
   const datesArray = [];
   const start = new Date();
-  const end = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+  const end = new Date(new Date().setFullYear(new Date().getFullYear() + time));
 
   const randomDate = (start, end) => {
     const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -32,41 +31,43 @@ function generateDates(length) {
 
   return datesArray.sort(( a, b ) => new Date(a) > new Date(b) ? 1 : -1 );
 }
-const dates = generateDates(100);
 
-// Переданы рандомные даты без выбранной даты. Если выбранная дата не передана, то будет выбрана дата первая в массиве дат. Массив дат приходит с апи уже отсортированным. СОртировка в корзине уж ене требуется
-// export const withDates = () => (
-//   <div className='story-container' style={{ maxWidth: '335px' }}>
-//     <Calendar dates={dates}/>
-//   </div>
-// );
+const futureDates = generateDates(100, 'future');
+const pastDates = generateDates(100, 'past');
+const randomNumber = Math.floor(Math.random() * futureDates.length);
+const randomDate = new Date( futureDates[randomNumber] );
 
-const randomNumber = Math.floor(Math.random() * dates.length);
-const randomDate = new Date( dates[randomNumber] );
-
-// Переданы рандомные даты с выбранной даты
-// export const withDatesAndSelectedDate = () => (
-//   <div className='story-container' style={{ maxWidth: '335px' }}>
-//     <Calendar dates={dates} selectedDate={randomDate}/>
-//   </div>
-// );
-
-storiesOf('Calendar', module)
+storiesOf('Календарь', module)
   .addParameters({
     options: {
-      theme: {}// this is just a workaround for addon-readme
-    },
-    readme: {
-      sidebar: CalendarReadme,
+      theme: {} // this is just a workaround for addon-readme
     },
   })
-  .add('withDates', () => (
+  .add('С датами', () => (
     <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
-      <Calendar dates={dates}/>
+      <Calendar dates={ futureDates }/>
     </div>
-  ))
-  .add('withDatesAndSelectedDate', () => (
+  ), {
+    readme: {
+      sidebar: 'Переданы рандомные даты без выбранной даты. Если выбранная дата не передана, то будет выбрана дата первая в массиве дат. Массив дат приходит с апи уже отсортированным. Сjртировка в корзине ужe не требуется',
+    },
+  })
+  .add('С прошедшими датами', () => (
     <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
-      <Calendar dates={dates} selectedDate={randomDate}/>
+      <Calendar dates={pastDates}/>
     </div>
-  ));
+  ), {
+    readme: {
+      sidebar: 'Переданы рандомные даты с выбранной даты',
+    },
+  })
+  .add('С выбранной активной датой', () => (
+    <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
+      <Calendar dates={futureDates} selectedDate={randomDate}/>
+    </div>
+  ),
+    {
+      readme: {
+        sidebar: 'CalendarReadme',
+      },
+    });
