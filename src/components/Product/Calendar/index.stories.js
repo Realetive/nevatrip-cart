@@ -1,10 +1,12 @@
 import React from 'react';
+import { storiesOf } from '@storybook/react';
 import { Calendar } from './Calendar';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import '../../App/App.css';
+import CalendarReadme from './README.md';
 
-export default { title: 'Calendar' };
+// export default { title: 'Calendar' };
 
 function generateDates(length) {
   const datesArray = [];
@@ -32,17 +34,39 @@ function generateDates(length) {
 }
 const dates = generateDates(100);
 
-export const withDates = () => (
-  <div className='story-container' style={{ maxWidth: '335px' }}>
-    <Calendar dates={dates}/>
-  </div>
-);
+// Переданы рандомные даты без выбранной даты. Если выбранная дата не передана, то будет выбрана дата первая в массиве дат. Массив дат приходит с апи уже отсортированным. СОртировка в корзине уж ене требуется
+// export const withDates = () => (
+//   <div className='story-container' style={{ maxWidth: '335px' }}>
+//     <Calendar dates={dates}/>
+//   </div>
+// );
 
 const randomNumber = Math.floor(Math.random() * dates.length);
 const randomDate = new Date( dates[randomNumber] );
 
-export const withDatesAndSelectedDate = () => (
-  <div className='story-container' style={{ maxWidth: '335px' }}>
-    <Calendar dates={dates} selectedDate={randomDate}/>
-  </div>
-);
+// Переданы рандомные даты с выбранной даты
+// export const withDatesAndSelectedDate = () => (
+//   <div className='story-container' style={{ maxWidth: '335px' }}>
+//     <Calendar dates={dates} selectedDate={randomDate}/>
+//   </div>
+// );
+
+storiesOf('Calendar', module)
+  .addParameters({
+    options: {
+      theme: {}// this is just a workaround for addon-readme
+    },
+    readme: {
+      sidebar: CalendarReadme,
+    },
+  })
+  .add('withDates', () => (
+    <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
+      <Calendar dates={dates}/>
+    </div>
+  ))
+  .add('withDatesAndSelectedDate', () => (
+    <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
+      <Calendar dates={dates} selectedDate={randomDate}/>
+    </div>
+  ));

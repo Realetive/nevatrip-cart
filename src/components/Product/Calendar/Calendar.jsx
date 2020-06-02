@@ -26,6 +26,7 @@ const getNearestDate = ( dates = [], date ) => {
 
 /* Функция возвращет дату для input выбора даты в нужном формате, в зависимости от языка. */
 const createDateValue = ( date, lang ) => {
+  console.log('++date', date)
   const local = {
     'en': 'en-US',
     'de': 'de-DE',
@@ -40,6 +41,8 @@ const createDateValue = ( date, lang ) => {
 let count = 0;
 
 export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) => {
+  console.log('dates', dates)
+  console.log('selectedDate', selectedDate)
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Calendar.name} rerender: ${count}`);
