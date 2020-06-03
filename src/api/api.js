@@ -19,7 +19,6 @@ export const useGetOrder = ( session, lang = 'en' ) => {
       fetch(`${MAIN_URL}carts/${session}`)
         .then( response => response.json() )
         .then( cart => {
-          console.log(cart, session)
           if ( !cart.products ) setCart({ status: 'loaded', payload: cart });
 
           const ids = cart.products.map( ( { productId } ) => productId );
@@ -27,7 +26,6 @@ export const useGetOrder = ( session, lang = 'en' ) => {
           const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/products/${ id }/cart?lang=${ lang }${ cash }&ttl=${ ttl }`).then( resp => resp.json() ) );
 
           Promise.allSettled( getProducts ).then( products => {
-            console.log(products)
             const _products = {};
 
             products.forEach( (product) => {

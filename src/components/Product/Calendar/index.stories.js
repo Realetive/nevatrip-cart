@@ -4,10 +4,10 @@ import { Calendar } from './Calendar';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import '../../App/App.css';
-// import CalendarReadme from './README.md';
+import CalendarReadme from './README.md';
 
-function generateDates(length, timeStr) {
-  const time = timeStr === 'future' && 1 || timeStr === 'past' && -1;
+function generateDates( length, timeStr = 'future', isSort = true ) {
+  const time = ( timeStr === 'future' && 1 ) || ( timeStr === 'past' && -1 );
   const datesArray = [];
   const start = new Date();
   const end = new Date(new Date().setFullYear(new Date().getFullYear() + time));
@@ -29,11 +29,14 @@ function generateDates(length, timeStr) {
     }
   }
 
-  return datesArray.sort(( a, b ) => new Date(a) > new Date(b) ? 1 : -1 );
+  return isSort
+    ? datesArray.sort(( a, b ) => new Date(a) > new Date(b) ? 1 : -1 )
+    : datesArray;
 }
 
-const futureDates = generateDates(100, 'future');
-const pastDates = generateDates(100, 'past');
+const futureDates = generateDates(100, 'future', true);
+const pastDates = generateDates(100, 'past', true);
+const unsortedDates = generateDates(100, 'future', false);
 const randomNumber = Math.floor(Math.random() * futureDates.length);
 const randomDate = new Date( futureDates[randomNumber] );
 
@@ -42,32 +45,22 @@ storiesOf('Календарь', module)
     options: {
       theme: {} // this is just a workaround for addon-readme
     },
+    readme: {
+      sidebar: CalendarReadme,
+    },
   })
-  .add('С датами', () => (
+  .add('С предстоящими датами', () => (
     <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
       <Calendar dates={ futureDates }/>
     </div>
-  ), {
-    readme: {
-      sidebar: 'Переданы рандомные даты без выбранной даты. Если выбранная дата не передана, то будет выбрана дата первая в массиве дат. Массив дат приходит с апи уже отсортированным. Сjртировка в корзине ужe не требуется',
-    },
-  })
+  ))
   .add('С прошедшими датами', () => (
     <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
       <Calendar dates={pastDates}/>
     </div>
-  ), {
-    readme: {
-      sidebar: 'Переданы рандомные даты с выбранной даты',
-    },
-  })
-  .add('С выбранной активной датой', () => (
+  ))
+  .add('С неотсортированными датами', () => (
     <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>
-      <Calendar dates={futureDates} selectedDate={randomDate}/>
+      <Calendar dates={unsortedDates}/>
     </div>
-  ),
-    {
-      readme: {
-        sidebar: 'CalendarReadme',
-      },
-    });
+  ));
