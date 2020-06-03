@@ -355,6 +355,12 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  /* styles for storybook */
+  .sb-show-main #root {
+    background-color: transparent;
+  }
+  /* /styles for storybook */
 }
 
 /*global*/
