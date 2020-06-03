@@ -45,6 +45,11 @@ storiesOf( 'Календарь', module )
       sidebar: CalendarReadme,
     },
   })
+  // .add( 'Даты не пришли', () => (
+  //   <Wrapper>
+  //     <Calendar/>
+  //   </Wrapper>
+  // ))
   .add( 'С предстоящими датами', () => (
     <Wrapper>
       <Calendar dates={ generateDates( 100, 'future', true ) }/>

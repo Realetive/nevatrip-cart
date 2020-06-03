@@ -15,6 +15,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
   }
 
   const { t } = useTranslation();
+  const lang = t('locale') || process.env.REACT_APP_DEFAULT_LANG;
   const isRightTranslate = useContext( LangContext );
   const name = directions.map( ( { _key } ) => _key ).join('-');
 
@@ -23,6 +24,9 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
     const checked = _key === selectedDirection;
 
     const emptyDatesInComplex = direction._type === 'complex' && direction.nested.find(one => normalise( directions )[ one._key ].dates.length === 0 );
+    console.log( title)
+    console.log( lang )
+    console.log( title[ lang ])
 
     return ( ( emptyDatesInComplex === undefined || direction._type !== 'complex' ) && (
       <li key={ _key } className='grid-list__item'>
