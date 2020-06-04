@@ -1,5 +1,89 @@
 {
-  "product": {
+  "singleDirectionProduct": {
+  "_id":"1c5578b8-b0ab-4d33-9c85-65fb4c8834a6",
+  "directions": [{
+    "_key": "01e50dd3e7a3",
+    "_type": "direction",
+    "buyTimeOffset": 10,
+    "point": {
+      "coords": {
+        "lat": 50.092341768618326,
+        "lng": 14.41714018161468
+      },
+      "key" : "prichal-2-u-chekhova-mosta-cechuv-most-naberezhnaya-dvorzhaka-dvorakovo-nabrezi",
+      "title": "from the dock at Čech Bridge, pier no. 2"
+    },
+    "tickets": [{
+      "_key": "a1a73cc9b8dc",
+      "_type": "ticket",
+      "category": {
+        "name": "mesto-u-okna",
+        "title": {
+          "_type": "localeString",
+          "cs": "Sezení u okna",
+          "de": "Fensterplatz",
+          "en": "Window seat ","ru":"Место у окна"
+        }
+      },
+      "count": 1,
+      "price": "910",
+      "ticket": [{
+        "name": "adult",
+        "title": {
+          "_type": "localeString",
+          "cs": "Vstupenka dospělí",
+          "de": "Erwachsenenticket",
+          "en": "Adult ticket",
+          "ru": "Взрослый билет"
+        }
+      }]
+    }, {
+      "_key": "ade832e1d17e",
+      "_type": "ticket",
+      "category": {
+        "name": "mesto-u-okna",
+        "title": {
+          "_type": "localeString",
+          "cs": "Sezení u okna",
+          "de": "Fensterplatz",
+          "en": "Window seat ",
+          "ru": "Место у окна"
+        }
+      },
+      "price": "9144",
+      "ticket": [{
+        "name": "child",
+        "title": {
+          "_type": "localeString",
+          "cs": "Vstupenka děti",
+          "de": "Kinderticket",
+          "en": "Child ticket",
+          "ru": "Детский билет"
+        }
+      }]
+    }],
+    "title": {
+      "_type": "localeString",
+      "cs": "Spb → Petergof",
+      "de": "Spb → Petergof",
+      "en": "Spb → Petergof",
+      "ru": "Спб → Петергоф"
+    },
+    "dates": ["2020-06-06T00:00:00.000Z","2020-06-07T00:00:00.000Z","2020-06-13T00:00:00.000Z","2020-06-14T00:00:00.000Z","2020-06-20T00:00:00.000Z","2020-06-21T00:00:00.000Z","2020-06-27T00:00:00.000Z","2020-06-28T00:00:00.000Z"],
+    "datesOpenTime": []
+  }
+  ],"title": {
+      "_type": "localeTitleSlug",
+      "ru": {
+        "key": {
+          "_type": "slug",
+          "current": "title"
+        }, "name": "TITLE"
+      }
+    }
+  },
+
+  "biDirectionalProduct": {
   "_id":"1c5578b8-b0ab-4d33-9c85-65fb4c8834a6",
   "directions": [{
     "_key": "01e50dd3e7a3",
@@ -72,5 +156,9 @@
     "dates": [],
     "datesOpenTime": []
   }, {"_key":"71cbc313ed1f","_type":"direction","tickets":[{"_key":"134bc25d1db1","_type":"ticket","category":{"name":"essential","title":{"_type":"localeString","cs":"Essential ","de":"Essential ","en":"Essential ","ru":"Essential "}},"count":2,"price":"912","ticket":[{"name":"child","title":{"_type":"localeString","cs":"Vstupenka děti","de":"Kinderticket","en":"Child ticket","ru":"Детский билет"}}]}],"title":{"_type":"localeString","cs":"test 2","de":"test 2","en":"Petergof → SPB","ru":"Петергоф → Спб"},"dates":[],"datesOpenTime":[]},{"_key":"d3743491d6ee","_type":"complex","isEveryOwnDate":false,"nested":[{"_key":"01e50dd3e7a3","_type":"direction"},{"_key":"71cbc313ed1f","_type":"direction"}],"tickets":[{"_key":"bf6300749286","_type":"ticket","category":{"name":"standart","title":{"_type":"localeString","cs":"Standardní","de":"Standard","en":"Standard","ru":"Стандартный "}},"count":1,"name":{"_type":"localeString","en":"Adulthood","ru":"Взросленький"},"price":"99","ticket":[{"name":"adult","title":{"_type":"localeString","cs":"Vstupenka dospělí","de":"Erwachsenenticket","en":"Adult ticket","ru":"Взрослый билет"}}]}],"title":{"_type":"localeString","en":"Tuda-suda","ru":"Туда-сюда"}}],"title":{"_type":"localeTitleSlug","ru":{"key":{"_type":"slug","current":"test"},"name":"TEST"}}},
-  "options": {"direction":"01e50dd3e7a3","tickets":{"a1a73cc9b8dc":1,"ade832e1d17e":0},"events":[]}
+
+
+
+  "options": {"direction":"01e50dd3e7a3","tickets":{"a1a73cc9b8dc":1,"ade832e1d17e":0},"events":[{"_key":"ovztDO0WqAzS9NjvGP4yU","start":"2020-06-06T11:00:00.000Z","timeOffset":-120,"expired":false,"end":"2020-05-30T13:00:00.000Z"}]}
+
 }
