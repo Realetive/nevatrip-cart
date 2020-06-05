@@ -226,7 +226,7 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
                   label: t( 'Телефон' ),
                   pattern: '(\\+?\\d[- .()]*){10,22}',
                   maxlength: '22',
-                  placeholder: '+7 9__ ___-__-__'
+                  placeholder: ''
                 }
               ].map( field => (
                 <div key={field.name} className='cart__field'>

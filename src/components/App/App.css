@@ -667,7 +667,11 @@ button:not(:disabled) {
   display: flex;
   margin-left: 5px;
   margin-right: 5px;
-  flex: 1 3 100%;
+  flex-basis: calc(50% - 10px);
+}
+
+.grid-list__item:only-child {
+  flex-grow: 1;
 }
 
 .checkbox{
@@ -794,7 +798,6 @@ button:not(:disabled) {
   list-style: none;
   padding: 0;
   display: block;
-  margin: 8px 0;
   font-size: 12px;
 }
 .listPreviewTicketsLi{
@@ -910,8 +913,8 @@ button:not(:disabled) {
   line-height:28px;
   box-sizing: border-box;
   border-radius: 50%;
-  height: 28px;
-  width: 28px;
+  height: 32px;
+  width: 32px;
   text-align: center;
   vertical-align: middle;
   outline: none;
