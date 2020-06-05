@@ -102,7 +102,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   return (
     <fieldset className='product product_view_form'>
       <legend className={'product__legend' + (isRightTranslate ? '' : ' translate')}>
-        <a href={ `${product.categoryName}/${alias}` } className="Link Link_view_inherit">
+        <a href={ `${product.categoryName}/${alias}` } className="Link Link_view_inherit main-title">
           { name }
         </a>
       </legend>

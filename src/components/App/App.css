@@ -941,3 +941,10 @@ button:not(:disabled) {
   color: inherit;
   text-decoration: inherit;
 }
+
+.main-title,
+.main-title:hover,
+.main-title:visited {
+  color: black;
+  font-weight: 400;
+}
