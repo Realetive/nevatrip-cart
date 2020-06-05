@@ -105,8 +105,6 @@ export const Cart = ( { session, lang, isRightTranslate } ) => {
       const newProducts = [ ...cart.payload.products ];
       newProducts[ index ].options = options;
       
-      console.log( `options`, options );
-      
       setCart( {
         status: 'loaded',
         payload: {

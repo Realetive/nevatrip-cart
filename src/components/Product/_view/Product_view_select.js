@@ -35,6 +35,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
     count += 1;
     console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
   }
+
   const { name, alias } = getTitle( product.title, lang );
   const { directions = [] } = product;
   const [ normalisedDirections, setNormalisedDirections ] = useState();
@@ -101,7 +102,7 @@ export const ProductViewSelect = ({ lang = process.env.REACT_APP_DEFAULT_LANG, i
   return (
     <fieldset className='product product_view_form'>
       <legend className={'product__legend' + (isRightTranslate ? '' : ' translate')}>
-        <a href={ alias } className="Link Link_view_inherit">
+        <a href={ `${product.categoryName}/${alias}` } className="Link Link_view_inherit">
           { name }
         </a>
       </legend>

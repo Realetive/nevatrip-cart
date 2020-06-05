@@ -19,17 +19,24 @@ export const useGetOrder = ( session, lang = 'en' ) => {
           
           const getProducts = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/cart?lang=${ lang }`).then( resp => resp.json() ) )
           
-          Promise.allSettled( getProducts ).then( products => {
+          Promise.allSettled( getProducts ).then( async (products) => {
             const _products = {};
+
+            const getCategory = uniqueIds.map( id => fetch(`${MAIN_URL}/product/${ id }/`).then( resp => resp.json() ) )
+            let categoryName = '';
+            await Promise.allSettled( getCategory ).then( cat => {
+              categoryName = cat[0].value.category.title[lang].key.current;
+            });
 
             products.forEach( (product) => {
               if ( product.status === "fulfilled" ) {
-                _products[ product.value._id ] = product.value
+                _products[ product.value._id ] = product.value;
               }
             });
 
             cart.products.forEach( product => {
               product.product = _products[ product.productId ];
+              product.product.categoryName = categoryName;
 
               const [ firstDirection ] = _products[ product.productId ].directions;
               const getTickets = ( tickets ) => tickets.reduce( ( acc, ticket ) => {
