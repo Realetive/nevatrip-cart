@@ -76,8 +76,11 @@ export const useGetTimes = (id, direction, date) => {
     return `${year}-${month}-${day}`;
   };
 
+  console.log('------',`${ MAIN_URL }/products/${ id }/schedule/${ direction }/${ createFormateDate( date ) }`)
+
   useEffect(() => {
     if ( id && direction && date ) {
+      console.log('------',`${ MAIN_URL }/products/${ id }/schedule/${ direction }/${ createFormateDate( date ) }`)
       setResult({ status: 'loading' });
       fetch( `${ MAIN_URL }/products/${ id }/schedule/${ direction }/${ createFormateDate( date ) }`)
         .then(response => response.json())

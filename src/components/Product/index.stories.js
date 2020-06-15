@@ -1,5 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { ProductViewSelect, ProductViewPreview, ProductViewLoading } from "../Product/_view";
 import './Product.css';
 import './Tickets/Tickets.css';
@@ -10,6 +11,7 @@ import i18n from '../../i18n';
 import data from './data.json';
 
 const singleDirectionProduct = data.singleDirectionProduct;
+const singleDirectionProductAndEmptySchedule = data.singleDirectionProductAndEmptySchedule;
 const biDirectionalProduct = data.biDirectionalProduct;
 const options = data.options;
 const Wrapper = ({ children }) => (
@@ -32,23 +34,23 @@ storiesOf('Product', module)
       <ProductViewSelect product={singleDirectionProduct} options={options}></ProductViewSelect>
     </Wrapper>
   ))
-  .add('Одиночное направление без пасписания', () => (
+  .add('Одиночное направление без расписания', () => (
     <Wrapper>
-      <ProductViewSelect product={singleDirectionProduct} options={options}></ProductViewSelect>
+      <ProductViewSelect product={singleDirectionProductAndEmptySchedule} options={options}></ProductViewSelect>
     </Wrapper>
   ))
   .add('Составное направление', () => (
     <Wrapper>
-      <ProductViewSelect product={biDirectionalProduct} options={options}></ProductViewSelect>
+      <ProductViewSelect product={biDirectionalProduct} options={options} onChange={() => {}}></ProductViewSelect>
     </Wrapper>
   ))
   .add('Составное направление с пустым одиночным', () => (
     <Wrapper>
-      <ProductViewSelect product={singleDirectionProduct} options={options}></ProductViewSelect>
+      <ProductViewSelect product={biDirectionalProduct} options={options} onChange={() => {}}></ProductViewSelect>
     </Wrapper>
   ))
   .add('Составное направление с несовпадающими датами', () => (
     <Wrapper>
-      <ProductViewSelect product={singleDirectionProduct} options={options}></ProductViewSelect>
+      <ProductViewSelect product={biDirectionalProduct} options={options} onChange={() => {}}></ProductViewSelect>
     </Wrapper>
   ));

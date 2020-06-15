@@ -175,7 +175,6 @@ _i18n
       },
     },
     fallbackLng: process.env.REACT_APP_DEFAULT_LANG,
-    lng: 'en',
     interpolation: {
       escapeValue: false
     }

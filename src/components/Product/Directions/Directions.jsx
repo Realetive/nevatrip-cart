@@ -28,7 +28,7 @@ export const DirectionsList = ( { directions = [], selectedDirection, onChange =
       <li key={ _key } className='grid-list__item'>
         <label
           className={ `btn-radio__label ${ checked ? 'btn-radio__label_checked' : '' }` }>
-          { title[ t('locale') ] }
+          { title[ t('locale') ] || title[ 'en' ] }
           <input
             type="radio"
             className='btn-radio'

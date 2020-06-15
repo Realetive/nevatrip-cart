@@ -23,12 +23,11 @@ export const ProductViewSelect = ({ product, options, onChange }) => {
     count += 1;
     console.log( `${ ProductViewSelect.name } rerender: ${ count }` );
   }
+
   const { t } = useTranslation();
   const isRightTranslate = useContext( LangContext );
   const { name, alias } = getTitle( product.title, t('locale') );
   const { directions = [] } = product;
-  console.log('product, options', JSON.stringify(product))
-  console.log('product, options', JSON.stringify(options))
 
   const onOptionsChange = newOptions => onChange( { ...options, ...newOptions } )
 
