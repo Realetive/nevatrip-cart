@@ -29,7 +29,7 @@ const Wrapper = ({ children }) => {
 
   return (
     <I18nextProvider i18n={ i18n }>
-      <div className='story-container' style={{ maxWidth: '375px', padding: '20px' }}>{ children }</div>
+      <div className='story-container' style={{ padding: '20px' }}>{ children }</div>
     </I18nextProvider>
   )};
 
