@@ -1,19 +1,18 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
-import Counter from "./Counter";
-import {describe, expect, it} from "@jest/globals";
+import React from "react";
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import Counter from './Counter';
 
-describe('Counter', () => {
-  it('компонент отображается корректно', () => {
-    const inputTree = renderer
-      .create(<Counter
-        count={ 1 }
-        // price={10}
-        onChange={() => {}}
-        max={ 1 >= 3 && 1 * 10 <= 0 ? 3 : 30 }
-      />)
-      .toJSON();
+Enzyme.configure({ adapter: new Adapter() });
 
-    expect(inputTree).toMatchSnapshot();
-  });
+it('should render a document title', () => {
+  const wrapper = shallow(
+    <Counter
+      count='0'
+      onChange={()=>{}}
+      max='20'
+  />
+  );
+
+  expect(wrapper.find('.counterInput').prop('value')).toBe('0');
 });

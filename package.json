@@ -22,7 +22,7 @@
     "postinstall": "patch-package",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -41,6 +41,8 @@
     ]
   },
   "devDependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "jest": "^26.0.1",
     "react-test-renderer": "^16.13.1",
     "typescript": "^3.5.2"
