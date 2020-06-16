@@ -15,15 +15,16 @@
     "react-datepicker": "^2.7.0",
     "react-dom": "^16.8.6",
     "react-i18next": "^11.3.1",
-    "react-scripts": "^3.3.0",
-    "storeon": "^0.9.1"
+    "react-scripts": "^3.3.0"
   },
   "scripts": {
     "postinstall": "patch-package",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 4000",
+    "storybook:build": "build-storybook -o build-storybook"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -41,6 +42,9 @@
     ]
   },
   "devDependencies": {
-    "typescript": "^3.5.2"
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-knobs": "^5.3.19",
+    "@storybook/react": "^5.3.18",
+    "storybook-readme": "^5.0.8"
   }
 }
