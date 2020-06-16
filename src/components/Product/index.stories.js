@@ -11,9 +11,11 @@ import data from './data.json';
 import { select, withKnobs } from "@storybook/addon-knobs";
 import { styled } from '@storybook/theming';
 
-const singleDirectionProduct = data.singleDirectionProduct;
-const singleDirectionProductAndEmptySchedule = data.singleDirectionProductAndEmptySchedule;
-const biDirectionalProduct = data.biDirectionalProduct;
+const singleDirection = data.singleDirection;
+const singleDirectionWithEmptySchedule = data.singleDirectionWithEmptySchedule;
+const complexDirectional = data.complexDirectional;
+const complexDirectionalAndEmptySingleDirection = data.complexDirectionalAndEmptySingleDirection;
+const complexDirectionalWithMismatchingDates = data.complexDirectionalWithMismatchingDates;
 const options = data.options['01e50dd3e7a3'];
 
 const Wrapper = ({ children }) => {
@@ -31,19 +33,6 @@ const Wrapper = ({ children }) => {
     </I18nextProvider>
   )};
 
-const fn = () => {
-  let currentOptions = data.options['01e50dd3e7a3'];
-  const [ initial, setInitial ] = useState(currentOptions);
-
-  const onChange = ( direction ) => {
-    console.log( direction.direction );
-    setInitial(data.options[direction.direction]);
-    console.log('currentOptions', currentOptions);
-  }
-
-  return { initial, onChange };
-};
-
 storiesOf('Product', module)
   .addParameters({
     options: {
@@ -56,35 +45,41 @@ storiesOf('Product', module)
   .addDecorator(withKnobs)
   .add('Одиночное направление c расписанием', () => (
     <Wrapper>
-      <ProductViewSelect product={ singleDirectionProduct } options={ options }></ProductViewSelect>
+      <ProductViewSelect product={ singleDirection } options={ options }></ProductViewSelect>
     </Wrapper>
   ))
   .add('Одиночное направление без расписания', () => (
     <Wrapper>
-      <ProductViewSelect product={ singleDirectionProductAndEmptySchedule } options={ options }></ProductViewSelect>
+      <ProductViewSelect product={ singleDirectionWithEmptySchedule } options={ options }></ProductViewSelect>
     </Wrapper>
   ))
   .add('Составное направление', () => {
-    const { initial, onChange } = fn();
+    const [ initial, setInitial ] = useState(options);
+
+    const onChange = ( direction ) => setInitial(data.options[direction.direction]);
 
     return (
       <Wrapper>
-        <ProductViewSelect product={ biDirectionalProduct } options={ initial } onChange={ onChange }></ProductViewSelect>
+        <ProductViewSelect product={ complexDirectional } options={ initial } onChange={ onChange }></ProductViewSelect>
       </Wrapper>
   )})
   .add('Составное направление с пустым одиночным', () => {
-    const { initial, onChange } = fn();
+    const [ initial, setInitial ] = useState(options);
+
+    const onChange = ( direction ) => setInitial(data.options[direction.direction]);
 
     return (
       <Wrapper>
-        <ProductViewSelect product={ biDirectionalProduct } options={ initial } onChange={ onChange }></ProductViewSelect>
+        <ProductViewSelect product={ complexDirectionalAndEmptySingleDirection } options={ initial } onChange={ onChange }></ProductViewSelect>
       </Wrapper>
   )})
   .add('Составное направление с несовпадающими датами', () => {
-    const { initial, onChange } = fn();
+    const [ initial, setInitial ] = useState(options);
+
+    const onChange = ( direction ) => setInitial(data.options[direction.direction]);
 
     return (
       <Wrapper>
-        <ProductViewSelect product={ biDirectionalProduct } options={ initial } onChange={ onChange }></ProductViewSelect>
+        <ProductViewSelect product={ complexDirectionalWithMismatchingDates } options={ initial } onChange={ onChange }></ProductViewSelect>
       </Wrapper>
   )});
