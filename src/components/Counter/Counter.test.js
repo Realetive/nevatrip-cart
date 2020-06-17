@@ -1,9 +1,22 @@
 import React from "react";
-import ReactDOM from 'react-dom';
-import { shallow } from 'enzyme';
+import ReactDOM, { unmountComponentAtNode } from 'react-dom';
+import { render, fireEvent } from '@testing-library/react'
 import Counter from './Counter';
 
 describe('', () => {
+  let container = null;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    unmountComponentAtNode(container);
+    container.remove();
+    container = null;
+  });
+
   it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<Counter />, div);
@@ -11,27 +24,29 @@ describe('', () => {
   });
 
   it('', () => {
-    const wrapper = shallow(
+    const { getByTestId } = render(
       <Counter
         count='0'
         onChange={()=>{}}
-        max='20'
-    />
+        max='30'
+      />
     );
 
-    expect(wrapper.find('.counterInput').prop('value')).toBe('0');
+    expect(getByTestId('value').value).toBe('0');
   });
 
   it('', () => {
-    const wrapper = shallow(
+    const { getByTestId } = render(
       <Counter
-        count='0'
+        count='1'
         onChange={()=>{}}
-        max='20'
+        max='30'
     />
     );
 
-    wrapper.find('.counterBtn_view_adding').simulate('click');
-    expect(wrapper.find('.counterInput').prop('value')).toBe('0');
+    expect(getByTestId('value').value).toBe('1');
+    // fireEvent.click(getByTestId('add-ticket'));
+    // fireEvent.click(getByTestId('add-ticket'));
+    // expect(getByTestId('value').value).toBe('1');
   });
 })
