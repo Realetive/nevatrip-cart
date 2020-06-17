@@ -75,7 +75,7 @@ export const Calendar = ( { dates = [], onChange = () => {} } ) => {
           calendarClassName='calendar'
           dateFormat='dd MMMM yyyy'
           includeDates={ includeDates }
-          locale='calendarLocale'
+          // locale='calendarLocale'
           selected={ date }
           onChange={ newDate => setDate( newDate ) }
         />
