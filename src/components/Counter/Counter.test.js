@@ -1,18 +1,37 @@
 import React from "react";
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import ReactDOM from 'react-dom';
+import { shallow } from 'enzyme';
 import Counter from './Counter';
 
-Enzyme.configure({ adapter: new Adapter() });
+describe('', () => {
+  it('renders without crashing', () => {
+    const div = document.createElement('div');
+    ReactDOM.render(<Counter />, div);
+    ReactDOM.unmountComponentAtNode(div);
+  });
 
-it('should render a document title', () => {
-  const wrapper = shallow(
-    <Counter
-      count='0'
-      onChange={()=>{}}
-      max='20'
-  />
-  );
+  it('', () => {
+    const wrapper = shallow(
+      <Counter
+        count='0'
+        onChange={()=>{}}
+        max='20'
+    />
+    );
 
-  expect(wrapper.find('.counterInput').prop('value')).toBe('0');
-});
+    expect(wrapper.find('.counterInput').prop('value')).toBe('0');
+  });
+
+  it('', () => {
+    const wrapper = shallow(
+      <Counter
+        count='0'
+        onChange={()=>{}}
+        max='20'
+    />
+    );
+
+    wrapper.find('.counterBtn_view_adding').simulate('click');
+    expect(wrapper.find('.counterInput').prop('value')).toBe('0');
+  });
+})
