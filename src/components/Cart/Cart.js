@@ -28,7 +28,7 @@ export const Cart = ( { session } ) => {
   const [ promocode, setPromocode ] = useState('');
   const [ sale ] = useState(0); // скидка в %
   const [ inProcess, setInProcess ] = useState( false );
-  
+
   /* При изменении cart меняем общее количество билетов и общую сумму. */
   useEffect( () => {
     if ( cart.status === 'loaded' ) {

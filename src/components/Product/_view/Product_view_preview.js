@@ -59,14 +59,13 @@ export const ProductViewPreview = ( { product, options } ) => {
                     { renderTime( selectedTime, t('locale') ) }
                   </div>
                 </div>
-                <div className="listPreviewDataLi__p">{ renderDate(selectedTime) }</div>
               </li>
               <li className='listPreviewDataLi'>
-                <div className={'listPreviewDataLi__h' + (isRightTranslate ? '' : ' translate')}>
-                  <b>{ t('время') }</b>
+                <div className={ 'listPreviewDataLi__h' + ( isRightTranslate ? '' : ' translate' ) }>
+                  <b>{ t( 'направление' ) }</b>
                 </div>
                 <div className="listPreviewDataLi__p">
-                  { renderTime(selectedTime) }
+                  { directionTitle }
                 </div>
               </li>
             </ul>

@@ -15,13 +15,6 @@ const getAvailableDates = ( dates = [] ) => {
 
     return availableDate;
   });
-}
-
-/* Функция возвращает первую дату из массива всех дат направления для инициализации календаря и выбранную пользователем дату. */
-const getNearestDate = ( dates = [], date ) => {
-  const nearestDate = dates.includes( date ) ? date : dates[ 0 ];
-
-  return nearestDate;
 };
 
 /* Функция возвращет дату для input выбора даты в нужном формате, в зависимости от языка. */
@@ -39,7 +32,7 @@ const createDateValue = ( date, lang ) => {
 
 let count = 0;
 
-export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) => {
+export const Calendar = ( { dates = [], onChange = () => {} } ) => {
   if ( process.env.NODE_ENV === 'development' ) {
     count += 1;
     console.log(`${Calendar.name} rerender: ${count}`);
@@ -48,7 +41,7 @@ export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) =>
   const { t } = useTranslation();
   const isRightTranslate = useContext( LangContext );
   const includeDates = getAvailableDates( dates );
-  const initialDate = getNearestDate( includeDates, selectedDate );
+  const initialDate = includeDates[ 0 ];
   const [ date, setDate ] = useState( initialDate );
 
   /* Подписываемся на изменение массива дат (изменится он при смене пользователем направления) и меняем выбранную дату. */
@@ -68,15 +61,15 @@ export const Calendar = ( { dates = [], selectedDate, onChange = () => {} } ) =>
   return (
     <>
       <label>
-        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Дата поездки' ) }</span>
+        <span className={ 'caption' + ( isRightTranslate ? '' : ' translate' ) }>{ t( 'Выберите дату' ) }</span>
         <input
           readOnly
           type='text'
-          value={ createDateValue( selectedDate, t( 'locale' ) ) }
+          value={ createDateValue( date, t( 'locale' ) ) }
           className='input input_calendar'
         />
       </label>
-      <div className='calendarWrapper'>
+      <div className='calendar__wrapper'>
         <DatePicker
           inline
           calendarClassName='calendar'
