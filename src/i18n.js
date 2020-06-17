@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import _i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
+const initReactI18next = require("react-i18next");
 
 _i18n
   .use( initReactI18next ) // passes i18n down to react-i18next
