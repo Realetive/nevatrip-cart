@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
 import { render, fireEvent } from '@testing-library/react'
 import Counter from './Counter';
@@ -18,16 +18,15 @@ describe('', () => {
   });
 
   it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<Counter />, div);
-    ReactDOM.unmountComponentAtNode(div);
+    ReactDOM.render(<Counter />, container);
   });
 
   it('', () => {
+    const onChange = jest.fn();
     const { getByTestId } = render(
       <Counter
         count='0'
-        onChange={()=>{}}
+        onChange={onChange}
         max='30'
       />
     );
@@ -36,17 +35,32 @@ describe('', () => {
   });
 
   it('', () => {
+    const onChange = jest.fn();
     const { getByTestId } = render(
       <Counter
         count='1'
-        onChange={()=>{}}
+        onChange={onChange}
         max='30'
     />
     );
 
     expect(getByTestId('value').value).toBe('1');
-    // fireEvent.click(getByTestId('add-ticket'));
-    // fireEvent.click(getByTestId('add-ticket'));
-    // expect(getByTestId('value').value).toBe('1');
   });
+
+  // it('', () => {
+  //   let [ count, setCount] = useState('0')
+  //   const onChange = jest.fn(() => setCount(count +1));
+  //   const { getByTestId } = render(
+  //     <Counter
+  //       count={count}
+  //       onChange={onChange}
+  //       max='30'
+  //   />
+  //   );
+  //
+  //   fireEvent.click(getByTestId('add-ticket'));
+  //   fireEvent.click(getByTestId('add-ticket'));
+  //   fireEvent.click(getByTestId('add-ticket'));
+  //   expect(getByTestId('value').value).toBe('2');
+  // });
 })
