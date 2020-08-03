@@ -4,10 +4,9 @@ import App from './components/App/App';
 import * as serviceWorker from './serviceWorker';
 
 const root = document.getElementById('root');
-const lang = root.getAttribute('lang');
-const session = new URL( window.location.href ).searchParams.get( 'session' )
-                || root.dataset.session
-                || 'test-test-test';
+const query = new URL( window.location.href ).searchParams;
+const lang = query.get( 'cart-lang' ) || root.getAttribute('lang') || 'en';
+const session = query.get( 'cart-session' ) || root.dataset.session || 'test-test-test';
 
 render(
   <App session={ session } lang={ lang } />,
