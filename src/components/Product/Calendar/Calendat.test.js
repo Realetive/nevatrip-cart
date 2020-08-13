@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import ReactDOM, { unmountComponentAtNode } from 'react-dom';
-import App from './App';
+import { Calendar } from './Calendar';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({t: key => key})
@@ -21,6 +21,6 @@ describe('', () => {
   });
 
   it('renders without crashing', () => {
-    ReactDOM.render(<App />, container);
+    ReactDOM.render(<Calendar />, container);
   });
 })
