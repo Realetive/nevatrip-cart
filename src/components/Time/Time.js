@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DEFAULT_LANG, times: { status, payload: times = [] } = [], selectedTime, onChange = () => {} } ) => {
   const { t } = useTranslation();
-  
+
   if ( !selectedTime ) return null;
 
   /* Если на выбранную дату пришел пустой массив с временем, то выводится текст, указывающий, что нет прогулок. */
@@ -38,9 +38,8 @@ export const Time = ( { isRightTranslate = true, lang = process.env.REACT_APP_DE
         }
         { status === 'loaded' && times.map( time => {
           const date = new Date( time.start );
-          date.setHours(date.getHours() - 1);
-          const formatTime = date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit' } );
-          const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' } );
+          const formatTime = date.toLocaleTimeString( lang, { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague' } );
+          const formatDate = date.toLocaleDateString( lang, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague' } );
           const checked = time._key === selectedTime._key && !time.expired;
 
           return (
